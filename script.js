@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             dataset = data.ipa_smp;
-            addMessage("Halo! Saya Pak KIKI 🤖. Tanyakan materi IPA SMP:");
+            addMessage("Halo! Saya Pak KIKI 🤖.Silahkan ketik pertanyaanmu tentang materi IPA:");
         })
         .catch(error => {
             console.error("Error:", error);
