@@ -8,6 +8,17 @@ body {
     color: #e0e0e0; /* Light text */
 }
 
+h1 {
+    text-align: center; /* Pusatkan judul horizontal */
+}
+
+footer {
+    font-size: 0.8em; /* Ukuran font lebih kecil */
+    color: #999; /* Warna lebih subtle */
+    text-align: center; /* Pusatkan footer */
+    margin-top: 20px;
+}
+
 #chatbox { 
     border: 1px solid #444; /* Darker border */
     height: 400px; 
