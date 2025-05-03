@@ -43,21 +43,14 @@ function addMessage(message, isBot = true) {
     }, isBot ? 1000 : 0);
 }
 
-// ================== [4] ANSWER MATCHING (UPDATED) ================== //
+// ================== [4] ANSWER MATCHING (OPTIMIZED) ================== //
 function findAnswer(query) {
     const cleanQuery = normalizeText(query);
     const keywords = extractKeywords(cleanQuery);
     let bestMatch = null;
     let highestScore = 0;
 
-    console.log(`Keywords detected: ${keywords.join(', ')}`); // Debug
-
-    // Priority keywords (bisa ditambah di dataseek.json)
-    const priorityKeywords = {
-        "fotosintesis": 10,
-        "sel": 8,
-        "energi": 6
-    };
+    console.log(`Query: "${query}" → Normalized: "${cleanQuery}" | Keywords: ${keywords.join(', ')}`);
 
     // Cari di semua topik
     for (const topic in dataset.topics) {
@@ -65,24 +58,46 @@ function findAnswer(query) {
             for (const item of dataset.topics[topic].subtopics[subtopic]) {
                 let score = 0;
 
-                // [A] Skor berdasarkan kata kunci
-                keywords.forEach(keyword => {
-                    if (item.keywords?.includes(keyword)) {
-                        score += priorityKeywords[keyword] || 5;
+                // [A] Enhanced Keyword Matching
+                const combinedKeywords = [
+                    ...(item.keywords || []),
+                    ...item.patterns.flatMap(p => extractKeywords(p))
+                ];
+                
+                const uniqueKeywords = [...new Set(combinedKeywords)];
+                
+                uniqueKeywords.forEach(keyword => {
+                    if (keywords.includes(keyword)) {
+                        // Base score + priority bonus
+                        score += 5 + (priorityKeywords[keyword] || 0);
                     }
                 });
 
-                // [B] Skor berdasarkan pola
+                // [B] Flexible Pattern Matching
                 item.patterns.forEach(pattern => {
                     const cleanPattern = normalizeText(pattern);
+                    
+                    // Exact match
                     if (cleanPattern === cleanQuery) {
-                        score += 20; // Exact match
-                    } else if (cleanQuery.includes(cleanPattern) || cleanPattern.includes(cleanQuery)) {
-                        score += 10; // Partial match
+                        score += 25;
+                        return;
+                    }
+                    
+                    // Partial match
+                    const patternKeywords = extractKeywords(cleanPattern);
+                    const matchedKeywords = patternKeywords.filter(kw => 
+                        keywords.includes(kw)
+                    ).length;
+                    
+                    score += matchedKeywords * 7;
+                    
+                    // Additional match bonus
+                    if (cleanQuery.includes(cleanPattern) || cleanPattern.includes(cleanQuery)) {
+                        score += 12;
                     }
                 });
 
-                // [C] Simpan yang terbaik
+                // [C] Update best match
                 if (score > highestScore) {
                     highestScore = score;
                     bestMatch = item;
@@ -91,7 +106,10 @@ function findAnswer(query) {
         }
     }
 
-    return bestMatch?.responses.join('<br>') || dataset.fallback_responses[0];
+    // Dynamic threshold
+    const threshold = Math.max(20, keywords.length * 6);
+    
+    return highestScore >= threshold ? bestMatch?.responses.join('<br>') : dataset.fallback_responses[0];
 }
 
 // ================== [5] MESSAGE HANDLING (TIDAK BERUBAH) ================== //
