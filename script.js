@@ -1,96 +1,120 @@
-// Inisialisasi dataset
+// ========== [1] INITIALIZATION ========== //
 let dataset = {};
 
-// Fungsi normalisasi teks
+// ========== [2] TEXT PROCESSING ========== //
 function normalizeText(text) {
     return text.toLowerCase()
-        .replace(/[?_.,]/g, '') // Hapus tanda baca
+        .replace(/[^a-z0-9\s]/g, '')         // Hapus simbol
+        .replace(/\b(apa|bagaimana|jelaskan|sebutkan)\b/g, '')  // Hapus kata tanya
+        .replace(/\s+/g, ' ')                 // Gabungkan spasi ganda
         .trim();
 }
 
-// Fungsi tambah pesan ke chatbox
+// ========== [3] CHAT DISPLAY ========== //
 function addMessage(message, isBot = true) {
     const chatbox = document.getElementById('chatbox');
-    const bubbleClass = isBot ? 'bot-message' : 'user-message';
-    chatbox.innerHTML += `<div class="message ${bubbleClass}">${message}</div>`;
-    chatbox.scrollTop = chatbox.scrollHeight;
+    
+    // Typing indicator (hanya untuk bot)
+    if (isBot) {
+        chatbox.innerHTML += `
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>`;
+    }
+
+    // Tampilkan pesan setelah delay
+    setTimeout(() => {
+        if (isBot) {
+            document.querySelector('.typing-indicator')?.remove();
+        }
+        
+        chatbox.innerHTML += `
+            <div class="message ${isBot ? 'bot-message' : 'user-message'}">
+                ${message}
+            </div>`;
+        
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }, isBot ? 1000 : 0);
 }
 
-// Fungsi pencarian jawaban yang diperbarui
+// ========== [4] ANSWER MATCHING ========== //
 function findAnswer(query) {
     const cleanQuery = normalizeText(query);
-    let bestMatch = null;
-    let highestScore = 0;
+    let exactMatch = null;
+    let partialMatch = null;
 
     // Debug: Tampilkan query yang dinormalisasi
     console.log(`Mencari: "${cleanQuery}"`);
 
+    // Cari di semua topik
     for (const topic in dataset.topics) {
         for (const subtopic in dataset.topics[topic].subtopics) {
             for (const item of dataset.topics[topic].subtopics[subtopic]) {
-                let score = item.patterns.reduce((max, pattern) => {
-                    const cleanPattern = normalizeText(pattern);
-                    
-                    // Exact match
-                    if (cleanQuery === cleanPattern) return 100;
-                    
-                    // Partial match dua arah
-                    if (cleanQuery.includes(cleanPattern) || cleanPattern.includes(cleanQuery)) {
-                        return Math.max(max, cleanPattern.length * 2); // Bobot lebih untuk pola lebih panjang
-                    }
-                    
-                    return max;
-                }, 0);
+                
+                // Cek exact match
+                const isExactMatch = item.patterns.some(p => 
+                    normalizeText(p) === cleanQuery
+                );
+                
+                // Cek partial match
+                const isPartialMatch = item.patterns.some(p => {
+                    const normalizedPattern = normalizeText(p);
+                    return (
+                        cleanQuery.includes(normalizedPattern) || 
+                        normalizedPattern.includes(cleanQuery)
+                    );
+                });
 
-                // Debug: Tampilkan skor pencocokan
-                if (score > 0) console.log(`Pola: "${item.patterns}" | Skor: ${score}`);
-
-                if (score > highestScore) {
-                    highestScore = score;
-                    bestMatch = item;
+                if (isExactMatch) {
+                    exactMatch = item;
+                    break;
+                } else if (isPartialMatch) {
+                    partialMatch = item;
                 }
             }
+            if (exactMatch) break;
         }
+        if (exactMatch) break;
     }
 
-    return bestMatch ? bestMatch.responses.join('<br>') : dataset.fallback_responses[0];
+    return (exactMatch || partialMatch)?.responses.join('<br>') || dataset.fallback_responses[0];
 }
 
-// Fungsi kirim pesan
+// ========== [5] MESSAGE HANDLING ========== //
 function sendMessage() {
     const userInput = document.getElementById('userInput');
     const message = userInput.value.trim();
     if (!message) return;
 
+    // Tampilkan pesan user
     addMessage(message, false);
     userInput.value = '';
 
-    // Beri delay untuk simulasi bot "mengetik"
+    // Proses dan tampilkan jawaban
     setTimeout(() => {
         const answer = findAnswer(message);
         addMessage(answer);
-    }, 600);
+    }, 800);
 }
 
-// Event listeners
+// ========== [6] INITIAL SETUP ========== //
 document.addEventListener('DOMContentLoaded', () => {
     // Load dataset
     fetch('dataseek.json')
         .then(response => response.json())
         .then(data => {
             dataset = data.ipa_smp;
-            addMessage("Saya Pak KIKI! Silakan tanyakan materi IPA SMP (contoh: fotosintesis, sistem pencernaan)");
+            addMessage("Halo! Saya Pak KIKI 🤖. Tanyakan materi IPA SMP:");
         })
         .catch(error => {
             console.error("Error:", error);
-            addMessage("Maaf, sedang ada gangguan. Coba lagi nanti.");
+            addMessage("Maaf, sedang ada gangguan teknis. Coba lagi nanti!");
         });
 
-    // Input keyboard
+    // Event listeners
     document.getElementById('userInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
 
-    // Tombol kirim
     document.querySelector('button').addEventListener('click', sendMessage);
 });
