@@ -1,7 +1,14 @@
-// Initialize dataset variable
+// Inisialisasi dataset
 let dataset = {};
 
-// Function to add message to chatbox
+// Fungsi normalisasi teks
+function normalizeText(text) {
+    return text.toLowerCase()
+        .replace(/[?_.,]/g, '') // Hapus tanda baca
+        .trim();
+}
+
+// Fungsi tambah pesan ke chatbox
 function addMessage(message, isBot = true) {
     const chatbox = document.getElementById('chatbox');
     const bubbleClass = isBot ? 'bot-message' : 'user-message';
@@ -9,27 +16,35 @@ function addMessage(message, isBot = true) {
     chatbox.scrollTop = chatbox.scrollHeight;
 }
 
-// Function to find the best matching answer
+// Fungsi pencarian jawaban yang diperbarui
 function findAnswer(query) {
-    query = query.toLowerCase().trim();
+    const cleanQuery = normalizeText(query);
     let bestMatch = null;
     let highestScore = 0;
 
-    // Search through all topics
+    // Debug: Tampilkan query yang dinormalisasi
+    console.log(`Mencari: "${cleanQuery}"`);
+
     for (const topic in dataset.topics) {
         for (const subtopic in dataset.topics[topic].subtopics) {
             for (const item of dataset.topics[topic].subtopics[subtopic]) {
-                // Calculate matching score
                 let score = item.patterns.reduce((max, pattern) => {
-                    const lowerPattern = pattern.toLowerCase();
-                    if (query === lowerPattern) return 100; // Exact match
-                    if (query.includes(lowerPattern)) {
-                        return Math.max(max, lowerPattern.length); // Partial match
+                    const cleanPattern = normalizeText(pattern);
+                    
+                    // Exact match
+                    if (cleanQuery === cleanPattern) return 100;
+                    
+                    // Partial match dua arah
+                    if (cleanQuery.includes(cleanPattern) || cleanPattern.includes(cleanQuery)) {
+                        return Math.max(max, cleanPattern.length * 2); // Bobot lebih untuk pola lebih panjang
                     }
+                    
                     return max;
                 }, 0);
 
-                // Keep track of best match
+                // Debug: Tampilkan skor pencocokan
+                if (score > 0) console.log(`Pola: "${item.patterns}" | Skor: ${score}`);
+
                 if (score > highestScore) {
                     highestScore = score;
                     bestMatch = item;
@@ -41,40 +56,41 @@ function findAnswer(query) {
     return bestMatch ? bestMatch.responses.join('<br>') : dataset.fallback_responses[0];
 }
 
-// Function to handle message sending
+// Fungsi kirim pesan
 function sendMessage() {
     const userInput = document.getElementById('userInput');
     const message = userInput.value.trim();
     if (!message) return;
 
-    // Display user message
     addMessage(message, false);
     userInput.value = '';
 
-    // Process and display bot response
+    // Beri delay untuk simulasi bot "mengetik"
     setTimeout(() => {
         const answer = findAnswer(message);
         addMessage(answer);
-    }, 500); // Small delay for better UX
+    }, 600);
 }
 
-// Load dataset and initialize chat
+// Event listeners
 document.addEventListener('DOMContentLoaded', () => {
+    // Load dataset
     fetch('dataseek.json')
         .then(response => response.json())
         .then(data => {
             dataset = data.ipa_smp;
-            // Initial bot message
-            addMessage("Saya Pak KIKI! Silahkan ketik pertanyaan untuk materi IPA SMP");
+            addMessage("Saya Pak KIKI! Silakan tanyakan materi IPA SMP (contoh: fotosintesis, sistem pencernaan)");
         })
         .catch(error => {
-            console.error("Error loading dataset:", error);
-            addMessage("Maaf, terjadi kesalahan saat memuat data.");
+            console.error("Error:", error);
+            addMessage("Maaf, sedang ada gangguan. Coba lagi nanti.");
         });
 
-    // Add event listeners
+    // Input keyboard
     document.getElementById('userInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
+
+    // Tombol kirim
     document.querySelector('button').addEventListener('click', sendMessage);
 });
