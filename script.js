@@ -1,37 +1,35 @@
-// Inisialisasi variabel untuk menyimpan data
+// Initialize dataset variable
 let dataset = {};
-// Fungsi untuk menambahkan pesan ke chatbox (tanpa label "Bot" atau "Anda")
-function addMessage(message) {
+
+// Function to add message to chatbox
+function addMessage(message, isBot = true) {
     const chatbox = document.getElementById('chatbox');
-    // Dalam fungsi addMessage()
-    const isBot = !document.getElementById('userInput').value;
     const bubbleClass = isBot ? 'bot-message' : 'user-message';
-    chatbox.innerHTML += `<p class="${bubbleClass}">${message}</p>`;   
+    chatbox.innerHTML += `<div class="message ${bubbleClass}">${message}</div>`;
     chatbox.scrollTop = chatbox.scrollHeight;
 }
-// Fungsi untuk mencari jawaban dari dataset
+
+// Function to find the best matching answer
 function findAnswer(query) {
     query = query.toLowerCase().trim();
     let bestMatch = null;
     let highestScore = 0;
 
-    // Cari di semua topik
+    // Search through all topics
     for (const topic in dataset.topics) {
         for (const subtopic in dataset.topics[topic].subtopics) {
             for (const item of dataset.topics[topic].subtopics[subtopic]) {
-                // Hitung skor kecocokan
-                let score = 0;
-                for (const pattern of item.patterns) {
+                // Calculate matching score
+                let score = item.patterns.reduce((max, pattern) => {
                     const lowerPattern = pattern.toLowerCase();
-                    if (query === lowerPattern) {
-                        score = 100; // Pertanyaan persis sama
-                        break;
-                    } else if (query.includes(lowerPattern)) {
-                        score = Math.max(score, lowerPattern.length);
+                    if (query === lowerPattern) return 100; // Exact match
+                    if (query.includes(lowerPattern)) {
+                        return Math.max(max, lowerPattern.length); // Partial match
                     }
-                }
+                    return max;
+                }, 0);
 
-                // Simpan jawaban dengan skor tertinggi
+                // Keep track of best match
                 if (score > highestScore) {
                     highestScore = score;
                     bestMatch = item;
@@ -43,36 +41,40 @@ function findAnswer(query) {
     return bestMatch ? bestMatch.responses.join('<br>') : dataset.fallback_responses[0];
 }
 
-// Fungsi untuk menangani pengiriman pesan
+// Function to handle message sending
 function sendMessage() {
-    const userInput = document.getElementById('userInput').value;
-    if (!userInput.trim()) return;
+    const userInput = document.getElementById('userInput');
+    const message = userInput.value.trim();
+    if (!message) return;
 
-    // Tampilkan pesan user
-    addMessage(userInput);
-    document.getElementById('userInput').value = '';
+    // Display user message
+    addMessage(message, false);
+    userInput.value = '';
 
-    // Cari dan tampilkan jawaban
-    const answer = findAnswer(userInput);
-    addMessage(answer);
+    // Process and display bot response
+    setTimeout(() => {
+        const answer = findAnswer(message);
+        addMessage(answer);
+    }, 500); // Small delay for better UX
 }
 
-// Load dataset dan tampilkan pesan pembuka
-fetch('dataseek.json')
-    .then(response => response.json())
-    .then(data => {
-        dataset = data.ipa_smp;
-        // Pesan pembuka tanpa label "Bot:"
-        addMessage("Saya Pak KIKI! Silahkan ketik pertanyaan untuk materi IPA SMP");
-    })
-    .catch(error => {
-        console.error("Error loading dataset:", error);
-        addMessage("Maaf, terjadi error saat memuat data.");
-    });
+// Load dataset and initialize chat
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('dataseek.json')
+        .then(response => response.json())
+        .then(data => {
+            dataset = data.ipa_smp;
+            // Initial bot message
+            addMessage("Saya Pak KIKI! Silahkan ketik pertanyaan untuk materi IPA SMP");
+        })
+        .catch(error => {
+            console.error("Error loading dataset:", error);
+            addMessage("Maaf, terjadi kesalahan saat memuat data.");
+        });
 
-// Tambahkan event listener untuk tombol Enter
-document.getElementById('userInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
+    // Add event listeners
+    document.getElementById('userInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+    document.querySelector('button').addEventListener('click', sendMessage);
 });
