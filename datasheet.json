@@ -1,0 +1,160 @@
+{
+  "ipa_smp": {
+    "topics": {
+      "Biologi": {
+        "subtopics": {
+          "Sel": [
+            {
+              "intent": "struktur_sel_tumbuhan",
+              "patterns": [
+                "Apa saja bagian sel tumbuhan?",
+                "Sebutkan organel sel tumbuhan!",
+                "Bagaimana struktur sel tumbuhan?"
+              ],
+              "responses": [
+                "Organel sel tumbuhan:",
+                "1. Dinding sel (pelindung)",
+                "2. Kloroplas (tempat fotosintesis)",
+                "3. Vakuola (penyimpanan air)"
+              ],
+              "diagram": "img/sel_tumbuhan.jpg"
+            },
+            {
+              "intent": "fotosintesis",
+              "patterns": [
+                "Apa itu fotosintesis?",
+                "Jelaskan proses fotosintesis!",
+                "Bagaimana tumbuhan membuat makanan?"
+              ],
+              "responses": [
+                "Fotosintesis adalah proses tumbuhan mengubah:",
+                "1. CO₂ + air + cahaya → glukosa + O₂",
+                "2. Terjadi di kloroplas",
+                "Rumus: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂"
+              ],
+              "diagram": "img/fotosintesis.png"
+            },
+            {
+              "intent": "sistem_pencernaan",
+              "patterns": [
+                "Sebutkan organ pencernaan manusia!",
+                "Apa saja bagian sistem pencernaan?",
+                "Jelaskan jalur makanan di tubuh!"
+              ],
+              "responses": [
+                "Organ pencernaan manusia:",
+                "1. Mulut → 2. Kerongkongan",
+                "3. Lambung → 4. Usus halus",
+                "5. Usus besar → 6. Anus"
+              ],
+              "diagram": "img/pencernaan.jpg"
+            }
+          ]
+        }
+      },
+      "Fisika": {
+        "subtopics": {
+          "Gaya": [
+            {
+              "intent": "hukum_newton_1",
+              "patterns": [
+                "Apa bunyi Hukum Newton 1?",
+                "Jelaskan hukum inersia!",
+                "Apa contoh hukum Newton pertama?"
+              ],
+              "responses": [
+                "Hukum Newton 1 (Inersia):",
+                "'Benda diam akan tetap diam, benda bergerak akan tetap bergerak kecuali ada gaya eksternal'",
+                "Contoh: Penumpang terdorong saat bus berhenti mendadak"
+              ],
+              "diagram": "img/newton1.gif"
+            },
+            {
+              "intent": "energi_potensial",
+              "patterns": [
+                "Apa itu energi potensial?",
+                "Definisikan energi potensial!",
+                "Berikan contoh energi potensial!"
+              ],
+              "responses": [
+                "Energi potensial adalah energi karena posisi benda.",
+                "Rumus: Ep = m × g × h",
+                "Contoh: Buah di pohon, air di bendungan"
+              ],
+              "rumus": "Ep = m × g × h"
+            },
+            {
+              "intent": "listrik_statis",
+              "patterns": [
+                "Apa yang dimaksud listrik statis?",
+                "Jelaskan fenomena listrik statis!",
+                "Apa contoh listrik statis?"
+              ],
+              "responses": [
+                "Listrik statis adalah ketidakseimbangan muatan pada benda.",
+                "Contoh:",
+                "1. Rambut berdiri setelah digosok balon",
+                "2. Petir saat hujan"
+              ],
+              "diagram": "img/listrik_statis.jpg"
+            }
+          ]
+        }
+      },
+      "Kimia": {
+        "subtopics": {
+          "Larutan": [
+            {
+              "intent": "indikator_asam_basa",
+              "patterns": [
+                "Apa fungsi indikator asam basa?",
+                "Bagaimana cara menguji pH larutan?",
+                "Sebutkan contoh indikator alami!"
+              ],
+              "responses": [
+                "Indikator asam basa:",
+                "1. Lakmus (merah: asam, biru: basa)",
+                "2. Kunyit (kuning: asam, merah: basa)",
+                "3. Kubis ungu (berubah warna sesuai pH)"
+              ],
+              "diagram": "img/indikator.jpg"
+            },
+            {
+              "intent": "reaksi_netralisasi",
+              "patterns": [
+                "Apa itu reaksi netralisasi?",
+                "Jelaskan reaksi asam + basa!",
+                "Berikan contoh reaksi penetralan!"
+              ],
+              "responses": [
+                "Reaksi netralisasi: Asam + Basa → Garam + Air",
+                "Contoh: HCl + NaOH → NaCl + H₂O",
+                "Aplikasi: Obat maag menetralkan asam lambung"
+              ],
+              "rumus": "Asam + Basa → Garam + Air"
+            },
+            {
+              "intent": "unsur_periode_3",
+              "patterns": [
+                "Sebutkan unsur periode 3!",
+                "Apa saja unsur di periode ketiga?",
+                "Jelaskan contoh unsur periode 3!"
+              ],
+              "responses": [
+                "Unsur periode 3:",
+                "1. Natrium (Na) → 2. Magnesium (Mg)",
+                "3. Aluminium (Al) → 4. Silikon (Si)",
+                "5. Fosfor (P) → 6. Sulfur (S)"
+              ],
+              "diagram": "img/tabel_periodik.jpg"
+            }
+          ]
+        }
+      }
+    },
+    "fallback_responses": [
+      "Maaf, saya tidak mengerti. Coba tanyakan tentang sel, gaya, atau larutan!",
+      "Mungkin Anda bisa menjelaskan dengan kata kunci lain?"
+    ]
+  }
+}
