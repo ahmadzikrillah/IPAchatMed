@@ -4,7 +4,7 @@ let dataset = {};
 // ================== [2] TEXT PROCESSING ================== //
 // Fungsi normalisasi teks terbaru (support kata tanya & tanda baca)
 function normalizeText(text) {
-    const questionWords = ['apa', 'bagaimana', 'mengapa', 'jelaskan', 'sebutkan', 'bisa', 'bisakah'];
+    const questionWords = ['apa', 'bagaimana', 'mengapa', 'jelaskan', 'sebutkan', 'bisa', 'dimaksud', 'sebutkan', 'fungsi', 'dengan', 'bisakah'];
     return text.toLowerCase()
         .replace(/[?.,!]/g, '')
         .split(' ')
@@ -15,7 +15,7 @@ function normalizeText(text) {
 
 // Fungsi ekstraksi kata kunci baru
 function extractKeywords(text) {
-    const stopWords = ['di', 'ke', 'dari', 'pada', 'adalah', 'itu', 'dan', 'untuk'];
+    const stopWords = ['di', 'ke', 'dari', 'pada', 'adalah', 'itu', 'dan', 'yang', 'untuk'];
     return text.split(' ')
         .filter(word => word.length > 3 && !stopWords.includes(word));
 }
