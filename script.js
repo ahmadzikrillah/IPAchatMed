@@ -1,13 +1,14 @@
 // Inisialisasi variabel untuk menyimpan data
 let dataset = {};
-
 // Fungsi untuk menambahkan pesan ke chatbox (tanpa label "Bot" atau "Anda")
 function addMessage(message) {
     const chatbox = document.getElementById('chatbox');
-    chatbox.innerHTML += `<p>${message}</p>`;
+    // Dalam fungsi addMessage()
+    const isBot = !document.getElementById('userInput').value;
+    const bubbleClass = isBot ? 'bot-message' : 'user-message';
+    chatbox.innerHTML += `<p class="${bubbleClass}">${message}</p>`;   
     chatbox.scrollTop = chatbox.scrollHeight;
 }
-
 // Fungsi untuk mencari jawaban dari dataset
 function findAnswer(query) {
     query = query.toLowerCase().trim();
