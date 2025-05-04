@@ -308,10 +308,16 @@ function findBestPatternMatch(query, patterns) {
 // ================== [4] CORE ANSWER FINDING LOGIC ================== //
 function evaluateQuestion(qna, query, keywords, isContextSearch = false) {
     let score = 0;
+    const normalizedQuery = normalizeText(query);
     
     // 1. Pattern Matching
     const { score: patternScore, pattern } = findBestPatternMatch(query, qna.patterns);
     score += patternScore * 100;
+    
+    // 1.5. Exact Pattern Bonus
+    if (qna.patterns.some(p => normalizeText(p) === normalizedQuery)) {
+        score += 40; // Extra bonus for exact pattern match
+    }
     
     // 2. Keyword Matching
     const matchedKeywords = qna.keywords.filter(kw => 
@@ -322,12 +328,14 @@ function evaluateQuestion(qna, query, keywords, isContextSearch = false) {
         })
     );
     
-    score += matchedKeywords.length * (15 + matchedKeywords.length * 0.5);
+    // 2.5. Keyword Density Adjustment
+    const keywordDensity = matchedKeywords.length / qna.keywords.length;
+    score += matchedKeywords.length * (15 + matchedKeywords.length * 0.5) * (1 + keywordDensity);
     
     // 3. Priority Keywords Bonus
     matchedKeywords.forEach(kw => {
         if (priorityKeywords[kw]) {
-            score += priorityKeywords[kw];
+            score += priorityKeywords[kw] * 1.2; // 20% extra for priority keywords
         }
     });
     
@@ -336,9 +344,42 @@ function evaluateQuestion(qna, query, keywords, isContextSearch = false) {
         score *= 1.5;
     }
     
-    // 5. Intent Matching
-    if (qna.intent && normalizeText(query).includes(normalizeText(qna.intent))) {
-        score += 30;
+    // 5. Intent Matching (Enhanced)
+    if (qna.intent) {
+        const normalizedIntent = normalizeText(qna.intent);
+        
+        // 5.1. Direct Intent Match
+        if (normalizedQuery.includes(normalizedIntent)) {
+            score += 50; // Higher bonus for direct intent match
+        }
+        
+        // 5.2. Partial Intent Match
+        const intentWords = normalizedIntent.split(' ');
+        const matchedIntentWords = intentWords.filter(word => 
+            normalizedQuery.includes(word)
+        ).length;
+        
+        score += matchedIntentWords * 10;
+    }
+    
+    // 6. Question Type Detection
+    const questionTypes = {
+        'apa': 20,
+        'bagaimana': 15,
+        'mengapa': 15,
+        'sebutkan': 10
+    };
+    
+    for (const [type, bonus] of Object.entries(questionTypes)) {
+        if (normalizedQuery.startsWith(type)) {
+            score += bonus;
+            break;
+        }
+    }
+    
+    // 7. Length Penalty (for too-short queries)
+    if (keywords.length < 2 && score > 0) {
+        score *= 0.7;
     }
     
     return { score, pattern };
