@@ -165,7 +165,7 @@
         <div class="input-container">
             <input type="text" id="userInput" placeholder="Tanyakan materi IPA..." 
                    aria-label="Input pertanyaan IPA" autocomplete="off">
-            <button id="sendButton" onclick="sendMessage()" aria-label="Kirim pertanyaan">
+            <button id="sendButton" aria-label="Kirim pertanyaan">
                 <i class="fas fa-paper-plane"></i> Kirim
             </button>
             <button id="clearChat" aria-label="Bersihkan percakapan">
@@ -176,9 +176,9 @@
         <div class="quick-questions">
             <p>Coba tanyakan:</p>
             <div class="quick-buttons">
-                <button class="quick-btn" onclick="askQuickQuestion('Apa itu sel?')">Apa itu sel?</button>
-                <button class="quick-btn" onclick="askQuickQuestion('Bagaimana proses fotosintesis?')">Proses fotosintesis</button>
-                <button class="quick-btn" onclick="askQuickQuestion('Sebutkan bagian sel hewan')">Bagian sel hewan</button>
+                <button class="quick-btn" data-question="Apa itu sel?">Apa itu sel?</button>
+                <button class="quick-btn" data-question="Bagaimana proses fotosintesis?">Proses fotosintesis</button>
+                <button class="quick-btn" data-question="Sebutkan bagian sel hewan">Bagian sel hewan</button>
             </div>
         </div>
     </main>
@@ -200,11 +200,14 @@
         // Set last updated date
         document.getElementById('lastUpdated').textContent = 'Terakhir diperbarui: ' + new Date().toLocaleDateString('id-ID');
         
-        // Fungsi untuk pertanyaan cepat
-        function askQuickQuestion(question) {
-            document.getElementById('userInput').value = question;
-            sendMessage();
-        }
+        // Event delegation untuk quick buttons
+        document.querySelector('.quick-buttons').addEventListener('click', function(e) {
+            if (e.target.classList.contains('quick-btn')) {
+                const question = e.target.getAttribute('data-question');
+                document.getElementById('userInput').value = question;
+                sendMessage();
+            }
+        });
         
         // Handle Enter key
         document.getElementById('userInput').addEventListener('keypress', function(e) {
