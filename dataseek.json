@@ -1,1479 +1,942 @@
 {
-  "materi": [
-    {
-      "topics": "Biologi",
-      "subtopics": "Sel",
-      "QnA": [
-        {
-          "patterns": "Apa itu sel?",
-          "responses": "Unit struktural dan fungsional terkecil dari makhluk hidup.",
-          "intent": ["sel", "biologi", "unit kehidupan"]
-        },
-        {
-          "patterns": "Sebutkan organel-organel utama sel hewan.",
-          "responses": "Membran sel, sitoplasma, inti sel, mitokondria, ribosom.",
-          "intent": ["organel", "sel hewan", "struktur sel"]
-        },
-        {
-          "patterns": "Apa fungsi membran sel?",
-          "responses": "Mengatur keluar masuk zat dan melindungi sel.",
-          "intent": ["membran sel", "transport sel", "fungsi sel"]
-        },
-        {
-          "patterns": "Di mana terjadinya sintesis protein?",
-          "responses": "Di ribosom.",
-          "intent": ["ribosom", "sintesis protein", "protein"]
+  "ipa_smp": {
+    "topics": {
+      "Biologi": {
+        "subtopics": {
+          "Sel": {
+            "QnA": [
+              {
+                "intent": "struktur_sel",
+                "patterns": [
+                  "apa itu sel?",
+                  "bagian-bagian sel",
+                  "fungsi sel",
+                  "sebutkan bagian-bagian utama sel hewan?",
+                  "apa fungsi dari mitokondria?",
+                  "apa perbedaan sel hewan dan sel tumbuhan?",
+                  "apa itu membran sel?",
+                  "apa fungsi ribosom?",
+                  "apa itu inti sel (nukleus)?",
+                  "apa itu sitoplasma?",
+                  "apa itu vakuola?",
+                  "apa itu lisosom?"
+                ],
+                "responses": [
+                  "Sel adalah unit struktural dan fungsional terkecil dari makhluk hidup.",
+                  "1. Membran sel<br>2. Inti sel",
+                  "Sel berfungsi untuk...",
+                  "Membran sel, sitoplasma, inti sel (nukleus).",
+                  "Mitokondria adalah organel yang menghasilkan energi melalui respirasi sel.",
+                  "Sel hewan tidak memiliki dinding sel dan kloroplas, sedangkan sel tumbuhan memilikinya.",
+                  "Membran sel adalah lapisan luar yang melindungi sel dan mengatur keluar masuk zat.",
+                  "Ribosom adalah tempat terjadinya sintesis protein.",
+                  "Inti sel adalah pusat kendali sel yang mengandung materi genetik (DNA).",
+                  "Sitoplasma adalah cairan kental di dalam sel yang mengandung organel-organel sel.",
+                  "Vakuola adalah organel yang menyimpan air, nutrisi, dan zat sisa.",
+                  "Lisosom adalah organel yang mengandung enzim pencernaan untuk mendaur ulang materi seluler."
+                ],
+                "keywords": ["sel", "organel", "membran", "nukleus", "mitokondria", "ribosom", "sitoplasma", "vakuola", "lisosom"],
+                "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Animal_cell_diagram_en.svg/800px-Animal_cell_diagram_en.svg.png"
+              }
+            ]
+          },
+          "Fotosintesis": {
+            "QnA": [
+              {
+                "intent": "proses_fotosintesis",
+                "patterns": [
+                  "apa itu fotosintesis?",
+                  "bahan apa saja yang dibutuhkan untuk fotosintesis?",
+                  "apa hasil dari fotosintesis?",
+                  "di mana fotosintesis terjadi pada tumbuhan?",
+                  "apa saja reaktan yang dibutuhkan dalam fotosintesis?",
+                  "apa produk utama yang dihasilkan dari fotosintesis?",
+                  "apa itu klorofil?",
+                  "apa peran cahaya matahari dalam fotosintesis?",
+                  "apa itu stomata?",
+                  "apa hubungan antara fotosintesis dan respirasi sel?",
+                  "apa faktor-faktor yang mempengaruhi laju fotosintesis?",
+                  "bagaimana fotosintesis berkontribusi pada kehidupan di Bumi?"
+                ],
+                "responses": [
+                  "Fotosintesis adalah proses tumbuhan mengubah energi cahaya menjadi makanan.",
+                  "1. Karbon dioksida<br>2. Air<br>3. Cahaya matahari<br>4. Klorofil",
+                  "Hasil fotosintesis adalah glukosa (gula) dan oksigen.",
+                  "Fotosintesis terjadi di kloroplas, terutama di sel-sel mesofil daun.",
+                  "Karbon dioksida (CO2) dan air (H2O).",
+                  "Glukosa (C6H12O6) dan oksigen (O2).",
+                  "Klorofil adalah pigmen hijau dalam kloroplas yang menyerap energi cahaya.",
+                  "Cahaya matahari menyediakan energi yang dibutuhkan untuk mengubah CO2 dan H2O menjadi glukosa.",
+                  "Stomata adalah pori-pori kecil pada daun yang memungkinkan pertukaran gas (CO2 dan O2).",
+                  "Fotosintesis menghasilkan glukosa yang digunakan dalam respirasi sel untuk menghasilkan energi (ATP).",
+                  "Intensitas cahaya, konsentrasi CO2, suhu, dan ketersediaan air.",
+                  "Fotosintesis menghasilkan oksigen yang penting untuk respirasi hewan dan menyediakan makanan bagi hampir semua organisme."
+                ],
+                "keywords": ["fotosintesis", "klorofil", "cahaya", "glukosa", "oksigen", "kloroplas", "stomata", "respirasi sel"],
+                "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Leaf_anatomy_and_photosynthesis.svg/1200px-Leaf_anatomy_and_photosynthesis.svg.png"
+              }
+            ]
+          },
+          "Sistem Pernapasan": {
+            "QnA": [
+              {
+                "intent": "sistem_pernapasan",
+                "patterns": [
+                  "apa fungsi utama sistem pernapasan?",
+                  "organ-organ apa saja yang terlibat?",
+                  "bagaimana proses pertukaran gas terjadi?",
+                  "apa fungsi utama sistem pernapasan?",
+                  "organ-organ pernapasan utama?",
+                  "bagaimana proses pertukaran oksigen dan karbon dioksida?"
+                ],
+                "responses": [
+                  "Mengambil oksigen dan mengeluarkan karbon dioksida.",
+                  "Hidung, faring, laring, trakea, bronkus, paru-paru, alveolus.",
+                  "Oksigen dari udara masuk ke alveolus dan berdifusi ke kapiler darah, sementara karbon dioksida dari darah berdifusi ke alveolus untuk dikeluarkan.",
+                  "Menyediakan oksigen dan membuang karbon dioksida.",
+                  "Hidung, trakea, bronkus, paru-paru.",
+                  "Oksigen masuk ke darah di alveoli, karbon dioksida keluar dari darah ke alveoli."
+                ],
+                "keywords": ["pernapasan", "oksigen", "karbon dioksida", "paru-paru", "alveolus"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Sistem Pencernaan": {
+            "QnA": [
+              {
+                "intent": "sistem_pencernaan",
+                "patterns": [
+                  "apa fungsi utama sistem pencernaan?",
+                  "organ-organ apa saja yang terlibat?",
+                  "apa itu enzim?",
+                  "organ-organ pencernaan utama?",
+                  "apa fungsi lambung?",
+                  "bagaimana proses penyerapan nutrisi?"
+                ],
+                "responses": [
+                  "Memecah makanan menjadi nutrisi yang dapat diserap tubuh.",
+                  "Mulut, kerongkongan, lambung, usus halus, usus besar.",
+                  "Protein yang mempercepat reaksi kimia dalam pencernaan.",
+                  "Mulut, kerongkongan, lambung, usus.",
+                  "Lambung mencerna protein dengan asam dan enzim.",
+                  "Nutrisi diserap di usus halus melalui vili usus."
+                ],
+                "keywords": ["pencernaan", "nutrisi", "enzim", "lambung", "usus"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Sistem Peredaran Darah": {
+            "QnA": [
+              {
+                "intent": "sistem_peredaran_darah",
+                "patterns": [
+                  "apa fungsi utama sistem peredaran darah?",
+                  "komponen utama darah?",
+                  "bagaimana darah mengalir?",
+                  "apa peran jantung?",
+                  "apa perbedaan arteri dan vena?",
+                  "bagaimana oksigen diangkut dalam darah?"
+                ],
+                "responses": [
+                  "Mengangkut oksigen, nutrisi, dan zat sisa ke seluruh tubuh.",
+                  "Plasma darah, sel darah merah, sel darah putih, trombosit.",
+                  "Jantung memompa darah melalui arteri dan vena.",
+                  "Memompa darah ke seluruh tubuh.",
+                  "Arteri membawa darah dari jantung, vena membawa darah ke jantung.",
+                  "Oksigen diikat oleh hemoglobin dalam sel darah merah."
+                ],
+                "keywords": ["peredaran darah", "jantung", "darah", "arteri", "vena"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Sistem Saraf": {
+            "QnA": [
+              {
+                "intent": "sistem_saraf",
+                "patterns": [
+                  "apa fungsi utama sistem saraf?",
+                  "bagian-bagian sistem saraf?",
+                  "apa itu neuron?",
+                  "bagaimana impuls saraf bekerja?",
+                  "apa peran otak?",
+                  "apa itu refleks?"
+                ],
+                "responses": [
+                  "Mengendalikan dan mengkoordinasikan aktivitas tubuh.",
+                  "Otak, sumsum tulang belakang, saraf tepi.",
+                  "Sel saraf yang mengirimkan impuls listrik.",
+                  "Impuls bergerak melalui akson dengan perubahan muatan listrik.",
+                  "Pusat kendali tubuh dan pikiran.",
+                  "Respon otomatis terhadap rangsangan tanpa melibatkan otak."
+                ],
+                "keywords": ["saraf", "otak", "neuron", "impuls", "refleks"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Reproduksi Manusia": {
+            "QnA": [
+              {
+                "intent": "reproduksi_manusia",
+                "patterns": [
+                  "apa tujuan reproduksi manusia?",
+                  "organ reproduksi pria?",
+                  "organ reproduksi wanita?",
+                  "bagaimana proses pembuahan terjadi?",
+                  "apa itu menstruasi?",
+                  "apa peran hormon dalam reproduksi?"
+                ],
+                "responses": [
+                  "Menghasilkan keturunan untuk melanjutkan spesies.",
+                  "Testis, penis, kelenjar prostat.",
+                  "Ovarium, uterus, vagina.",
+                  "Penyatuan sperma dan sel telur di tuba falopi.",
+                  "Peluruhan dinding rahim ketika tidak terjadi pembuahan.",
+                  "Hormon mengontrol siklus menstruasi dan produksi sel kelamin."
+                ],
+                "keywords": ["reproduksi", "seksual", "hormon", "sperma", "ovum"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Pertumbuhan dan Perkembangan": {
+            "QnA": [
+              {
+                "intent": "pertumbuhan_dan_perkembangan",
+                "patterns": [
+                  "apa perbedaan pertumbuhan dan perkembangan?",
+                  "apa faktor yang mempengaruhi pertumbuhan?",
+                  "tahapan perkembangan manusia?",
+                  "bagaimana nutrisi mempengaruhi pertumbuhan?",
+                  "apa peran genetik dalam perkembangan?",
+                  "bagaimana pubertas mempengaruhi perkembangan?"
+                ],
+                "responses": [
+                  "Pertumbuhan adalah peningkatan ukuran, perkembangan adalah perubahan fungsi.",
+                  "Nutrisi, genetik, lingkungan, hormon.",
+                  "Bayi, anak-anak, remaja, dewasa, lansia.",
+                  "Nutrisi menyediakan bahan baku untuk pertumbuhan sel dan jaringan.",
+                  "Gen menentukan potensi pertumbuhan dan perkembangan.",
+                  "Pubertas menandai kematangan organ reproduksi dan perubahan fisik."
+                ],
+                "keywords": ["pertumbuhan", "perkembangan", "nutrisi", "genetik", "pubertas"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Ekologi": {
+            "QnA": [
+              {
+                "intent": "ekologi",
+                "patterns": [
+                  "apa itu ekosistem?",
+                  "apa itu rantai makanan?",
+                  "apa itu daur biogeokimia?",
+                  "bagaimana aliran energi dalam ekosistem?",
+                  "apa peran produsen dalam ekosistem?",
+                  "apa dampak aktivitas manusia terhadap ekosistem?"
+                ],
+                "responses": [
+                  "Interaksi antara makhluk hidup dan lingkungannya.",
+                  "Urutan transfer energi melalui makan dan dimakan.",
+                  "Siklus unsur kimia melalui komponen biotik dan abiotik.",
+                  "Energi mengalir dari produsen ke konsumen dalam rantai makanan.",
+                  "Produsen mengubah energi matahari menjadi energi kimia melalui fotosintesis.",
+                  "Dapat menyebabkan polusi, kepunahan spesies, dan perubahan iklim."
+                ],
+                "keywords": ["ekosistem", "rantai makanan", "daur", "produsen", "konsumen"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Evolusi": {
+            "QnA": [
+              {
+                "intent": "evolusi",
+                "patterns": [
+                  "apa itu evolusi?",
+                  "apa itu seleksi alam?",
+                  "apa bukti-bukti evolusi?",
+                  "bagaimana spesies baru terbentuk?",
+                  "apa perbedaan evolusi gradual dan punctuated equilibrium?",
+                  "bagaimana resistensi antibiotik terkait evolusi?"
+                ],
+                "responses": [
+                  "Perubahan sifat populasi organisme dari generasi ke generasi.",
+                  "Organisme dengan sifat menguntungkan lebih mungkin bertahan dan bereproduksi.",
+                  "Fosil, homologi organ, embriologi, bukti biokimia.",
+                  "Melalui isolasi reproduktif dan akumulasi perbedaan genetik.",
+                  "Gradual: perubahan perlahan; Punctuated: perubahan cepat diikuti stasis.",
+                  "Bakteri yang resisten bertahan hidup dan berkembang biak saat antibiotik digunakan."
+                ],
+                "keywords": ["evolusi", "seleksi alam", "fosil", "spesiasi", "adaptasi"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Genetika": {
+            "QnA": [
+              {
+                "intent": "genetika",
+                "patterns": [
+                  "apa itu gen?",
+                  "apa itu kromosom?",
+                  "apa itu DNA?",
+                  "bagaimana sifat diturunkan?",
+                  "apa perbedaan gen dominan dan resesif?",
+                  "apa itu mutasi gen?"
+                ],
+                "responses": [
+                  "Unit hereditas yang menentukan sifat organisme.",
+                  "Struktur dalam sel yang membawa gen dalam bentuk DNA.",
+                  "Molekul pembawa informasi genetik dalam bentuk kode.",
+                  "Melalui pewarisan gen dari orang tua kepada keturunannya.",
+                  "Dominan menutupi ekspresi resesif dalam heterozigot.",
+                  "Perubahan urutan DNA yang dapat mengubah fungsi gen."
+                ],
+                "keywords": ["genetika", "gen", "kromosom", "DNA", "hereditas"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Imunitas": {
+            "QnA": [
+              {
+                "intent": "imunitas",
+                "patterns": [
+                  "apa itu sistem imunitas?",
+                  "apa itu antibodi?",
+                  "bagaimana vaksin bekerja?",
+                  "apa perbedaan imunitas aktif dan pasif?",
+                  "apa itu alergi?",
+                  "bagaimana HIV menyerang sistem imun?"
+                ],
+                "responses": [
+                  "Sistem pertahanan tubuh melawan patogen.",
+                  "Protein yang mengenali dan menetralisir antigen spesifik.",
+                  "Memperkenalkan antigen untuk merangsang respons imun tanpa menyebabkan penyakit.",
+                  "Aktif: tubuh membuat antibodi sendiri; Pasif: mendapat antibosi dari luar.",
+                  "Respons imun berlebihan terhadap zat tidak berbahaya.",
+                  "Menyerang sel T helper sehingga melemahkan sistem imun."
+                ],
+                "keywords": ["imunitas", "antibodi", "vaksin", "alergi", "HIV"],
+                "diagram": ""
+              }
+            ]
+          }
         }
-      ],
-      "diagram": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEicVlTGyUgrOsg_oPjqFDhaDS7EOq9sIJzkvZIgjeQBnQ1i9LVpi6NF3xYGl-u12UoWhEU50JPIY-KJh2J-PXDcVbnrsyf2JWOXh7MxyHlK3q5ZIquce7JkYMLKEilNJYKokgenNSRNORpOMxeef-bQGOpj5bj3KdunV20jJtOyzUeasvmBUmjhBS6Jrqg/s320/sel%20hewan%20dan%20tumbuhan.jpg"
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Jaringan Tumbuhan",
-      "QnA": [
-        {
-          "patterns": "Apa itu jaringan tumbuhan?",
-          "responses": "Kelompok sel dengan struktur dan fungsi yang sama pada tumbuhan.",
-          "intent": ["jaringan tumbuhan", "struktur tumbuhan", "fungsi tumbuhan"]
-        },
-        {
-          "patterns": "Sebutkan jenis-jenis jaringan meristem.",
-          "responses": "Meristem apikal, meristem lateral, meristem interkalar.",
-          "intent": ["meristem", "pertumbuhan primer", "pertumbuhan sekunder"]
-        },
-        {
-          "patterns": "Apa fungsi jaringan parenkim?",
-          "responses": "Menyimpan makanan dan melakukan fotosintesis.",
-          "intent": ["parenkim", "fotosintesis", "penyimpanan makanan"]
-        },
-        {
-          "patterns": "Apa perbedaan xilem dan floem?",
-          "responses": "Xilem mengangkut air dan mineral, floem mengangkut makanan.",
-          "intent": ["xilem", "floem", "pengangkutan tumbuhan"]
+      },
+      "Fisika": {
+        "subtopics": {
+          "Gaya": {
+            "QnA": [
+              {
+                "intent": "gaya",
+                "patterns": [
+                  "apa itu gaya?",
+                  "sebutkan jenis-jenis gaya yang umum?",
+                  "apa satuan SI untuk gaya?",
+                  "bagaimana gaya dapat mempengaruhi gerak benda?",
+                  "apa itu gaya gravitasi?",
+                  "apa itu gaya gesek?"
+                ],
+                "responses": [
+                  "Gaya adalah interaksi yang, ketika tidak diimbangi, akan mengubah gerak suatu benda.",
+                  "Gaya gravitasi, gaya gesek, gaya normal, gaya tegangan, gaya pegas.",
+                  "Newton (N).",
+                  "Gaya dapat mempercepat, memperlambat, mengubah arah gerak, atau mengubah bentuk benda.",
+                  "Gaya gravitasi adalah gaya tarik-menarik antara benda-benda bermassa.",
+                  "Gaya gesek adalah gaya yang melawan gerakan antara dua permukaan yang bersentuhan."
+                ],
+                "keywords": ["gaya", "newton", "gravitasi", "gesek", "interaksi"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Gerak Lurus": {
+            "QnA": [
+              {
+                "intent": "gerak_lurus",
+                "patterns": [
+                  "apa itu gerak lurus?",
+                  "apa perbedaan antara jarak dan perpindahan?",
+                  "apa itu kecepatan?",
+                  "apa itu percepatan?",
+                  "berikan contoh gerak lurus dipercepat",
+                  "apa itu kecepatan rata-rata?"
+                ],
+                "responses": [
+                  "Gerak lurus adalah gerak suatu objek dalam satu dimensi, sepanjang garis lurus.",
+                  "Jarak adalah panjang total lintasan yang ditempuh, perpindahan adalah perubahan posisi dari titik awal ke titik akhir.",
+                  "Kecepatan adalah laju perubahan posisi objek terhadap waktu.",
+                  "Percepatan adalah laju perubahan kecepatan objek terhadap waktu.",
+                  "Mobil yang melaju dari berhenti, buah jatuh dari pohon.",
+                  "Kecepatan rata-rata adalah total perpindahan dibagi total waktu tempuh."
+                ],
+                "keywords": ["gerak lurus", "jarak", "perpindahan", "kecepatan", "percepatan"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Tekanan": {
+            "QnA": [
+              {
+                "intent": "tekanan",
+                "patterns": [
+                  "apa yang dimaksud dengan tekanan?",
+                  "apa saja faktor yang memengaruhi besarnya tekanan?",
+                  "sebutkan contoh penerapan konsep tekanan dalam kehidupan sehari-hari!",
+                  "apa itu tekanan hidrostatis?",
+                  "apa hukum Pascal?",
+                  "bagaimana tekanan udara mempengaruhi cuaca?"
+                ],
+                "responses": [
+                  "Tekanan adalah besarnya gaya yang bekerja tegak lurus pada suatu permukaan per satuan luas permukaan tersebut.",
+                  "Faktor-faktor yang memengaruhi tekanan adalah besarnya gaya dan luas permukaan.",
+                  "Contoh: penggunaan paku yang runcing, ban mobil yang dipompa, pisau yang tajam.",
+                  "Tekanan zat cair akibat beratnya sendiri.",
+                  "Tekanan yang diberikan pada zat cair dalam ruang tertutup diteruskan ke segala arah sama rata.",
+                  "Perbedaan tekanan udara menciptakan angin dan mempengaruhi pola cuaca."
+                ],
+                "keywords": ["tekanan", "gaya", "luas", "hidrostatis", "pascal"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Usaha dan Energi": {
+            "QnA": [
+              {
+                "intent": "usaha_dan_energi",
+                "patterns": [
+                  "apa definisi usaha dalam fisika?",
+                  "apa saja bentuk-bentuk energi?",
+                  "apa hubungan antara usaha dan energi?",
+                  "apa itu energi kinetik?",
+                  "apa itu energi potensial?",
+                  "bagaimana prinsip kekekalan energi?"
+                ],
+                "responses": [
+                  "Usaha adalah gaya yang bekerja pada benda sehingga benda berpindah.",
+                  "Energi kinetik, potensial, listrik, panas, kimia.",
+                  "Usaha adalah perubahan energi.",
+                  "Energi gerak (½mv²).",
+                  "Energi posisi (mgh).",
+                  "Energi tidak dapat diciptakan atau dimusnahkan, hanya berubah bentuk."
+                ],
+                "keywords": ["usaha", "energi", "kinetik", "potensial", "kekekalan"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Pesawat Sederhana": {
+            "QnA": [
+              {
+                "intent": "pesawat_sederhana",
+                "patterns": [
+                  "apa tujuan penggunaan pesawat sederhana?",
+                  "sebutkan jenis-jenis pesawat sederhana?",
+                  "apa keuntungan mekanis?",
+                  "bagaimana tuas bekerja?",
+                  "apa keuntungan menggunakan katrol?",
+                  "bagaimana bidang miring mempermudah kerja?"
+                ],
+                "responses": [
+                  "Memudahkan pekerjaan dengan mengubah gaya atau jarak.",
+                  "Tuas, katrol, bidang miring, roda berporos.",
+                  "Rasio gaya output terhadap gaya input.",
+                  "Dengan titik tumpu, beban, dan kuasa yang seimbang.",
+                  "Mengubah arah gaya dan mengurangi gaya yang dibutuhkan.",
+                  "Membagi gaya yang dibutuhkan dengan memperpanjang jarak."
+                ],
+                "keywords": ["pesawat sederhana", "tuas", "katrol", "bidang miring", "keuntungan mekanis"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Kalor dan Perpindahan Kalor": {
+            "QnA": [
+              {
+                "intent": "kalor",
+                "patterns": [
+                  "apa itu kalor?",
+                  "bagaimana kalor berpindah?",
+                  "apa itu konduksi?",
+                  "apa itu konveksi?",
+                  "apa itu radiasi?",
+                  "apa pengaruh kalor terhadap suhu benda?"
+                ],
+                "responses": [
+                  "Energi yang berpindah akibat perbedaan suhu.",
+                  "Konduksi, konveksi, radiasi.",
+                  "Perpindahan kalor melalui sentuhan langsung partikel.",
+                  "Perpindahan kalor melalui aliran fluida.",
+                  "Perpindahan kalor melalui gelombang elektromagnetik.",
+                  "Kalor dapat menaikkan suhu benda atau mengubah wujudnya."
+                ],
+                "keywords": ["kalor", "konduksi", "konveksi", "radiasi", "suhu"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Listrik Dinamis": {
+            "QnA": [
+              {
+                "intent": "listrik_dinamis",
+                "patterns": [
+                  "apa itu arus listrik?",
+                  "apa itu tegangan listrik?",
+                  "apa itu hambatan listrik?",
+                  "apa hukum Ohm?",
+                  "bagaimana rangkaian seri dan paralel berbeda?",
+                  "apa itu daya listrik?"
+                ],
+                "responses": [
+                  "Aliran muatan listrik (elektron).",
+                  "Beda potensial yang mendorong arus listrik.",
+                  "Penghambat aliran arus listrik.",
+                  "V = I × R (Tegangan = Arus × Hambatan).",
+                  "Seri: arus sama, tegangan dibagi; Paralel: tegangan sama, arus dibagi.",
+                  "Laju penggunaan energi listrik (P = V × I)."
+                ],
+                "keywords": ["listrik", "arus", "tegangan", "hambatan", "ohm"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Magnet": {
+            "QnA": [
+              {
+                "intent": "magnet",
+                "patterns": [
+                  "apa itu magnet?",
+                  "apa itu kutub magnet?",
+                  "apa itu medan magnet?",
+                  "bagaimana membuat elektromagnet?",
+                  "apa aplikasi magnet dalam kehidupan?",
+                  "apa hubungan antara listrik dan magnet?"
+                ],
+                "responses": [
+                  "Benda yang dapat menarik besi dan menghasilkan medan magnet.",
+                  "Utara dan selatan, dimana gaya magnet terkuat.",
+                  "Daerah di sekitar magnet yang dipengaruhi gaya magnet.",
+                  "Dengan melilitkan kawat berarus pada inti besi.",
+                  "Dinamo, motor listrik, MRI, kompas.",
+                  "Arus listrik menghasilkan medan magnet, perubahan medan magnet menghasilkan arus listrik."
+                ],
+                "keywords": ["magnet", "kutub", "medan magnet", "elektromagnet", "induksi"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Optik": {
+            "QnA": [
+              {
+                "intent": "optik",
+                "patterns": [
+                  "apa itu cahaya?",
+                  "apa itu pemantulan cahaya?",
+                  "apa itu pembiasan cahaya?",
+                  "bagaimana lensa bekerja?",
+                  "apa perbedaan cermin cekung dan cembung?",
+                  "bagaimana prisma menguraikan cahaya?"
+                ],
+                "responses": [
+                  "Gelombang elektromagnetik yang dapat dilihat (400-700 nm).",
+                  "Perubahan arah cahaya saat mengenai permukaan (hukum pemantulan).",
+                  "Pembelokan cahaya saat melewati medium berbeda (hukum Snellius).",
+                  "Dengan membiaskan cahaya untuk memfokuskan atau menyebarkan berkas cahaya.",
+                  "Cekung: konvergen; Cembung: divergen.",
+                  "Dengan membiaskan panjang gelombang berbeda dengan sudut berbeda."
+                ],
+                "keywords": ["cahaya", "pemantulan", "pembiasan", "lensa", "cermin"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Bunyi": {
+            "QnA": [
+              {
+                "intent": "bunyi",
+                "patterns": [
+                  "apa itu bunyi?",
+                  "bagaimana bunyi merambat?",
+                  "apa itu frekuensi bunyi?",
+                  "apa perbedaan infrasonik, ultrasonik, dan audiosonik?",
+                  "bagaimana gema terjadi?",
+                  "apa faktor yang mempengaruhi cepat rambat bunyi?"
+                ],
+                "responses": [
+                  "Gelombang mekanik longitudinal yang dihasilkan getaran.",
+                  "Melalui medium (padat, cair, gas) sebagai gelombang tekanan.",
+                  "Jumlah getaran per detik (Hz).",
+                  "Infrasonik (<20Hz), Audiosonik (20-20.000Hz), Ultrasonik (>20.000Hz).",
+                  "Pantulan bunyi yang terdengar jelas karena jarak cukup jauh.",
+                  "Jenis medium, suhu, dan kerapatan medium."
+                ],
+                "keywords": ["bunyi", "gelombang", "frekuensi", "resonansi", "gema"],
+                "diagram": ""
+              }
+            ]
+          }
         }
-      ],
-      "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Plant_tissue_drawing.svg/1200px-Plant_tissue_drawing.svg.png"
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Sistem Pencernaan Manusia",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama sistem pencernaan?",
-          "responses": "Memecah makanan menjadi nutrisi yang dapat diserap tubuh.",
-          "intent": ["sistem pencernaan", "nutrisi", "pencernaan makanan"]
-        },
-        {
-          "patterns": "Sebutkan organ-organ pencernaan utama.",
-          "responses": "Mulut, kerongkongan, lambung, usus halus, usus besar.",
-          "intent": ["organ pencernaan", "saluran pencernaan", "anatomi"]
-        },
-        {
-          "patterns": "Apa itu enzim pencernaan?",
-          "responses": "Protein yang membantu memecah makanan.",
-          "intent": ["enzim", "pencernaan kimiawi", "amilase", "pepsin", "lipase"]
-        },
-        {
-          "patterns": "Di mana penyerapan nutrisi terjadi?",
-          "responses": "Di usus halus.",
-          "intent": ["usus halus", "penyerapan", "vili"]
+      },
+      "Kimia": {
+        "subtopics": {
+          "Materi dan Perubahannya": {
+            "QnA": [
+              {
+                "intent": "materi_dan_perubahan",
+                "patterns": [
+                  "Apa itu materi?",
+                  "Sebutkan dan jelaskan tiga wujud utama materi.",
+                  "Jelaskan perbedaan antara perubahan fisika dan perubahan kimia.",
+                  "Berikan contoh perubahan fisika.",
+                  "Berikan contoh perubahan kimia.",
+                  "Apa itu perubahan wujud?"
+                ],
+                "responses": [
+                  "Materi adalah segala sesuatu yang memiliki massa dan menempati ruang.",
+                  "Padat: memiliki bentuk dan volume tetap; Cair: memiliki volume tetap, bentuk berubah-ubah; Gas: tidak memiliki bentuk dan volume tetap.",
+                  "Perubahan fisika tidak mengubah komposisi kimia materi (misalnya, perubahan wujud), sedangkan perubahan kimia mengubah komposisi kimia materi (menghasilkan zat baru).",
+                  "Es mencair, air mendidih, gula larut dalam air.",
+                  "Pembakaran kayu, perkaratan besi, memasak telur.",
+                  "Perubahan dari satu wujud materi ke wujud lainnya, seperti mencair, membeku, menguap, mengembun, menyublim, dan mendeposisi."
+                ],
+                "keywords": ["materi", "wujud zat", "perubahan fisika", "perubahan kimia", "padat", "cair", "gas"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Unsur, Senyawa, dan Campuran": {
+            "QnA": [
+              {
+                "intent": "unsur_senyawa_campuran",
+                "patterns": [
+                  "apa itu unsur?",
+                  "apa itu senyawa?",
+                  "apa itu campuran?",
+                  "apa perbedaan antara unsur dan senyawa?",
+                  "apa perbedaan antara campuran homogen dan heterogen?",
+                  "berikan contoh unsur, senyawa, dan campuran!"
+                ],
+                "responses": [
+                  "Zat tunggal yang tidak dapat diuraikan menjadi zat lebih sederhana.",
+                  "Zat yang terbentuk dari dua atau lebih unsur yang terikat kimia.",
+                  "Gabungan dua atau lebih zat tanpa ikatan kimia.",
+                  "Unsur tunggal, senyawa gabungan unsur dengan perbandingan tetap.",
+                  "Homogen: komposisi seragam; Heterogen: komposisi tidak seragam.",
+                  "Unsur: Oksigen; Senyawa: Air; Campuran: Larutan garam."
+                ],
+                "keywords": ["unsur", "senyawa", "campuran", "homogen", "heterogen"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Asam, Basa, dan Garam": {
+            "QnA": [
+              {
+                "intent": "asam_basa_garam",
+                "patterns": [
+                  "apa ciri-ciri larutan asam?",
+                  "apa ciri-ciri larutan basa?",
+                  "bagaimana garam terbentuk?",
+                  "apa itu pH?",
+                  "bagaimana cara mengukur pH?",
+                  "apa contoh asam dan basa dalam kehidupan sehari-hari?"
+                ],
+                "responses": [
+                  "Rasa masam, memerahkan lakmus biru, pH < 7.",
+                  "Rasa pahit, membirukan lakmus merah, pH > 7.",
+                  "Dari reaksi netralisasi asam dan basa.",
+                  "Skala keasaman (0-14).",
+                  "Dengan indikator pH atau pH meter.",
+                  "Asam: jeruk, cuka; Basa: sabun, soda kue."
+                ],
+                "keywords": ["asam", "basa", "garam", "pH", "netralisasi"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Reaksi Kimia": {
+            "QnA": [
+              {
+                "intent": "reaksi_kimia",
+                "patterns": [
+                  "apa yang dimaksud dengan reaksi kimia?",
+                  "apa saja jenis-jenis reaksi kimia?",
+                  "apa yang dimaksud dengan persamaan reaksi kimia?",
+                  "bagaimana cara menyeimbangkan persamaan reaksi?",
+                  "apa itu reaksi eksoterm dan endoterm?",
+                  "apa faktor yang mempengaruhi laju reaksi?"
+                ],
+                "responses": [
+                  "Proses perubahan zat menjadi zat baru dengan sifat berbeda.",
+                  "Sintesis, dekomposisi, penggantian tunggal, penggantian ganda, pembakaran.",
+                  "Representasi simbolik reaktan dan produk dengan koefisien stoikiometri.",
+                  "Menyamakan jumlah atom setiap unsur di kedua sisi persamaan.",
+                  "Eksoterm: melepas panas; Endoterm: menyerap panas.",
+                  "Suhu, konsentrasi, luas permukaan, katalis."
+                ],
+                "keywords": ["reaksi kimia", "persamaan reaksi", "stoikiometri", "eksoterm", "endoterm"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Struktur Atom": {
+            "QnA": [
+              {
+                "intent": "struktur_atom",
+                "patterns": [
+                  "apa itu atom?",
+                  "apa saja partikel penyusun atom?",
+                  "apa itu nomor atom dan nomor massa?",
+                  "apa itu isotop?",
+                  "bagaimana susunan elektron dalam atom?",
+                  "apa itu konfigurasi elektron?"
+                ],
+                "responses": [
+                  "Unit dasar materi yang terdiri dari inti dan elektron.",
+                  "Proton (+), neutron (0), elektron (-).",
+                  "Nomor atom = jumlah proton; Nomor massa = proton + neutron.",
+                  "Atom dengan nomor atom sama tetapi nomor massa berbeda.",
+                  "Elektron mengelilingi inti dalam orbital.",
+                  "Susunan elektron dalam kulit dan subkulit atom."
+                ],
+                "keywords": ["atom", "proton", "neutron", "elektron", "isotop"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Tabel Periodik": {
+            "QnA": [
+              {
+                "intent": "tabel_periodik",
+                "patterns": [
+                  "apa itu tabel periodik?",
+                  "apa itu golongan dan periode?",
+                  "apa itu logam, nonlogam, dan metaloid?",
+                  "bagaimana sifat periodik unsur?",
+                  "apa perbedaan logam alkali dan alkali tanah?",
+                  "mengapa gas mulia sangat stabil?"
+                ],
+                "responses": [
+                  "Susunan unsur berdasarkan nomor atom dan sifat periodik.",
+                  "Golongan = kolom (sifat kimia mirip); Periode = baris.",
+                  "Logam = konduktor; Nonlogam = isolator; Metaloid = antara.",
+                  "Berubah secara periodik seiring nomor atom (jari-jari, energi ionisasi, dll).",
+                  "Alkali: 1 elektron valensi; Alkali tanah: 2 elektron valensi.",
+                  "Konfigurasi elektron stabil (oktet/duplet)."
+                ],
+                "keywords": ["tabel periodik", "golongan", "periode", "logam", "nonlogam"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Ikatan Kimia": {
+            "QnA": [
+              {
+                "intent": "ikatan_kimia",
+                "patterns": [
+                  "apa itu ikatan ion?",
+                  "apa itu ikatan kovalen?",
+                  "apa perbedaan ikatan ion dan kovalen?",
+                  "apa itu ikatan logam?",
+                  "apa itu ikatan hidrogen?",
+                  "bagaimana ikatan kimia mempengaruhi sifat zat?"
+                ],
+                "responses": [
+                  "Ikatan antara ion positif dan negatif (serah terima elektron).",
+                  "Ikatan dengan berbagi pasangan elektron.",
+                  "Ion: serah terima; Kovalen: berbagi.",
+                  "Ikatan dalam logam (lautan elektron).",
+                  "Ikatan antarmolekul antara H dengan F, O, atau N.",
+                  "Menentukan titik leleh, kelarutan, konduktivitas, dll."
+                ],
+                "keywords": ["ikatan kimia", "ion", "kovalen", "logam", "hidrogen"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Larutan": {
+            "QnA": [
+              {
+                "intent": "larutan",
+                "patterns": [
+                  "apa yang dimaksud dengan larutan?",
+                  "apa perbedaan antara zat pelarut dan zat terlarut?",
+                  "apa saja faktor yang memengaruhi kelarutan?",
+                  "apa itu konsentrasi larutan?",
+                  "bagaimana cara membuat larutan encer dari larutan pekat?",
+                  "apa perbedaan antara larutan jenuh dan tak jenuh?"
+                ],
+                "responses": [
+                  "Campuran homogen antara pelarut dan terlarut.",
+                  "Pelarut: jumlah lebih banyak; Terlarut: jumlah lebih sedikit.",
+                  "Suhu, jenis pelarut, tekanan (untuk gas).",
+                  "Banyaknya zat terlarut dalam sejumlah larutan/pelarut.",
+                  "Dengan pengenceran (menambahkan pelarut).",
+                  "Jenuh: maksimum zat terlarut; Tak jenuh: belum maksimum."
+                ],
+                "keywords": ["larutan", "pelarut", "terlarut", "kelarutan", "konsentrasi"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Termokimia": {
+            "QnA": [
+              {
+                "intent": "termokimia",
+                "patterns": [
+                  "apa itu termokimia?",
+                  "apa itu entalpi?",
+                  "apa perbedaan reaksi eksoterm dan endoterm?",
+                  "apa itu kalor reaksi?",
+                  "bagaimana menghitung perubahan entalpi?",
+                  "apa hukum Hess?"
+                ],
+                "responses": [
+                  "Studi tentang perubahan energi dalam reaksi kimia.",
+                  "Panas reaksi pada tekanan tetap.",
+                  "Eksoterm: melepas panas; Endoterm: menyerap panas.",
+                  "Jumlah panas yang diserap/dilepas dalam reaksi.",
+                  "Dengan kalorimeter atau hukum Hess.",
+                  "Perubahan entalpi total tidak tergantung jalur reaksi."
+                ],
+                "keywords": ["termokimia", "entalpi", "eksoterm", "endoterm", "kalor reaksi"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Kimia Organik": {
+            "QnA": [
+              {
+                "intent": "kimia_organik",
+                "patterns": [
+                  "apa itu kimia organik?",
+                  "apa itu hidrokarbon?",
+                  "apa itu gugus fungsi?",
+                  "apa perbedaan alkana, alkena, dan alkuna?",
+                  "apa itu isomer?",
+                  "berikan contoh senyawa organik dalam kehidupan!"
+                ],
+                "responses": [
+                  "Studi tentang senyawa karbon.",
+                  "Senyawa hanya mengandung karbon dan hidrogen.",
+                  "Kelompok atom yang menentukan sifat senyawa organik.",
+                  "Alkana: ikatan tunggal; Alkena: ikatan ganda; Alkuna: ikatan tripel.",
+                  "Senyawa dengan rumus molekul sama tetapi struktur berbeda.",
+                  "Gula, protein, lemak, DNA, obat-obatan."
+                ],
+                "keywords": ["kimia organik", "hidrokarbon", "gugus fungsi", "alkana", "isomer"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Elektrokimia": {
+            "QnA": [
+              {
+                "intent": "elektrokimia",
+                "patterns": [
+                  "apa itu sel volta?",
+                  "apa itu elektrolisis?",
+                  "apa itu korosi?",
+                  "bagaimana baterai bekerja?",
+                  "apa perbedaan katoda dan anoda?",
+                  "apa aplikasi elektrolisis dalam industri?"
+                ],
+                "responses": [
+                  "Sel yang mengubah energi kimia menjadi listrik.",
+                  "Penguraian zat dengan arus listrik.",
+                  "Perusakan logam oleh reaksi redoks dengan lingkungan.",
+                  "Dengan reaksi redoks spontan yang menghasilkan arus listrik.",
+                  "Katoda: reduksi; Anoda: oksidasi.",
+                  "Pemurnian logam, penyepuhan, produksi bahan kimia."
+                ],
+                "keywords": ["elektrokimia", "sel volta", "elektrolisis", "korosi", "redoks"],
+                "diagram": ""
+              }
+            ]
+          },
+          "Kimia Lingkungan": {
+            "QnA": [
+              {
+                "intent": "kimia_lingkungan",
+                "patterns": [
+                  "apa itu polusi?",
+                  "apa saja jenis-jenis polusi?",
+                  "bagaimana cara mengatasi polusi?",
+                  "apa itu efek rumah kaca?",
+                  "apa itu hujan asam?",
+                  "bagaimana DDT mempengaruhi lingkungan?"
+                ],
+                "responses": [
+                  "Pencemaran lingkungan oleh zat berbahaya.",
+                  "Udara, air, tanah, suara, cahaya.",
+                  "Reduce, reuse, recycle, regulasi, teknologi bersih.",
+                  "Pemanasan global akibat gas rumah kaca menahan panas.",
+                  "Hujan dengan pH rendah akibat polusi sulfur/nitrogen.",
+                  "Akumulasi dalam rantai makanan menyebabkan kerusakan ekosistem."
+                ],
+                "keywords": ["polusi", "lingkungan", "efek rumah kaca", "hujan asam", "DDT"],
+                "diagram": ""
+              }
+            ]
+          }
         }
-      ],
-      "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Digestive_system_diagram_edit.svg/1200px-Digestive_system_diagram_edit.svg.png"
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Sistem Peredaran Darah Manusia",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama sistem peredaran darah?",
-          "responses": "Mengangkut oksigen, nutrisi, dan zat sisa ke seluruh tubuh.",
-          "intent": ["sistem peredaran darah", "transportasi", "homeostasis"]
-        },
-        {
-          "patterns": "Sebutkan komponen utama darah.",
-          "responses": "Plasma, sel darah merah, sel darah putih, trombosit.",
-          "intent": ["darah", "plasma", "sel darah merah", "sel darah putih", "trombosit"]
-        },
-        {
-          "patterns": "Bagaimana darah mengalir dalam tubuh?",
-          "responses": "Jantung memompa darah melalui arteri dan vena.",
-          "intent": ["jantung", "arteri", "vena", "sirkulasi"]
-        },
-        {
-          "patterns": "Apa perbedaan arteri dan vena?",
-          "responses": "Arteri membawa darah dari jantung, vena membawa darah ke jantung.",
-          "intent": ["arteri", "vena", "aliran darah"]
+      },	  
+     "Profil Guru": {
+        "subtopics": {
+          "Identitas Pengajar": {
+            "QnA": [
+              {
+                "intent": "guru_ipa_terpadu",
+                "patterns": [
+                  "siapa nama guru ipa",
+                  "guru ipa",
+                  "siapa pengajar ipa di sekolah ini"
+                ],
+                "responses": [
+                  "Guru mapel IPA Terpadu di MTs Attaqwa 10 Rawasilam adalah Bpk Ahmad Zikrillah, S.Pd."
+                ],
+                "keywords": ["guru", "ipa", "pengajar", "nama"],
+                "diagram": ""
+              },
+              {
+                "intent": "pak_kiki",
+                "patterns": [
+                  "siapa pak kiki",
+                  "pak kiki",
+                  "apakah pak kiki guru ipa"
+                ],
+                "responses": [
+                  "Pak Kiki adalah Guru mapel IPA Terpadu di MTs Attaqwa 10 Rawasilam."
+                ],
+                "keywords": ["kiki", "guru", "ipa"],
+                "diagram": ""
+              },
+              {
+                "intent": "ahmad_zikrillah",
+                "patterns": [
+                  "siapa ahmad zikrillah",
+                  "profil ahmad zikrillah",
+                  "latar belakang pak zikri"
+                ],
+                "responses": [
+                  "Bapak Ahmad Zikrillah, S.Pd adalah:",
+                  "1. Guru Sains dan Matematika",
+                  "2. Pengembang Teknologi AI Pendidikan",
+                  "3. Pengajar di MTs Attaqwa 10 Rawasilam"
+                ],
+                "keywords": ["ahmad", "zikrillah", "guru", "sains", "ai"],
+                "diagram": ""
+              }
+            ]
+          }
         }
-      ],
-      "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Diagram_of_the_human_heart.svg/1200px-Diagram_of_the_human_heart.svg.png"
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Sistem Pernapasan Manusia",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama sistem pernapasan?",
-          "responses": "Menyediakan oksigen dan membuang karbon dioksida.",
-          "intent": ["sistem pernapasan", "pertukaran gas", "respirasi"]
-        },
-        {
-          "patterns": "Sebutkan organ-organ pernapasan.",
-          "responses": "Hidung, trakea, bronkus, paru-paru, alveolus.",
-          "intent": ["organ pernapasan", "paru-paru", "trakea", "bronkus", "alveolus"]
-        },
-        {
-          "patterns": "Bagaimana proses pertukaran gas terjadi?",
-          "responses": "Oksigen masuk ke darah dan karbon dioksida keluar di alveolus.",
-          "intent": ["pertukaran gas", "alveolus", "difusi"]
-        },
-        {
-          "patterns": "Apa itu diafragma?",
-          "responses": "Otot yang membantu pernapasan.",
-          "intent": ["diafragma", "otot pernapasan", "mekanisme pernapasan"]
-        }
-      ],
-      "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Respiratory_system_complete_en.svg/1200px-Respiratory_system_complete_en.svg.png"
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Gerak Lurus",
-      "QnA": [
-        {
-          "patterns": "Apa itu gerak lurus?",
-          "responses": "Gerak benda pada lintasan lurus.",
-          "intent": ["gerak lurus", "kinematika", "mekanika"]
-        },
-        {
-          "patterns": "Apa perbedaan jarak dan perpindahan?",
-          "responses": "Jarak adalah panjang lintasan, perpindahan adalah perubahan posisi.",
-          "intent": ["jarak", "perpindahan", "vektor", "skalar"]
-        },
-        {
-          "patterns": "Apa itu kecepatan?",
-          "responses": "Laju perubahan posisi terhadap waktu.",
-          "intent": ["kecepatan", "laju", "waktu"]
-        },
-        {
-          "patterns": "Apa itu percepatan?",
-          "responses": "Laju perubahan kecepatan terhadap waktu.",
-          "intent": ["percepatan", "kecepatan", "waktu"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Gaya dan Hukum Newton",
-      "QnA": [
-        {
-          "patterns": "Apa itu gaya?",
-          "responses": "Interaksi yang menyebabkan benda bergerak, berubah bentuk, atau berhenti.",
-          "intent": ["gaya", "interaksi", "dorongan", "tarikan"]
-        },
-        {
-          "patterns": "Sebutkan Hukum Newton tentang gerak.",
-          "responses": "Hukum I (Inersia), Hukum II (F = ma), Hukum III (Aksi-Reaksi).",
-          "intent": ["Hukum Newton", "inersia", "aksi-reaksi"]
-        },
-        {
-          "patterns": "Apa itu gaya gravitasi?",
-          "responses": "Gaya tarik-menarik antara benda bermassa.",
-          "intent": ["gaya gravitasi", "massa", "tarik-menarik"]
-        },
-         {
-          "patterns": "Apa itu gaya gesek?",
-          "responses": "Gaya yang melawan gerakan antara dua permukaan yang bersentuhan.",
-          "intent": ["gaya gesek", "koefisien gesek", "kinetik", "statis"]
-        }
-      ],
-      "diagram": "-"
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Usaha dan Energi",
-      "QnA": [
-        {
-          "patterns": "Apa itu usaha dalam fisika?",
-          "responses": "Gaya yang bekerja pada benda sehingga benda berpindah.",
-          "intent": ["usaha", "gaya", "perpindahan", "joule"]
-        },
-        {
-          "patterns": "Apa itu energi?",
-          "responses": "Kemampuan untuk melakukan usaha.",
-          "intent": ["energi", "kinetik", "potensial", "mekanik"]
-        },
-        {
-          "patterns": "Apa itu energi kinetik?",
-          "responses": "Energi yang dimiliki benda karena gerakannya.",
-          "intent": ["energi kinetik", "gerakan", "kecepatan"]
-        },
-        {
-          "patterns": "Apa itu energi potensial?",
-          "responses": "Energi yang dimiliki benda karena posisinya.",
-          "intent": ["energi potensial", "posisi", "ketinggian", "gravitasi"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Kalor dan Suhu",
-      "QnA": [
-        {
-          "patterns": "Apa itu suhu?",
-          "responses": "Ukuran derajat panas atau dingin suatu benda.",
-          "intent": ["suhu", "derajat panas", "derajat dingin", "termometer"]
-        },
-        {
-          "patterns": "Apa itu kalor?",
-          "responses": "Energi yang berpindah akibat perbedaan suhu.",
-          "intent": ["kalor", "energi panas", "perpindahan kalor"]
-        },
-        {
-          "patterns": "Bagaimana kalor berpindah?",
-          "responses": "Konduksi, konveksi, radiasi.",
-          "intent": ["konduksi", "konveksi", "radiasi", "perpindahan kalor"]
-        },
-        {
-          "patterns": "Apa itu kalor jenis?",
-          "responses": "Jumlah kalor yang dibutuhkan untuk menaikkan suhu 1 kg zat sebesar 1 °C.",
-          "intent": ["kalor jenis", "kapasitas kalor", "zat"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Listrik",
-      "QnA": [
-        {
-          "patterns": "Apa itu arus listrik?",
-          "responses": "Aliran muatan listrik.",
-          "intent": ["arus listrik", "muatan listrik", "ampere"]
-        },
-        {
-          "patterns": "Apa itu tegangan listrik?",
-          "responses": "Perbedaan potensial listrik antara dua titik.",
-          "intent": ["tegangan listrik", "potensial listrik", "volt"]
-        },
-        {
-          "patterns": "Apa itu hambatan listrik?",
-          "responses": "Hambatan terhadap aliran arus listrik.",
-          "intent": ["hambatan listrik", "ohm", "konduktor", "isolator"]
-        },
-        {
-          "patterns": "Bagaimana bunyi Hukum Ohm?",
-          "responses": "V = IR (Tegangan = Arus x Hambatan).",
-          "intent": ["Hukum Ohm", "tegangan", "arus", "hambatan"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Kimia",
-      "subtopics": "Struktur Atom",
-      "QnA": [
-        {
-          "patterns": "Apa itu atom?",
-          "responses": "Unit dasar materi.",
-          "intent": ["atom", "materi", "unsur"]
-        },
-        {
-          "patterns": "Apa saja partikel penyusun atom?",
-          "responses": "Proton, neutron, elektron.",
-          "intent": ["proton", "neutron", "elektron", "partikel subatomik"]
-        },
-        {
-          "patterns": "Di mana letak proton dan neutron?",
-          "responses": "Di dalam inti atom.",
-          "intent": ["inti atom", "nukleus", "proton", "neutron"]
-        },
-        {
-          "patterns": "Apa itu nomor atom dan nomor massa?",
-          "responses": "Nomor atom = jumlah proton, nomor massa = jumlah proton + neutron.",
-          "intent": ["nomor atom", "nomor massa", "proton", "neutron"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Kimia",
-      "subtopics": "Tabel Periodik",
-      "QnA": [
-        {
-          "patterns": "Apa itu tabel periodik?",
-          "responses": "Susunan unsur berdasarkan sifat kimianya.",
-          "intent": ["tabel periodik", "unsur", "sifat kimia"]
-        },
-        {
-          "patterns": "Apa itu golongan dan periode?",
-          "responses": "Golongan = kolom vertikal, periode = baris horizontal.",
-          "intent": ["golongan", "periode", "kolom", "baris"]
-        },
-        {
-          "patterns": "Sebutkan jenis-jenis unsur dalam tabel periodik.",
-          "responses": "Logam, nonlogam, metaloid.",
-          "intent": ["logam", "nonlogam", "metaloid", "sifat unsur"]
-        },
-        {
-          "patterns": "Apa itu unsur transisi?",
-          "responses": "Unsur di golongan 3-12.",
-          "intent": ["unsur transisi", "logam transisi", "sifat kimia"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Kimia",
-      "subtopics": "Ikatan Kimia",
-      "QnA": [
-        {
-          "patterns": "Apa itu ikatan kimia?",
-          "responses": "Gaya tarik-menarik antar atom yang menyatukan mereka.",
-          "intent": ["ikatan kimia", "gaya tarik-menarik", "molekul"]
-        },
-        {
-          "patterns": "Apa itu ikatan ion?",
-          "responses": "Ikatan antara ion positif dan negatif.",
-          "intent": ["ikatan ion", "ion", "transfer elektron"]
-        },
-        {
-          "patterns": "Apa itu ikatan kovalen?",
-          "responses": "Ikatan dengan berbagi pasangan elektron.",
-          "intent": ["ikatan kovalen", "berbagi elektron", "molekul"]
-        },
-        {
-          "patterns": "Apa perbedaan ikatan ion dan kovalen?",
-          "responses": "Ion melibatkan transfer elektron, kovalen melibatkan berbagi elektron.",
-          "intent": ["perbedaan ikatan", "ion", "kovalen", "transfer elektron", "berbagi elektron"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Kimia",
-      "subtopics": "Reaksi Kimia",
-      "QnA": [
-        {
-          "patterns": "Apa itu reaksi kimia?",
-          "responses": "Proses perubahan zat menjadi zat lain.",
-          "intent": ["reaksi kimia", "perubahan zat", "reaktan", "produk"]
-        },
-        {
-          "patterns": "Apa itu persamaan reaksi?",
-          "responses": "Representasi simbolik dari reaksi kimia.",
-          "intent": ["persamaan reaksi", "simbol kimia", "koefisien"]
-        },
-        {
-          "patterns": "Apa itu reaksi eksoterm?",
-          "responses": "Reaksi yang melepaskan kalor.",
-          "intent": ["reaksi eksoterm", "kalor", "energi"]
-        },
-        {
-          "patterns": "Apa itu reaksi endoterm?",
-          "responses": "Reaksi yang menyerap kalor.",
-          "intent": ["reaksi endoterm", "kalor", "energi"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Kimia",
-      "subtopics": "Larutan",
-      "QnA": [
-        {
-          "patterns": "Apa itu larutan?",
-          "responses": "Campuran homogen zat terlarut dan pelarut.",
-          "intent": ["larutan", "zat terlarut", "pelarut", "homogen"]
-        },
-        {
-          "patterns": "Apa itu konsentrasi larutan?",
-          "responses": "Jumlah zat terlarut dalam sejumlah larutan.",
-          "intent": ["konsentrasi", "molaritas", "molalitas", "persen massa"]
-        },
-        {
-          "patterns": "Apa itu larutan asam?",
-          "responses": "Larutan dengan pH kurang dari 7.",
-          "intent": ["asam", "pH", "ion hidronium"]
-        },
-        {
-          "patterns": "Apa itu larutan basa?",
-          "responses": "Larutan dengan pH lebih dari 7.",
-          "intent": ["basa", "pH", "ion hidroksida"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Sistem Ekskresi",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama sistem ekskresi?",
-          "responses": "Membuang zat sisa metabolisme dari tubuh.",
-          "intent": ["ekskresi", "pembuangan", "metabolisme"]
-        },
-        {
-          "patterns": "Organ-organ apa saja yang terlibat dalam sistem ekskresi?",
-          "responses": "Ginjal, kulit, paru-paru, hati.",
-          "intent": ["ginjal", "kulit", "paru-paru", "hati"]
-        },
-        {
-          "patterns": "Zat sisa apa saja yang dikeluarkan oleh tubuh?",
-          "responses": "Urine, keringat, karbon dioksida, empedu.",
-          "intent": ["urine", "keringat", "karbon dioksida", "empedu"]
-        },
-        {
-          "patterns": "Bagaimana ginjal menyaring darah?",
-          "responses": "Melalui proses filtrasi, reabsorpsi, dan sekresi di nefron.",
-          "intent": ["ginjal", "nefron", "filtrasi", "reabsorpsi", "sekresi"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Sistem Regulasi (Hormon)",
-      "QnA": [
-        {
-          "patterns": "Apa itu hormon?",
-          "responses": "Zat kimia yang dihasilkan kelenjar endokrin untuk mengatur fungsi tubuh.",
-          "intent": ["hormon", "kelenjar endokrin", "regulasi tubuh"]
-        },
-        {
-          "patterns": "Sebutkan beberapa kelenjar endokrin utama.",
-          "responses": "Hipofisis, tiroid, adrenal, pankreas, ovarium, testis.",
-          "intent": ["hipofisis", "tiroid", "adrenal", "pankreas", "ovarium", "testis"]
-        },
-        {
-          "patterns": "Apa fungsi hormon insulin?",
-          "responses": "Menurunkan kadar gula darah.",
-          "intent": ["insulin", "gula darah", "pankreas", "metabolisme glukosa"]
-        },
-        {
-          "patterns": "Apa fungsi hormon adrenalin?",
-          "responses": "Meningkatkan detak jantung dan respons stres.",
-          "intent": ["adrenalin", "respons stres", "detak jantung", "kelenjar adrenal"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Sistem Reproduksi Manusia",
-      "QnA": [
-        {
-          "patterns": "Apa tujuan reproduksi manusia?",
-          "responses": "Menghasilkan keturunan dan melanjutkan generasi.",
-          "intent": ["reproduksi", "keturunan", "generasi"]
-        },
-        {
-          "patterns": "Sebutkan organ reproduksi pria.",
-          "responses": "Testis, penis, epididimis, vas deferens, prostat.",
-          "intent": ["testis", "penis", "sperma", "sistem reproduksi pria"]
-        },
-        {
-          "patterns": "Sebutkan organ reproduksi wanita.",
-          "responses": "Ovarium, uterus, vagina, tuba falopi.",
-          "intent": ["ovarium", "uterus", "vagina", "tuba falopi", "sistem reproduksi wanita"]
-        },
-        {
-          "patterns": "Bagaimana proses fertilisasi terjadi?",
-          "responses": "Peleburan sel sperma dan sel telur di tuba falopi.",
-          "intent": ["fertilisasi", "sperma", "sel telur", "tuba falopi"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Pertumbuhan dan Perkembangan",
-      "QnA": [
-        {
-          "patterns": "Apa perbedaan pertumbuhan dan perkembangan?",
-          "responses": "Pertumbuhan adalah peningkatan ukuran, perkembangan adalah pematangan fungsi.",
-          "intent": ["pertumbuhan", "perkembangan", "ukuran", "fungsi"]
-        },
-        {
-          "patterns": "Faktor apa saja yang mempengaruhi pertumbuhan?",
-          "responses": "Genetik, nutrisi, hormon, lingkungan.",
-          "intent": ["genetik", "nutrisi", "hormon", "lingkungan"]
-        },
-        {
-          "patterns": "Sebutkan tahapan perkembangan manusia.",
-          "responses": "Bayi, anak-anak, remaja, dewasa, lansia.",
-          "intent": ["tahapan perkembangan", "usia", "bayi", "anak-anak", "remaja", "dewasa", "lansia"]
-        },
-        {
-          "patterns": "Apa itu pubertas?",
-          "responses": "Masa perkembangan menuju kematangan seksual.",
-          "intent": ["pubertas", "kematangan seksual", "perubahan hormon"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Ekologi",
-      "QnA": [
-        {
-          "patterns": "Apa itu ekosistem?",
-          "responses": "Komunitas makhluk hidup dan lingkungan fisik yang berinteraksi.",
-          "intent": ["ekosistem", "komunitas", "lingkungan fisik", "interaksi"]
-        },
-        {
-          "patterns": "Apa itu rantai makanan?",
-          "responses": "Urutan makan dan dimakan antar makhluk hidup.",
-          "intent": ["rantai makanan", "produsen", "konsumen", "dekomposer"]
-        },
-        {
-          "patterns": "Apa itu daur biogeokimia?",
-          "responses": "Perputaran materi antara makhluk hidup dan lingkungan.",
-          "intent": ["daur biogeokimia", "daur air", "daur karbon", "daur nitrogen"]
-        },
-        {
-          "patterns": "Apa itu keanekaragaman hayati?",
-          "responses": "Variasi makhluk hidup di Bumi.",
-          "intent": ["keanekaragaman hayati", "spesies", "ekosistem", "genetik"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Fluida Statis",
-      "QnA": [
-        {
-          "patterns": "Apa itu tekanan hidrostatis?",
-          "responses": "Tekanan zat cair akibat beratnya sendiri.",
-          "intent": ["tekanan hidrostatis", "zat cair", "kedalaman", "massa jenis"]
-        },
-        {
-          "patterns": "Apa itu hukum Pascal?",
-          "responses": "Tekanan pada zat cair dalam ruang tertutup diteruskan ke segala arah sama rata.",
-          "intent": ["hukum Pascal", "zat cair", "tekanan", "ruang tertutup"]
-        },
-        {
-          "patterns": "Apa itu gaya apung?",
-          "responses": "Gaya ke atas yang dialami benda dalam zat cair.",
-          "intent": ["gaya apung", "hukum Archimedes", "benda mengapung", "benda tenggelam"]
-        },
-        {
-          "patterns": "Bagaimana cara mengukur tekanan?",
-          "responses": "Dengan manometer atau barometer.",
-          "intent": ["manometer", "barometer", "pengukuran tekanan"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Gelombang",
-      "QnA": [
-        {
-          "patterns": "Apa itu gelombang?",
-          "responses": "Getaran yang merambat dan membawa energi.",
-          "intent": ["gelombang", "getaran", "energi", "medium"]
-        },
-        {
-          "patterns": "Sebutkan jenis-jenis gelombang.",
-          "responses": "Transversal, longitudinal, mekanik, elektromagnetik.",
-          "intent": ["gelombang transversal", "gelombang longitudinal", "gelombang mekanik", "gelombang elektromagnetik"]
-        },
-        {
-          "patterns": "Apa itu frekuensi dan periode?",
-          "responses": "Frekuensi adalah jumlah getaran per detik, periode adalah waktu satu getaran.",
-          "intent": ["frekuensi", "periode", "getaran", "waktu"]
-        },
-        {
-          "patterns": "Bagaimana bunyi merambat?",
-          "responses": "Melalui medium seperti padat, cair, dan gas.",
-          "intent": ["bunyi", "perambatan bunyi", "medium", "gelombang longitudinal"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Optik",
-      "QnA": [
-        {
-          "patterns": "Apa itu cahaya?",
-          "responses": "Gelombang elektromagnetik yang dapat dilihat.",
-          "intent": ["cahaya", "gelombang elektromagnetik", "spektrum cahaya"]
-        },
-        {
-          "patterns": "Apa itu pemantulan cahaya?",
-          "responses": "Perubahan arah cahaya saat mengenai permukaan.",
-          "intent": ["pemantulan cahaya", "sudut datang", "sudut pantul", "cermin"]
-        },
-        {
-          "patterns": "Apa itu pembiasan cahaya?",
-          "responses": "Pembelokan cahaya saat melewati medium yang berbeda.",
-          "intent": ["pembiasan cahaya", "indeks bias", "lensa"]
-        },
-        {
-          "patterns": "Apa itu lensa?",
-          "responses": "Alat optik yang memfokuskan atau menyebarkan cahaya.",
-          "intent": ["lensa", "lensa cembung", "lensa cekung", "fokus"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Termodinamika",
-      "QnA": [
-        {
-          "patterns": "Apa itu termodinamika?",
-          "responses": "Ilmu tentang hubungan antara panas dan bentuk energi lain.",
-          "intent": ["termodinamika", "panas", "energi", "kerja"]
-        },
-        {
-          "patterns": "Sebutkan Hukum Termodinamika.",
-          "responses": "Hukum 0, Hukum 1, Hukum 2, Hukum 3.",
-          "intent": ["Hukum Termodinamika", "energi dalam", "entropi"]
-        },
-        {
-          "patterns": "Apa itu entropi?",
-          "responses": "Ukuran ketidakteraturan sistem.",
-          "intent": ["entropi", "ketidakteraturan", "proses ireversibel"]
-        },
-        {
-          "patterns": "Apa itu mesin kalor?",
-          "responses": "Alat yang mengubah energi panas menjadi kerja mekanik.",
-          "intent": ["mesin kalor", "efisiensi", "siklus Carnot"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Fisika Modern",
-      "QnA": [
-        {
-          "patterns": "Apa itu relativitas khusus?",
-          "responses": "Teori tentang hubungan ruang dan waktu.",
-          "intent": ["relativitas khusus", "ruang", "waktu", "kecepatan cahaya"]
-        },
-        {
-          "patterns": "Apa itu relativitas umum?",
-          "responses": "Teori tentang gravitasi sebagai kelengkungan ruang-waktu.",
-          "intent": ["relativitas umum", "gravitasi", "ruang-waktu", "kelengkungan"]
-        },
-        {
-          "patterns": "Apa itu mekanika kuantum?",
-          "responses": "Teori tentang perilaku materi pada skala atom dan subatom.",
-          "intent": ["mekanika kuantum", "atom", "subatom", "dualitas gelombang-partikel"]
-        },
-        {
-          "patterns": "Apa itu fisika nuklir?",
-          "responses": "Studi tentang inti atom dan reaksinya.",
-          "intent": ["fisika nuklir", "inti atom", "reaksi nuklir", "radioaktivitas"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Sistem Imun",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama sistem imun?",
-          "responses": "Melindungi tubuh dari infeksi dan penyakit.",
-          "intent": ["sistem imun", "infeksi", "penyakit", "pertahanan tubuh"]
-        },
-        {
-          "patterns": "Apa saja komponen utama sistem imun?",
-          "responses": "Sel darah putih, antibodi, sistem limfatik.",
-          "intent": ["sel darah putih", "antibodi", "sistem limfatik", "leukosit"]
-        },
-        {
-          "patterns": "Apa itu antibodi?",
-          "responses": "Protein yang mengenali dan melawan antigen.",
-          "intent": ["antibodi", "antigen", "imunoglobulin", "respons imun"]
-        },
-        {
-          "patterns": "Bagaimana vaksin bekerja?",
-          "responses": "Merangsang sistem imun untuk menghasilkan antibodi terhadap patogen tertentu.",
-          "intent": ["vaksin", "imunisasi", "patogen", "antibodi", "kekebalan"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Genetika",
-      "QnA": [
-        {
-          "patterns": "Apa itu gen?",
-          "responses": "Unit pewarisan sifat yang terletak pada DNA.",
-          "intent": ["gen", "pewarisan sifat", "DNA", "hereditas"]
-        },
-        {
-          "patterns": "Apa itu kromosom?",
-          "responses": "Struktur dalam inti sel yang membawa gen.",
-          "intent": ["kromosom", "inti sel", "gen", "struktur DNA"]
-        },
-        {
-          "patterns": "Apa itu DNA?",
-          "responses": "Molekul yang membawa informasi genetik.",
-          "intent": ["DNA", "informasi genetik", "asam nukleat", "struktur DNA"]
-        },
-        {
-          "patterns": "Apa itu mutasi?",
-          "responses": "Perubahan dalam urutan DNA.",
-          "intent": ["mutasi", "perubahan DNA", "genetik", "evolusi"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Evolusi",
-      "QnA": [
-        {
-          "patterns": "Apa itu evolusi?",
-          "responses": "Perubahan bertahap pada makhluk hidup dari waktu ke waktu.",
-          "intent": ["evolusi", "perubahan makhluk hidup", "waktu", "sejarah kehidupan"]
-        },
-        {
-          "patterns": "Apa itu seleksi alam?",
-          "responses": "Proses di mana organisme dengan sifat yang menguntungkan lebih mungkin bertahan hidup dan bereproduksi.",
-          "intent": ["seleksi alam", "bertahan hidup", "reproduksi", "adaptasi"]
-        },
-        {
-          "patterns": "Apa bukti-bukti evolusi?",
-          "responses": "Fosil, anatomi perbandingan, embriologi, biokimia.",
-          "intent": ["bukti evolusi", "fosil", "anatomi perbandingan", "embriologi", "biokimia"]
-        },
-        {
-          "patterns": "Apa itu adaptasi?",
-          "responses": "Kemampuan organisme untuk menyesuaikan diri dengan lingkungannya.",
-          "intent": ["adaptasi", "lingkungan", "penyesuaian diri", "perilaku"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Klasifikasi Makhluk Hidup",
-      "QnA": [
-        {
-          "patterns": "Apa tujuan klasifikasi makhluk hidup?",
-          "responses": "Mengelompokkan dan mengelompokkan organisme berdasarkan kesamaan dan perbedaan.",
-          "intent": ["klasifikasi", "taksonomi", "pengelompokan", "organisme"]
-        },
-        {
-          "patterns": "Sebutkan tingkatan taksonomi utama.",
-          "responses": "Domain, kerajaan, filum/divisi, kelas, ordo, famili, genus, spesies.",
-          "intent": ["tingkatan taksonomi", "domain", "kerajaan", "filum", "kelas", "ordo", "famili", "genus", "spesies"]
-        },
-        {
-          "patterns": "Apa itu binomial nomenklatur?",
-          "responses": "Sistem penamaan ilmiah dua bagian untuk setiap spesies (genus dan spesies).",
-          "intent": ["binomial nomenklatur", "nama ilmiah", "genus", "spesies", "Carl Linnaeus"]
-        },
-        {
-          "patterns": "Sebutkan lima kerajaan makhluk hidup.",
-          "responses": "Monera, Protista, Fungi, Plantae, Animalia.",
-          "intent": ["lima kerajaan", "Monera", "Protista", "Fungi", "Plantae", "Animalia", "keanekaragaman hayati"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Bioteknologi",
-      "QnA": [
-        {
-          "patterns": "Apa itu bioteknologi?",
-          "responses": "Pemanfaatan organisme hidup atau proses biologis untuk menghasilkan produk yang bermanfaat.",
-          "intent": ["bioteknologi", "organisme hidup", "proses biologis", "produk bermanfaat"]
-        },
-        {
-          "patterns": "Sebutkan contoh aplikasi bioteknologi di bidang pertanian.",
-          "responses": "Tanaman transgenik, kultur jaringan.",
-          "intent": ["bioteknologi pertanian", "tanaman transgenik", "kultur jaringan", "rekayasa genetika"]
-        },
-        {
-          "patterns": "Sebutkan contoh aplikasi bioteknologi di bidang kedokteran.",
-          "responses": "Produksi insulin, terapi gen.",
-          "intent": ["bioteknologi kedokteran", "insulin", "terapi gen", "vaksin"]
-        },
-        {
-          "patterns": "Apa itu rekayasa genetika?",
-          "responses": "Manipulasi materi genetik organisme.",
-          "intent": ["rekayasa genetika", "manipulasi genetik", "DNA rekombinan", "organisme transgenik"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Listrik Statis",
-      "QnA": [
-        {
-          "patterns": "Apa itu listrik statis?",
-          "responses": "Ketidakseimbangan muatan listrik pada permukaan benda.",
-          "intent": ["listrik statis", "muatan listrik", "ketidakseimbangan", "permukaan benda"]
-        },
-        {
-          "patterns": "Bagaimana benda menjadi bermuatan listrik?",
-          "responses": "Melalui gesekan, induksi, atau konduksi.",
-          "intent": ["gesekan", "induksi", "konduksi", "transfer muatan"]
-        },
-        {
-          "patterns": "Apa itu hukum Coulomb?",
-          "responses": "Gaya antara dua muatan listrik berbanding lurus dengan perkalian muatan dan berbanding terbalik dengan kuadrat jaraknya.",
-          "intent": ["hukum Coulomb", "gaya listrik", "muatan listrik", "jarak"]
-        },
-        {
-          "patterns": "Apa itu medan listrik?",
-          "responses": "Daerah di sekitar muatan listrik di mana gaya listrik dapat dirasakan.",
-          "intent": ["medan listrik", "muatan listrik", "gaya listrik", "garis medan listrik"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Induksi Elektromagnetik",
-      "QnA": [
-        {
-          "patterns": "Apa itu induksi elektromagnetik?",
-          "responses": "Produksi arus listrik dalam konduktor akibat perubahan medan magnet.",
-          "intent": ["induksi elektromagnetik", "arus listrik", "medan magnet", "perubahan"]
-        },
-        {
-          "patterns": "Apa itu hukum Faraday?",
-          "responses": "GGL induksi sebanding dengan laju perubahan fluks magnetik.",
-          "intent": ["hukum Faraday", "GGL induksi", "fluks magnetik", "laju perubahan"]
-        },
-        {
-          "patterns": "Apa itu hukum Lenz?",
-          "responses": "Arus induksi menghasilkan medan magnet yang melawan perubahan yang menghasilkannya.",
-          "intent": ["hukum Lenz", "arah arus induksi", "medan magnet", "perlawanan"]
-        },
-        {
-          "patterns": "Bagaimana prinsip kerja generator listrik?",
-          "responses": "Menggunakan induksi elektromagnetik untuk mengubah energi mekanik menjadi energi listrik.",
-          "intent": ["generator listrik", "energi mekanik", "energi listrik", "induksi elektromagnetik"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Fisika Inti",
-      "QnA": [
-        {
-          "patterns": "Apa itu inti atom?",
-          "responses": "Bagian pusat atom yang terdiri dari proton dan neutron.",
-          "intent": ["inti atom", "proton", "neutron", "nukleon"]
-        },
-        {
-          "patterns": "Apa itu radioaktivitas?",
-          "responses": "Pemancaran partikel atau radiasi dari inti atom yang tidak stabil.",
-          "intent": ["radioaktivitas", "peluruhan inti", "partikel alfa", "partikel beta", "sinar gamma"]
-        },
-        {
-          "patterns": "Apa itu reaksi fisi nuklir?",
-          "responses": "Pembelahan inti atom berat menjadi inti yang lebih ringan.",
-          "intent": ["reaksi fisi nuklir", "pembelahan inti", "energi nuklir", "reaktor nuklir"]
-        },
-        {
-          "patterns": "Apa itu reaksi fusi nuklir?",
-          "responses": "Penggabungan inti atom ringan menjadi inti yang lebih berat.",
-          "intent": ["reaksi fusi nuklir", "penggabungan inti", "energi nuklir", "matahari"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Astronomi",
-      "QnA": [
-        {
-          "patterns": "Apa itu astronomi?",
-          "responses": "Ilmu yang mempelajari benda-benda langit dan alam semesta.",
-          "intent": ["astronomi", "benda langit", "alam semesta", "kosmos"]
-        },
-        {
-          "patterns": "Apa itu tata surya?",
-          "responses": "Sistem planet yang mengorbit Matahari.",
-          "intent": ["tata surya", "Matahari", "planet", "satelit"]
-        },
-        {
-          "patterns": "Apa itu galaksi?",
-          "responses": "Kumpulan besar bintang, gas, dan debu yang terikat oleh gravitasi.",
-          "intent": ["galaksi", "bintang", "gas", "debu", "gravitasi", "Bima Sakti"]
-        },
-        {
-          "patterns": "Apa itu lubang hitam?",
-          "responses": "Wilayah di ruang angkasa dengan gravitasi yang sangat kuat sehingga tidak ada yang bisa lepas, bahkan cahaya.",
-          "intent": ["lubang hitam", "gravitasi", "ruang angkasa", "cahaya", "singularitas"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Gelombang Elektromagnetik",
-      "QnA": [
-        {
-          "patterns": "Apa itu gelombang elektromagnetik?",
-          "responses": "Gelombang yang dihasilkan oleh perubahan medan listrik dan medan magnet.",
-          "intent": ["gelombang elektromagnetik", "medan listrik", "medan magnet", "radiasi"]
-        },
-        {
-          "patterns": "Sebutkan spektrum gelombang elektromagnetik.",
-          "responses": "Gelombang radio, gelombang mikro, inframerah, cahaya tampak, ultraviolet, sinar-X, sinar gamma.",
-          "intent": ["spektrum elektromagnetik", "gelombang radio", "gelombang mikro", "inframerah", "cahaya tampak", "ultraviolet", "sinar-X", "sinar gamma"]
-        },
-        {
-          "patterns": "Bagaimana gelombang elektromagnetik merambat?",
-          "responses": "Melalui ruang hampa dengan kecepatan cahaya.",
-          "intent": ["perambatan gelombang", "ruang hampa", "kecepatan cahaya", "medan listrik", "medan magnet"]
-        },
-        {
-          "patterns": "Apa kegunaan gelombang elektromagnetik?",
-          "responses": "Komunikasi, pemanasan, pencitraan, terapi, dan banyak lagi.",
-          "intent": ["kegunaan gelombang elektromagnetik", "komunikasi", "pemanasan", "pencitraan", "terapi", "teknologi"]
-        }
-      ],
-      "diagram": ""
-    },  
-    {
-      "topics": "Kimia",
-      "subtopics": "Zat Aditif dan Psikotropika",
-      "QnA": [
-        {
-          "patterns": "Apa yang dimaksud dengan zat aditif?",
-          "responses": "Zat yang ditambahkan ke makanan untuk meningkatkan rasa, tampilan, atau daya simpan.",
-          "intent": ["zat aditif", "makanan", "pengawet", "perasa"]
-        },
-        {
-          "patterns": "Sebutkan jenis-jenis zat aditif yang umum digunakan dalam makanan.",
-          "responses": "Pengawet, pewarna, pemanis, penguat rasa, pengemulsi.",
-          "intent": ["pengawet", "pewarna", "pemanis", "penguat rasa", "pengemulsi"]
-        },
-        {
-          "patterns": "Apa dampak negatif penggunaan zat aditif berlebihan bagi kesehatan?",
-          "responses": "Dapat menyebabkan alergi, kanker, atau gangguan kesehatan lainnya.",
-          "intent": ["dampak negatif", "kesehatan", "alergi", "kanker"]
-        },
-        {
-          "patterns": "Apa yang dimaksud dengan psikotropika?",
-          "responses": "Zat yang mempengaruhi sistem saraf pusat dan dapat mengubah kesadaran, suasana hati, atau perilaku.",
-          "intent": ["psikotropika", "sistem saraf pusat", "kesadaran", "perilaku"]
-        },
-        {
-          "patterns": "Sebutkan contoh-contoh psikotropika dan efeknya bagi tubuh.",
-          "responses": "Alkohol (depresan), ganja (halusinogen), sabu (stimulan).",
-          "intent": ["alkohol", "ganja", "sabu", "depresan", "halusinogen", "stimulan"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Energi Terbarukan",
-      "QnA": [
-        {
-          "patterns": "Apa yang dimaksud dengan energi terbarukan?",
-          "responses": "Energi yang berasal dari sumber daya alam yang tidak habis saat digunakan.",
-          "intent": ["energi terbarukan", "sumber daya alam", "berkelanjutan"]
-        },
-        {
-          "patterns": "Sebutkan sumber-sumber energi terbarukan yang Anda ketahui.",
-          "responses": "Matahari, angin, air, panas bumi, biomassa.",
-          "intent": ["matahari", "angin", "air", "panas bumi", "biomassa"]
-        },
-        {
-          "patterns": "Apa keuntungan menggunakan energi terbarukan dibandingkan energi fosil?",
-          "responses": "Lebih ramah lingkungan, mengurangi emisi gas rumah kaca, sumber daya tidak terbatas.",
-          "intent": ["keuntungan", "energi fosil", "lingkungan", "emisi gas rumah kaca"]
-        },
-        {
-          "patterns": "Bagaimana cara kerja pembangkit listrik tenaga surya?",
-          "responses": "Sel surya mengubah energi matahari menjadi energi listrik.",
-          "intent": ["tenaga surya", "sel surya", "energi listrik", "fotovoltaik"]
-        },
-        {
-          "patterns": "Apa tantangan utama dalam pengembangan energi terbarukan di Indonesia?",
-          "responses": "Biaya investasi awal yang tinggi, infrastruktur yang belum memadai, variabilitas sumber energi.",
-          "intent": ["tantangan", "pengembangan", "infrastruktur", "biaya investasi"]
-        }
-      ],
-      "diagram": ""
-    }, 
-    {
-      "topics": "Kimia",
-      "subtopics": "Zat Aditif dan Psikotropika",
-      "QnA": [
-        {
-          "patterns": [
-            "Apa yang dimaksud dengan zat aditif?",
-            "Jelaskan tentang zat aditif?",
-            "Zat aditif adalah?"
-            ],
-          "responses": "Zat yang ditambahkan ke makanan untuk meningkatkan rasa, tampilan, atau daya simpan.",
-          "intent": ["zat aditif", "makanan", "pengawet", "perasa"]
-        },
-        {
-          "patterns": "Sebutkan jenis-jenis zat aditif yang umum digunakan dalam makanan.",
-          "responses": "Pengawet, pewarna, pemanis, penguat rasa, pengemulsi.",
-          "intent": ["pengawet", "pewarna", "pemanis", "penguat rasa", "pengemulsi"]
-        },
-        {
-          "patterns": "Apa dampak negatif penggunaan zat aditif berlebihan bagi kesehatan?",
-          "responses": "Dapat menyebabkan alergi, kanker, atau gangguan kesehatan lainnya.",
-          "intent": ["dampak negatif", "kesehatan", "alergi", "kanker"]
-        },
-        {
-          "patterns": [
-            "Apa yang dimaksud dengan psikotropika?",
-            "Jelaskan apa itu psikotropika?",
-            "Psikotropika adalah..."
-            ],
-          "responses": "Zat yang mempengaruhi sistem saraf pusat dan dapat mengubah kesadaran, suasana hati, atau perilaku.",
-          "intent": ["psikotropika", "sistem saraf pusat", "kesadaran", "perilaku"]
-        },
-        {
-          "patterns": "Sebutkan contoh-contoh psikotropika dan efeknya bagi tubuh.",
-          "responses": "Alkohol (depresan), ganja (halusinogen), sabu (stimulan).",
-          "intent": ["alkohol", "ganja", "sabu", "depresan", "halusinogen", "stimulan"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Fisika",
-      "subtopics": "Energi Terbarukan",
-      "QnA": [
-        {
-          "patterns": [
-            "Apa yang dimaksud dengan energi terbarukan?",
-            "Jelaskan definisi energi terbarukan?",
-            "Energi terbarukan yaitu..."
-            ],
-          "responses": "Energi yang berasal dari sumber daya alam yang tidak habis saat digunakan.",
-          "intent": ["energi terbarukan", "sumber daya alam", "berkelanjutan"]
-        },
-        {
-          "patterns": "Sebutkan sumber-sumber energi terbarukan yang Anda ketahui.",
-          "responses": "Matahari, angin, air, panas bumi, biomassa.",
-          "intent": ["matahari", "angin", "air", "panas bumi", "biomassa"]
-        },
-        {
-          "patterns": "Apa keuntungan menggunakan energi terbarukan dibandingkan energi fosil?",
-          "responses": "Lebih ramah lingkungan, mengurangi emisi gas rumah kaca, sumber daya tidak terbatas.",
-          "intent": ["keuntungan", "energi fosil", "lingkungan", "emisi gas rumah kaca"]
-        },
-        {
-          "patterns": "Bagaimana cara kerja pembangkit listrik tenaga surya?",
-          "responses": "Sel surya mengubah energi matahari menjadi energi listrik.",
-          "intent": ["tenaga surya", "sel surya", "energi listrik", "fotovoltaik"]
-        },
-        {
-          "patterns": "Apa tantangan utama dalam pengembangan energi terbarukan di Indonesia?",
-          "responses": "Biaya investasi awal yang tinggi, infrastruktur yang belum memadai, variabilitas sumber energi.",
-          "intent": ["tantangan", "pengembangan", "infrastruktur", "biaya investasi"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Otak",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama otak?",
-          "responses": "Mengendalikan seluruh aktivitas tubuh, termasuk pikiran, memori, dan emosi.",
-          "intent": ["otak", "sistem saraf", "kendali tubuh", "kognitif"]
-        },
-        {
-          "patterns": "Sebutkan bagian-bagian utama otak.",
-          "responses": "Serebrum, serebelum, batang otak.",
-          "intent": ["serebrum", "serebelum", "batang otak", "struktur otak"]
-        },
-        {
-          "patterns": "Apa fungsi serebrum?",
-          "responses": "Mengatur fungsi luhur seperti berpikir, bahasa, dan gerakan sadar.",
-          "intent": ["serebrum", "berpikir", "bahasa", "gerakan sadar"]
-        },
-        {
-          "patterns": "Apa fungsi serebelum?",
-          "responses": "Mengatur keseimbangan, koordinasi, dan postur tubuh.",
-          "intent": ["serebelum", "keseimbangan", "koordinasi", "postur tubuh"]
-        }
-      ],
-      "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Gray726.png/1200px-Gray726.png"
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Jantung",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama jantung?",
-          "responses": "Memompa darah ke seluruh tubuh.",
-          "intent": ["jantung", "sistem kardiovaskular", "peredaran darah"]
-        },
-        {
-          "patterns": "Sebutkan ruang-ruang utama jantung.",
-          "responses": "Atrium kanan, atrium kiri, ventrikel kanan, ventrikel kiri.",
-          "intent": ["atrium", "ventrikel", "ruang jantung", "struktur jantung"]
-        },
-        {
-          "patterns": "Bagaimana darah mengalir melalui jantung?",
-          "responses": "Darah dari tubuh masuk ke atrium kanan, lalu ke ventrikel kanan, dipompa ke paru-paru, kembali ke atrium kiri, lalu ke ventrikel kiri, dan dipompa ke seluruh tubuh.",
-          "intent": ["aliran darah", "sirkulasi darah", "jantung manusia"]
-        },
-        {
-          "patterns": "Apa itu detak jantung?",
-          "responses": "Jumlah kontraksi jantung per menit.",
-          "intent": ["detak jantung", "denyut nadi", "frekuensi jantung"]
-        }
-      ],
-      "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Heart_diagram-en.svg/1200px-Heart_diagram-en.svg.png"
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Paru-paru",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama paru-paru?",
-          "responses": "Melakukan pertukaran gas oksigen dan karbon dioksida.",
-          "intent": ["paru-paru", "sistem pernapasan", "pertukaran gas"]
-        },
-        {
-          "patterns": "Sebutkan bagian-bagian utama paru-paru.",
-          "responses": "Bronkus, bronkiolus, alveolus.",
-          "intent": ["bronkus", "bronkiolus", "alveolus", "struktur paru-paru"]
-        },
-        {
-          "patterns": "Di mana terjadinya pertukaran gas?",
-          "responses": "Di alveolus.",
-          "intent": ["alveolus", "pertukaran gas", "kapiler darah"]
-        },
-        {
-          "patterns": "Apa itu diafragma?",
-          "responses": "Otot yang berperan penting dalam proses pernapasan.",
-          "intent": ["diafragma", "otot pernapasan", "mekanisme pernapasan"]
-        }
-      ],
-      "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Lungs_diagram.svg/1200px-Lungs_diagram.svg.png"
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Ginjal",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama ginjal?",
-          "responses": "Menyaring darah dan membuang zat sisa dalam bentuk urine.",
-          "intent": ["ginjal", "sistem ekskresi", "filtrasi darah"]
-        },
-        {
-          "patterns": "Sebutkan bagian-bagian utama ginjal.",
-          "responses": "Korteks, medula, pelvis ginjal, nefron.",
-          "intent": ["korteks", "medula", "pelvis ginjal", "nefron", "struktur ginjal"]
-        },
-        {
-          "patterns": "Bagaimana ginjal menyaring darah?",
-          "responses": "Melalui proses filtrasi, reabsorpsi, dan sekresi di nefron.",
-          "intent": ["filtrasi", "reabsorpsi", "sekresi", "nefron"]
-        },
-        {
-          "patterns": "Zat sisa apa saja yang dibuang oleh ginjal?",
-          "responses": "Urea, asam urat, kreatinin.",
-          "intent": ["urea", "asam urat", "kreatinin", "urine"]
-        }
-      ],
-      "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Illu_kidney_structures.svg/1200px-Illu_kidney_structures.svg.png"
-    },
-    {
-      "topics": "Biologi",
-      "subtopics": "Hati",
-      "QnA": [
-        {
-          "patterns": "Apa fungsi utama hati?",
-          "responses": "Memproses nutrisi, menyimpan energi, dan membersihkan racun dari darah.",
-          "intent": ["hati", "metabolisme", "detoksifikasi", "fungsi hati"]
-        },
-        {
-          "patterns": "Sebutkan beberapa fungsi hati.",
-          "responses": "Produksi empedu, penyimpanan glikogen, detoksifikasi obat dan racun.",
-          "intent": ["empedu", "glikogen", "detoksifikasi", "fungsi hati"]
-        },
-        {
-          "patterns": "Apa itu empedu?",
-          "responses": "Cairan yang membantu pencernaan lemak, dihasilkan oleh hati dan disimpan di kantung empedu.",
-          "intent": ["empedu", "pencernaan lemak", "kantung empedu"]
-        },
-        {
-          "patterns": "Apa itu glikogen?",
-          "responses": "Bentuk simpanan glukosa yang disimpan di hati.",
-          "intent": ["glikogen", "glukosa", "penyimpanan energi"]
-        }
-      ],
-      "diagram": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Liver_anterior_view.svg/1200px-Liver_anterior_view.svg.png"
-    },
-    {
-      "topics": "Listrik",
-      "subtopics": "Listrik Statis",
-      "QnA": [
-        {
-          "patterns": "Apa itu Muatan Listrik (Q)?",
-          "responses": "Satuan Coulomb (C)",
-          "intent": ["muatan listrik", "coulomb", "listrik statis"]
-        },
-        {
-          "patterns": "Tuliskan rumus Hukum Coulomb.",
-          "responses": "F = k * |Q1 * Q2| / r^2, dengan F adalah Gaya Coulomb (N), k adalah Konstanta Coulomb (8.99 x 10^9 N m^2/C^2), Q1 dan Q2 adalah muatan listrik (C), dan r adalah jarak antara muatan (m).",
-          "intent": ["hukum coulomb", "gaya coulomb", "muatan listrik", "jarak"]
-        },
-        {
-          "patterns": "Tuliskan rumus Medan Listrik (E).",
-          "responses": "E = k * Q / r^2, dengan E adalah Kuat medan listrik (N/C).",
-          "intent": ["medan listrik", "kuat medan listrik"]
-        },
-        {
-          "patterns": "Tuliskan rumus Potensial Listrik (V).",
-          "responses": "V = k * Q / r, dengan V adalah Potensial listrik (Volt).",
-          "intent": ["potensial listrik", "volt"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Listrik",
-      "subtopics": "Listrik Dinamis",
-      "QnA": [
-        {
-          "patterns": "Tuliskan rumus Arus Listrik (I).",
-          "responses": "I = Q / t, dengan I adalah Arus listrik (Ampere, A), Q adalah Muatan listrik (C), dan t adalah Waktu (s).",
-          "intent": ["arus listrik", "ampere", "muatan listrik", "waktu"]
-        },
-        {
-          "patterns": "Tuliskan rumus Tegangan Listrik (V).",
-          "responses": "V = W / Q, dengan V adalah Tegangan listrik (Volt, V), dan W adalah Energi listrik (Joule, J).",
-          "intent": ["tegangan listrik", "volt", "energi listrik", "joule"]
-        },
-        {
-          "patterns": "Tuliskan rumus Hambatan Listrik (R).",
-          "responses": "R = (ρ * l) / A, dengan R adalah Hambatan Listrik (Ohm, Ω), ρ adalah Hambatan jenis (Ωm), l adalah Panjang penghantar (m), dan A adalah Luas penampang (m²).",
-          "intent": ["hambatan listrik", "ohm", "hambatan jenis", "panjang penghantar", "luas penampang"]
-        },
-        {
-          "patterns": "Tuliskan rumus Hukum Ohm.",
-          "responses": "V = IR",
-          "intent": ["hukum ohm", "tegangan", "arus", "hambatan"]
-        },
-        {
-          "patterns": "Tuliskan rumus Daya Listrik (P).",
-          "responses": "P = VI = I^2 * R = V^2 / R, dengan P adalah Daya listrik (Watt, W).",
-          "intent": ["daya listrik", "watt", "tegangan", "arus", "hambatan"]
-        },
-        {
-          "patterns": "Tuliskan rumus Energi Listrik (W).",
-          "responses": "W = VIt",
-          "intent": ["energi listrik", "tegangan", "arus", "waktu"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Listrik",
-      "subtopics": "Rangkaian Listrik",
-      "QnA": [
-        {
-          "patterns": "Tuliskan rumus Hambatan total pada Rangkaian Seri.",
-          "responses": "R_seri = R1 + R2 + ... + Rn",
-          "intent": ["rangkaian seri", "hambatan total", "hambatan"]
-        },
-        {
-          "patterns": "Bagaimana arus dan tegangan pada Rangkaian Seri?",
-          "responses": "Arus sama: I_total = I1 = I2 = ... = In, Tegangan total: V_total = V1 + V2 + ... + Vn",
-          "intent": ["rangkaian seri", "arus", "tegangan"]
-        },
-        {
-          "patterns": "Tuliskan rumus Hambatan total pada Rangkaian Paralel.",
-          "responses": "1/R_paralel = 1/R1 + 1/R2 + ... + 1/Rn",
-          "intent": ["rangkaian paralel", "hambatan total", "hambatan"]
-        },
-        {
-          "patterns": "Bagaimana arus dan tegangan pada Rangkaian Paralel?",
-          "responses": "Tegangan sama: V_total = V1 = V2 = ... = Vn, Arus total: I_total = I1 + I2 + ... + In",
-          "intent": ["rangkaian paralel", "arus", "tegangan"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Listrik",
-      "subtopics": "Medan Magnet di Sekitar Arus Listrik",
-      "QnA": [
-        {
-          "patterns": "Tuliskan rumus Medan Magnet di sekitar Kawat Lurus Panjang.",
-          "responses": "B = (μ₀ * I) / (2 * π * r), dengan B adalah Kuat medan magnet (Tesla, T), μ₀ adalah Permeabilitas vakum (4π x 10^-7 T m/A), I adalah Arus listrik (A), dan r adalah Jarak dari kawat (m).",
-          "intent": ["medan magnet", "kawat lurus", "arus listrik", "permeabilitas vakum"]
-        },
-        {
-          "patterns": "Tuliskan rumus Medan Magnet di tengah Kumparan Melingkar.",
-          "responses": "B = (μ₀ * N * I) / (2 * a), dengan N adalah Jumlah lilitan, dan a adalah Jari-jari kumparan (m).",
-          "intent": ["medan magnet", "kumparan melingkar", "jumlah lilitan", "jari-jari"]
-        },
-        {
-          "patterns": "Tuliskan rumus Medan Magnet di Solenoida.",
-          "responses": "B = μ₀ * n * I, dengan n = N / l, n adalah Jumlah lilitan per satuan panjang, dan l adalah Panjang Solenoida (m).",
-          "intent": ["medan magnet", "solenoida", "jumlah lilitan", "panjang solenoida"]
-        },
-        {
-          "patterns": "Tuliskan rumus Gaya Lorentz.",
-          "responses": "F = BIl sin θ, dengan F adalah Gaya Lorentz (N), dan θ adalah Sudut antara B dan I.",
-          "intent": ["gaya lorentz", "medan magnet", "arus listrik", "sudut"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Listrik",
-      "subtopics": "Induksi Elektromagnetik",
-      "QnA": [
-        {
-          "patterns": "Tuliskan rumus GGL Induksi menurut Hukum Faraday.",
-          "responses": "ε = -N * (ΔΦ / Δt), dengan ε adalah GGL induksi (Volt, V), N adalah Jumlah lilitan, Φ adalah Fluks magnetik (Weber, Wb), dan t adalah Waktu (s).",
-          "intent": ["ggl induksi", "hukum faraday", "jumlah lilitan", "fluks magnetik", "waktu"]
-        },
-        {
-          "patterns": "Tuliskan rumus Fluks Magnetik.",
-          "responses": "Φ = BA cos θ, dengan A adalah Luas area yang ditembus medan magnet (m²).",
-          "intent": ["fluks magnetik", "medan magnet", "luas area", "sudut"]
-        },
-        {
-          "patterns": "Apa bunyi Hukum Lenz?",
-          "responses": "Arah arus induksi melawan perubahan fluks magnetik yang menghasilkannya.",
-          "intent": ["hukum lenz", "arus induksi", "fluks magnetik"]
-        },
-        {
-          "patterns": "Tuliskan rumus Transformator.",
-          "responses": "Vp / Vs = Np / Ns = Is / Ip, dengan Vp adalah Tegangan primer, Vs adalah Tegangan sekunder, Np adalah Jumlah lilitan primer, Ns adalah Jumlah lilitan sekunder, Ip adalah Arus primer, dan Is adalah Arus sekunder.",
-          "intent": ["transformator", "tegangan primer", "tegangan sekunder", "jumlah lilitan", "arus primer", "arus sekunder"]
-        }
-      ],
-      "diagram": ""
-    },  
-    {
-      "topics": "Pertumbuhan dan Perkembangan",
-      "subtopics": "Konsep Dasar Pertumbuhan dan Perkembangan",
-      "QnA": [
-        {
-          "patterns": "Apa perbedaan antara pertumbuhan dan perkembangan?",
-          "responses": "Pertumbuhan adalah perubahan kuantitatif dalam ukuran (misalnya, tinggi, berat), sedangkan perkembangan adalah perubahan kualitatif dalam fungsi dan kemampuan.",
-          "intent": ["pertumbuhan", "perkembangan", "kuantitatif", "kualitatif"]
-        },
-        {
-          "patterns": "Sebutkan prinsip-prinsip pertumbuhan dan perkembangan.",
-          "responses": "Berkesinambungan, bertahap, individual, terarah, saling berhubungan.",
-          "intent": ["prinsip pertumbuhan", "prinsip perkembangan", "berkesinambungan", "bertahap", "individual", "terarah", "saling berhubungan"]
-        },
-        {
-          "patterns": "Faktor-faktor apa saja yang mempengaruhi pertumbuhan dan perkembangan?",
-          "responses": "Genetik, nutrisi, lingkungan, hormon, kesehatan.",
-          "intent": ["faktor pertumbuhan", "faktor perkembangan", "genetik", "nutrisi", "lingkungan", "hormon", "kesehatan"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Pertumbuhan dan Perkembangan",
-      "subtopics": "Tahapan Pertumbuhan dan Perkembangan Manusia",
-      "QnA": [
-        {
-          "patterns": "Sebutkan tahapan-tahapan perkembangan manusia.",
-          "responses": "Prenatal (sebelum lahir), bayi, anak-anak, remaja, dewasa, lansia.",
-          "intent": ["tahapan perkembangan manusia", "prenatal", "bayi", "anak-anak", "remaja", "dewasa", "lansia"]
-        },
-        {
-          "patterns": "Apa saja ciri-ciri pertumbuhan pada masa bayi?",
-          "responses": "Pertumbuhan fisik sangat cepat, perkembangan motorik kasar dan halus.",
-          "intent": ["pertumbuhan bayi", "ciri-ciri pertumbuhan bayi", "pertumbuhan fisik", "motorik kasar", "motorik halus"]
-        },
-        {
-          "patterns": "Apa saja ciri-ciri perkembangan pada masa remaja?",
-          "responses": "Perubahan fisik (pubertas), perkembangan kognitif, perkembangan identitas.",
-          "intent": ["perkembangan remaja", "ciri-ciri perkembangan remaja", "pubertas", "perkembangan kognitif", "perkembangan identitas"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Pertumbuhan dan Perkembangan",
-      "subtopics": "Pertumbuhan Fisik",
-      "QnA": [
-        {
-          "patterns": "Apa saja parameter yang digunakan untuk mengukur pertumbuhan fisik?",
-          "responses": "Berat badan, tinggi badan, lingkar kepala.",
-          "intent": ["pertumbuhan fisik", "parameter pertumbuhan fisik", "berat badan", "tinggi badan", "lingkar kepala"]
-        },
-        {
-          "patterns": "Bagaimana pola pertumbuhan tinggi badan manusia?",
-          "responses": "Cepat pada masa bayi dan remaja, melambat pada masa anak-anak, berhenti pada dewasa.",
-          "intent": ["pola pertumbuhan tinggi badan", "pertumbuhan tinggi badan", "masa bayi", "masa anak-anak", "masa remaja", "masa dewasa"]
-        },
-        {
-          "patterns": "Apa itu kurva pertumbuhan?",
-          "responses": "Grafik yang menunjukkan pola pertumbuhan individu dan populasi.",
-          "intent": ["kurva pertumbuhan", "pola pertumbuhan", "grafik pertumbuhan"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Pertumbuhan dan Perkembangan",
-      "subtopics": "Perkembangan Kognitif",
-      "QnA": [
-        {
-          "patterns": "Apa saja teori perkembangan kognitif yang terkenal?",
-          "responses": "Teori Piaget, teori Vygotsky.",
-          "intent": ["teori perkembangan kognitif", "Piaget", "Vygotsky"]
-        },
-        {
-          "patterns": "Sebutkan tahapan perkembangan kognitif menurut Piaget.",
-          "responses": "Sensorimotor, praoperasional, operasional konkret, operasional formal.",
-          "intent": ["tahapan perkembangan kognitif Piaget", "sensorimotor", "praoperasional", "operasional konkret", "operasional formal"]
-        },
-        {
-          "patterns": "Apa itu zona proksimal perkembangan (ZPD)?",
-          "responses": "Jarak antara kemampuan anak saat ini dan potensi kemampuan yang dapat dicapai dengan bantuan.",
-          "intent": ["zona proksimal perkembangan", "ZPD", "Vygotsky", "kemampuan anak"]
-        }
-      ],
-      "diagram": ""
-    },
-    {
-      "topics": "Pertumbuhan dan Perkembangan",
-      "subtopics": "Perkembangan Sosial dan Emosional",
-      "QnA": [
-        {
-          "patterns": "Apa saja aspek penting dalam perkembangan sosial?",
-          "responses": "Pembentukan hubungan, perkembangan moral, perkembangan identitas.",
-          "intent": ["perkembangan sosial", "hubungan", "perkembangan moral", "perkembangan identitas"]
-        },
-        {
-          "patterns": "Apa saja aspek penting dalam perkembangan emosional?",
-          "responses": "Pengenalan emosi, regulasi emosi, empati.",
-          "intent": ["perkembangan emosional", "pengenalan emosi", "regulasi emosi", "empati"]
-        },
-        {
-          "patterns": "Bagaimana peran keluarga dalam perkembangan sosial dan emosional anak?",
-          "responses": "Memberikan kasih sayang, dukungan, dan bimbingan.",
-          "intent": ["peran keluarga", "perkembangan sosial anak", "perkembangan emosional anak", "kasih sayang", "dukungan", "bimbingan"]
-        }
-      ],
-      "diagram": ""
-    }
-  ]
-}
+      }      
+    } 
+  } 
+} 
