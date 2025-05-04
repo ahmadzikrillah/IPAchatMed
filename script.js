@@ -1,10 +1,11 @@
+
 // ================== [1] INITIALIZATION ================== //
 let dataset = {};
 
 // ================== [2] TEXT PROCESSING ================== //
 // Fungsi normalisasi teks terbaru (support kata tanya & tanda baca)
 function normalizeText(text) {
-    const questionWords = ['apa', 'bagaimana', 'mengapa', 'jelaskan', 'sebutkan', 'bisa', 'dimaksud', 'sebutkan', 'tentang', 'fungsi', 'dengan', 'dimaksud','termasuk', 'yang','adalah', 'bisakah'];
+    const questionWords = ['apa', 'bagaimana', 'mengapa', 'jelaskan', 'sebutkan', 'bisa', 'dimaksud', 'sebutkan', 'tentang', 'fungsi', 'dengan', 'bisakah'];
     return text.toLowerCase()
         .replace(/[?.,!]/g, '')
         .split(' ')
