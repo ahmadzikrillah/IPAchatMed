@@ -114,6 +114,37 @@
         .typing-indicator span:nth-child(3) {
             animation-delay: 0.4s;
         }
+        /* Accessibility Class */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Loading States */
+.loading-spinner {
+    display: none;
+}
+
+button[aria-busy="true"] .button-content {
+    display: none;
+}
+
+button[aria-busy="true"] .loading-spinner {
+    display: block;
+}
+
+/* Button Group Layout */
+.button-group {
+    display: flex;
+    gap: 8px;
+}
         
         @keyframes bounce {
             0%, 60%, 100% { transform: translateY(0); }
@@ -159,29 +190,70 @@
         <p class="subtitle">Asisten Virtual Pembelajaran IPA Kelas 7-9</p>
     </header>
     
-    <main>
-        <div id="chatbox"></div>
+    <main aria-live="polite" aria-atomic="false">
+    <!-- Chat Messages Container -->
+    <div id="chatbox" role="log" aria-live="polite"></div>
+    
+    <!-- Input Section -->
+    <div class="input-container">
+        <label for="userInput" class="sr-only">Masukkan pertanyaan IPA</label>
+        <input type="text" 
+               id="userInput" 
+               placeholder="Tanyakan materi IPA..." 
+               aria-label="Input pertanyaan IPA" 
+               autocomplete="off"
+               aria-controls="chatbox">
         
-        <div class="input-container">
-            <input type="text" id="userInput" placeholder="Tanyakan materi IPA..." 
-                   aria-label="Input pertanyaan IPA" autocomplete="off">
-            <button id="sendButton" aria-label="Kirim pertanyaan">
-                <i class="fas fa-paper-plane"></i> Kirim
+        <div class="button-group">
+            <button type="button" 
+                    id="sendButton" 
+                    aria-label="Kirim pertanyaan"
+                    aria-live="polite"
+                    disabled>
+                <span class="button-content">
+                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                    <span>Kirim</span>
+                </span>
+                <span class="loading-spinner" aria-hidden="true">
+                    <i class="fas fa-spinner fa-pulse"></i>
+                </span>
             </button>
-            <button id="clearChat" aria-label="Bersihkan percakapan">
-                <i class="fas fa-trash-alt"></i>
+            
+            <button type="button" 
+                    id="clearChat" 
+                    aria-label="Bersihkan percakapan"
+                    aria-controls="chatbox">
+                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                <span class="sr-only">Bersihkan</span>
             </button>
         </div>
-        
-        <div class="quick-questions">
-            <p>Coba tanyakan:</p>
-            <div class="quick-buttons">
-                <button class="quick-btn" data-question="Apa itu sel?">Apa itu sel?</button>
-                <button class="quick-btn" data-question="Bagaimana proses fotosintesis?">Proses fotosintesis</button>
-                <button class="quick-btn" data-question="Sebutkan bagian sel hewan">Bagian sel hewan</button>
-            </div>
+    </div>
+    
+    <!-- Quick Questions Section -->
+    <section class="quick-questions" aria-labelledby="quickQuestionsHeading">
+        <h2 id="quickQuestionsHeading" class="quick-questions-title">Coba tanyakan:</h2>
+        <div class="quick-buttons" role="group" aria-labelledby="quickQuestionsHeading">
+            <button type="button" 
+                    class="quick-btn" 
+                    data-question="Apa itu sel?"
+                    aria-label="Ajukan pertanyaan: Apa itu sel?">
+                Apa itu sel?
+            </button>
+            <button type="button" 
+                    class="quick-btn" 
+                    data-question="Bagaimana proses fotosintesis?"
+                    aria-label="Ajukan pertanyaan: Bagaimana proses fotosintesis?">
+                Proses fotosintesis
+            </button>
+            <button type="button" 
+                    class="quick-btn" 
+                    data-question="Sebutkan bagian sel hewan"
+                    aria-label="Ajukan pertanyaan: Sebutkan bagian sel hewan">
+                Bagian sel hewan
+            </button>
         </div>
-    </main>
+    </section>
+</main>
     
     <footer>
         <p>&copy; 2025 Dibuat dengan <span class="heart">❤️</span> oleh Ahmad Zikrillah @Digital IPA Learning</p>
