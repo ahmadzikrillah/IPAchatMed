@@ -7,338 +7,150 @@
     <meta name="description" content="Asisten virtual untuk pembelajaran IPA SMP/MTs dengan materi biologi, fisika, dan kimia">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="style.css">
     <style>
-       /* ================== [1] BASE STYLES ================== */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f7fa;
-    color: #333;
-    line-height: 1.6;
-}
-
-h1, h2, h3 {
-    color: #2c3e50;
-    margin-bottom: 1rem;
-}
-
-h1 {
-    text-align: center;
-    font-size: 1.8rem;
-}
-
-/* ================== [2] CHAT INTERFACE ================== */
-#chatbox {
-    height: 60vh;
-    overflow-y: auto;
-    padding: 15px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
-    scroll-behavior: smooth;
-}
-
-.message {
-    margin-bottom: 12px;
-    padding: 10px 15px;
-    border-radius: 18px;
-    max-width: 80%;
-    word-wrap: break-word;
-}
-
-.user-message {
-    background-color: #e3f2fd;
-    margin-left: auto;
-    border-bottom-right-radius: 5px;
-}
-
-.bot-message {
-    background-color: #f1f1f1;
-    margin-right: auto;
-    border-bottom-left-radius: 5px;
-}
-
-/* ================== [3] INPUT AREA ================== */
-.input-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-#userInput {
-    flex: 1;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 25px;
-    font-size: 16px;
-    outline: none;
-    transition: border 0.3s;
-}
-
-#userInput:focus {
-    border-color: #4CAF50;
-}
-
-.button-group {
-    display: flex;
-    gap: 8px;
-}
-
-button {
-    min-width: 40px;
-    padding: 12px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* ================== [4] SPECIAL MESSAGE STYLES ================== */
-.answer-box {
-    border-left: 3px solid #4CAF50;
-    padding: 12px;
-    margin: 10px 0;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-}
-
-.topic-header {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-}
-
-.topic-badge, .subtopic-badge, .context-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-.topic-badge {
-    background-color: #2c3e50;
-    color: white;
-}
-
-.subtopic-badge {
-    background-color: #3498db;
-    color: white;
-}
-
-.context-badge {
-    background-color: #f1c40f;
-    color: #2c3e50;
-}
-
-.diagram-container {
-    margin: 15px 0;
-    text-align: center;
-}
-
-.diagram-container img {
-    max-width: 100%;
-    border-radius: 8px;
-    border: 1px solid #eee;
-}
-
-.diagram-caption {
-    font-size: 0.9rem;
-    color: #7f8c8d;
-    margin-top: 5px;
-}
-
-/* ================== [5] INTERACTION ELEMENTS ================== */
-.typing-indicator {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #f1f1f1;
-    border-radius: 18px;
-    margin-bottom: 12px;
-}
-
-.typing-indicator span {
-    height: 8px;
-    width: 8px;
-    background-color: #666;
-    border-radius: 50%;
-    display: inline-block;
-    margin: 0 2px;
-    animation: bounce 1.5s infinite ease-in-out;
-}
-
-.typing-indicator span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.typing-indicator span:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-.follow-up {
-    margin-top: 15px;
-    padding-top: 10px;
-    border-top: 1px dashed #ddd;
-}
-
-.followup-title {
-    font-size: 0.9rem;
-    color: #7f8c8d;
-    margin-bottom: 8px;
-}
-
-.followup-questions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.followup-btn {
-    background-color: #e3f2fd !important;
-    color: #2c3e50 !important;
-    font-size: 0.85rem !important;
-    padding: 8px 12px !important;
-    min-width: unset !important;
-}
-
-.followup-btn:hover {
-    background-color: #bbdefb !important;
-}
-
-/* ================== [6] UTILITY CLASSES ================== */
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
-.loading-spinner {
-    display: none;
-    animation: spin 1s linear infinite;
-}
-
-button[aria-busy="true"] .button-content {
-    display: none;
-}
-
-button[aria-busy="true"] .loading-spinner {
-    display: block;
-}
-
-.error-message {
-    background-color: #ffebee !important;
-    color: #c62828;
-    padding: 12px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.not-found {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.not-found-icon {
-    font-size: 1.5rem;
-}
-
-.not-found-text {
-    flex: 1;
-}
-
-/* ================== [7] AUTO-SUGGESTIONS ================== */
-#suggestions-container {
-    position: absolute;
-    width: calc(100% - 30px);
-    max-width: 800px;
-    background: white;
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    z-index: 100;
-    margin-top: -15px;
-}
-
-.suggestion-item {
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.suggestion-item:hover {
-    background-color: #f5f5f5;
-}
-
-/* ================== [8] ANIMATIONS ================== */
-@keyframes bounce {
-    0%, 60%, 100% { transform: translateY(0); }
-    30% { transform: translateY(-5px); }
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* ================== [9] RESPONSIVE DESIGN ================== */
-@media (max-width: 600px) {
-    body {
-        padding: 10px;
-    }
-    
-    #chatbox {
-        height: 65vh;
-    }
-    
-    .input-container {
-        flex-direction: column;
-    }
-    
-    #userInput {
-        width: 100%;
-        padding: 10px 12px;
-    }
-    
-    .button-group {
-        justify-content: flex-end;
-    }
-    
-    button {
-        width: 70px;
-        padding: 10px;
-    }
-    
-    .followup-questions {
-        flex-direction: column;
-    }
-}
+        /* Embedded CSS untuk fallback jika style.css tidak terload */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        #chatbox {
+            height: 60vh;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            scroll-behavior: smooth;
+        }
+        
+        .message {
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            background-color: #f1f1f1;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        
+        #userInput {
+            width: calc(100% - 90px);
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        
+        #userInput:focus {
+            border-color: #4CAF50;
+        }
+        
+        button {
+            width: 80px;
+            padding: 12px;
+            margin-left: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .typing-indicator {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #f1f1f1;
+            border-radius: 18px;
+            margin-bottom: 12px;
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #666;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .heart {
+            color: #e74c3c;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            #chatbox {
+                height: 65vh;
+            }
+            
+            #userInput {
+                width: calc(100% - 80px);
+                padding: 10px 12px;
+            }
+            
+            button {
+                width: 70px;
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -347,70 +159,29 @@ button[aria-busy="true"] .loading-spinner {
         <p class="subtitle">Asisten Virtual Pembelajaran IPA Kelas 7-9</p>
     </header>
     
-    <main aria-live="polite" aria-atomic="false">
-    <!-- Chat Messages Container -->
-    <div id="chatbox" role="log" aria-live="polite"></div>
-    
-    <!-- Input Section -->
-    <div class="input-container">
-        <label for="userInput" class="sr-only">Masukkan pertanyaan IPA</label>
-        <input type="text" 
-               id="userInput" 
-               placeholder="Tanyakan materi IPA..." 
-               aria-label="Input pertanyaan IPA" 
-               autocomplete="off"
-               aria-controls="chatbox">
+    <main>
+        <div id="chatbox"></div>
         
-        <div class="button-group">
-            <button type="button" 
-                    id="sendButton" 
-                    aria-label="Kirim pertanyaan"
-                    aria-live="polite"
-                    disabled>
-                <span class="button-content">
-                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
-                    <span>Kirim</span>
-                </span>
-                <span class="loading-spinner" aria-hidden="true">
-                    <i class="fas fa-spinner fa-pulse"></i>
-                </span>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Tanyakan materi IPA..." 
+                   aria-label="Input pertanyaan IPA" autocomplete="off">
+            <button id="sendButton" aria-label="Kirim pertanyaan">
+                <i class="fas fa-paper-plane"></i> Kirim
             </button>
-            
-            <button type="button" 
-                    id="clearChat" 
-                    aria-label="Bersihkan percakapan"
-                    aria-controls="chatbox">
-                <i class="fas fa-trash-alt" aria-hidden="true"></i>
-                <span class="sr-only">Bersihkan</span>
+            <button id="clearChat" aria-label="Bersihkan percakapan">
+                <i class="fas fa-trash-alt"></i>
             </button>
         </div>
-    </div>
-    
-    <!-- Quick Questions Section -->
-    <section class="quick-questions" aria-labelledby="quickQuestionsHeading">
-        <h2 id="quickQuestionsHeading" class="quick-questions-title">Coba tanyakan:</h2>
-        <div class="quick-buttons" role="group" aria-labelledby="quickQuestionsHeading">
-            <button type="button" 
-                    class="quick-btn" 
-                    data-question="Apa itu sel?"
-                    aria-label="Ajukan pertanyaan: Apa itu sel?">
-                Apa itu sel?
-            </button>
-            <button type="button" 
-                    class="quick-btn" 
-                    data-question="Bagaimana proses fotosintesis?"
-                    aria-label="Ajukan pertanyaan: Bagaimana proses fotosintesis?">
-                Proses fotosintesis
-            </button>
-            <button type="button" 
-                    class="quick-btn" 
-                    data-question="Sebutkan bagian sel hewan"
-                    aria-label="Ajukan pertanyaan: Sebutkan bagian sel hewan">
-                Bagian sel hewan
-            </button>
+        
+        <div class="quick-questions">
+            <p>Coba tanyakan:</p>
+            <div class="quick-buttons">
+                <button class="quick-btn" data-question="Apa itu sel?">Apa itu sel?</button>
+                <button class="quick-btn" data-question="Bagaimana proses fotosintesis?">Proses fotosintesis</button>
+                <button class="quick-btn" data-question="Sebutkan bagian sel hewan">Bagian sel hewan</button>
+            </div>
         </div>
-    </section>
-</main>
+    </main>
     
     <footer>
         <p>&copy; 2025 Dibuat dengan <span class="heart">❤️</span> oleh Ahmad Zikrillah @Digital IPA Learning</p>
@@ -419,318 +190,401 @@ button[aria-busy="true"] .loading-spinner {
 
     <!-- Script Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/indonesian-stemmer@0.0.3/dist/index.min.js"></script>   
+    <script src="https://cdn.jsdelivr.net/npm/indonesian-stemmer@0.0.3/dist/index.min.js"></script>
+    
+    <!-- Main Script -->
     <script>
-        // ================== [1] ENHANCED INITIALIZATION ================== //
-const CONFIG = {
-    DEBUG_MODE: true,
-    TYPING_DELAY: 800,
-    CACHE_TTL: 3600000, // 1 hour in ms
-    MATCH_THRESHOLDS: {
-        EXACT: 1.0,
-        HIGH: 0.85,
-        MEDIUM: 0.65,
-        LOW: 0.45
-    }
-};
+    // ================== [1] INITIALIZATION ================== //
+    let dataset = {};
+    const responseCache = new Map();
+    const sessionContext = {
+        lastTopic: null,
+        lastSubtopic: null,
+        followUpQuestions: []
+    };
 
-let dataset = {};
-const responseCache = new Map();
-const sessionContext = {
-    lastTopic: null,
-    lastSubtopic: null,
-    followUpQuestions: [],
-    lastResponseIndices: {},
-    conversationHistory: []
-};
+    const priorityKeywords = {
+        // Biologi
+        "sel": 15, "fotosintesis": 15, "mitokondria": 12, 
+        "kloroplas": 12, "membran": 10, "nukleus": 10,
+        "glukosa": 10, "oksigen": 9, "karbon": 9,
+        "dna": 12, "rna": 11, "enzim": 10,
+        
+        // Fisika
+        "gaya": 14, "energi": 13, "listrik": 12,
+        "magnet": 11, "cahaya": 11, "gerak": 10,
+        
+        // Kimia
+        "asam": 12, "basa": 12, "reaksi": 11,
+        "unsur": 10, "senyawa": 10, "periodik": 9
+    };
 
-// ================== [2] TEXT PROCESSING ENHANCEMENTS ================== //
-const textProcessor = {
-    normalize: (text) => {
+    // ================== [2] TEXT PROCESSING ================== //
+    function normalizeText(text) {
         if (!text) return '';
         return text.toLowerCase()
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             .replace(/[^\w\s]/g, '')
-            .replace(/\b(apa|bagaimana|mengapa|tolong|jelaskan|itu|sebutkan)\b/g, '')
+            .replace(/\b(apa|bagaimana|mengapa|jelaskan|sebutkan|bisa|dimaksud|tentang|pada|yang|dan|untuk|di|ke|dari|adalah|itu)\b/g, '')
             .replace(/\s+/g, ' ')
             .trim();
-    },
+    }
 
-    stem: (word) => {
-        const specialStems = {
-            "fotosintesis": "fotosintesis",
-            "respirasi": "napas",
-            "seluler": "sel",
-            "mitokondria": "mitokondria",
-            "voltage":"tegangan"
-        };
-        if (specialStems[word]) return specialStems[word];
-
-        const suffixes = ['nya', 'lah', 'kah', 'adalah'];
-        const prefixes = ['ber', 'ter', 'me'];
+    function indonesianStemming(word) {
+        if (!word) return '';
+        
+        const suffixes = ['nya', 'lah', 'kah', 'pun', 'kan', 'an'];
+        const prefixes = ['ber', 'ter', 'me', 'pe', 'di', 'se'];
         
         let stemmed = word;
+        
+        // Hapus suffix
         for (const suffix of suffixes) {
-            if (stemmed.endsWith(suffix)) {
+            if (stemmed.endsWith(suffix) && stemmed.length > suffix.length + 2) {
                 stemmed = stemmed.slice(0, -suffix.length);
                 break;
             }
         }
+        
+        // Hapus prefix
         for (const prefix of prefixes) {
-            if (stemmed.startsWith(prefix)) {
+            if (stemmed.startsWith(prefix) && stemmed.length > prefix.length + 2) {
                 stemmed = stemmed.slice(prefix.length);
                 break;
             }
         }
         
         return stemmed.length > 2 ? stemmed : word;
-    },
+    }
 
-    tokenize: (text) => {
-        return textProcessor.normalize(text).split(' ')
-            .map(textProcessor.stem)
+    function extractKeywords(text) {
+        if (!text) return [];
+        return normalizeText(text).split(' ')
+            .map(indonesianStemming)
             .filter(word => word.length > 2);
     }
-};
 
-// ================== [3] SEMANTIC MATCHING ENGINE ================== //
-const matcher = {
-    findExactMatch: (query) => {
-        const normalizedQuery = textProcessor.normalize(query);
-        for (const [topic, topicData] of Object.entries(dataset.topics || {})) {
-            for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics || {})) {
-                for (const qna of subtopicData.QnA || []) {
-                    const exactMatch = qna.patterns.find(p => 
-                        textProcessor.normalize(p) === normalizedQuery
-                    );
-                    if (exactMatch) {
-                        return this._prepareMatchResult(topic, subtopic, qna);
-                    }
-                }
-            }
-        }
-        return null;
-    },
-
-    findSemanticMatch: (query) => {
-        let bestMatch = { confidence: 0 };
-        const queryTokens = textProcessor.tokenize(query);
-
-        for (const [topic, topicData] of Object.entries(dataset.topics || {})) {
-            for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics || {})) {
-                for (const qna of subtopicData.QnA || []) {
-                    const score = this._calculateMatchScore(query, queryTokens, topic, subtopic, qna);
-                    if (score > bestMatch.confidence) {
-                        bestMatch = this._prepareMatchResult(topic, subtopic, qna, score);
-                    }
-                }
-            }
-        }
-        return bestMatch.confidence >= CONFIG.MATCH_THRESHOLDS.HIGH ? bestMatch : null;
-    },
-
-    _calculateMatchScore: (query, queryTokens, topic, subtopic, qna) => {
-        // 1. Pattern matching
-        const patternScore = Math.max(...qna.patterns.map(p => 
-            this._jaccardSimilarity(queryTokens, textProcessor.tokenize(p))
-        ));
-
-        // 2. Intent matching
-        const intentScore = qna.intent ? 
-            this._jaccardSimilarity(queryTokens, textProcessor.tokenize(qna.intent)) : 0;
-
-        // 3. Context bonus
-        const contextBonus = sessionContext.lastTopic === topic ? 1.2 : 1.0;
-
-        return (patternScore * 0.6 + intentScore * 0.3) * contextBonus;
-    },
-
-    _jaccardSimilarity: (tokensA, tokensB) => {
-        const setA = new Set(tokensA);
-        const setB = new Set(tokensB);
-        const intersection = new Set([...setA].filter(t => setB.has(t)));
-        const union = new Set([...setA, ...setB]);
-        return union.size > 0 ? intersection.size / union.size : 0;
-    },
-
-    _prepareMatchResult: (topic, subtopic, qna, confidence = 1.0) => {
-        const qnaKey = `${topic}|${subtopic}|${qna.intent}`;
-        const lastIndex = sessionContext.lastResponseIndices[qnaKey] || 0;
-        const responseIndex = (lastIndex + 1) % qna.responses.length;
+    // ================== [3] FUZZY MATCHING & SIMILARITY ================== //
+    function calculateSimilarity(str1, str2) {
+        const set1 = new Set(str1.split(' '));
+        const set2 = new Set(str2.split(' '));
         
-        sessionContext.lastResponseIndices[qnaKey] = responseIndex;
+        const intersection = new Set([...set1].filter(x => set2.has(x)));
+        const union = new Set([...set1, ...set2]);
         
-        return {
-            topic,
-            subtopic,
-            response: qna.responses[responseIndex],
-            diagram: qna.diagram,
-            intent: qna.intent,
-            patterns: qna.patterns,
-            confidence
-        };
+        return union.size === 0 ? 0 : intersection.size / union.size;
     }
-};
 
-// ================== [4] RESPONSE MANAGEMENT ================== //
-const responseManager = {
-    findAnswer: (query) => {
-        const normalizedQuery = textProcessor.normalize(query);
+    function findBestPatternMatch(query, patterns) {
+        let bestScore = 0;
+        let bestPattern = null;
         
-        // Check cache
-        if (responseCache.has(normalizedQuery)) {
-            return responseCache.get(normalizedQuery);
-        }
-
-        // Try exact match first
-        const exactMatch = matcher.findExactMatch(query);
-        if (exactMatch) {
-            return this._cacheAndFormatResponse(normalizedQuery, exactMatch);
-        }
-
-        // Fallback to semantic match
-        const semanticMatch = matcher.findSemanticMatch(query);
-        if (semanticMatch) {
-            return this._cacheAndFormatResponse(normalizedQuery, semanticMatch);
-        }
-
-        // Final fallback
-        return this._getFallbackResponse(query);
-    },
-
-    _cacheAndFormatResponse: (queryKey, match) => {
-        const response = this._formatResponse(match);
-        responseCache.set(queryKey, response);
-        this._updateSessionContext(match, queryKey);
-        return response;
-    },
-
-    _updateSessionContext: (match, query) => {
-        sessionContext.lastTopic = match.topic;
-        sessionContext.lastSubtopic = match.subtopic;
-        sessionContext.conversationHistory.push({
-            query,
-            topic: match.topic,
-            subtopic: match.subtopic,
-            timestamp: new Date()
+        const normalizedQuery = normalizeText(query);
+        
+        patterns.forEach(pattern => {
+            const normalizedPattern = normalizeText(pattern);
+            const similarity = calculateSimilarity(normalizedQuery, normalizedPattern);
+            
+            // Bonus untuk exact match atau urutan kata yang sama
+            if (normalizedQuery === normalizedPattern) {
+                bestScore = 1.5;
+                bestPattern = pattern;
+                return;
+            }
+            
+            // Bonus untuk pola yang mengandung seluruh kata query
+            const queryWords = normalizedQuery.split(' ');
+            if (queryWords.every(word => normalizedPattern.includes(word))) {
+                similarity += 0.3;
+            }
+            
+            if (similarity > bestScore) {
+                bestScore = similarity;
+                bestPattern = pattern;
+            }
         });
+        
+        return { score: bestScore, pattern: bestPattern };
+    }
 
-        // Generate follow-up questions
-        sessionContext.followUpQuestions = match.patterns
-            .filter(p => {
-                const patternNorm = textProcessor.normalize(p);
-                return patternNorm !== query && 
-                       matcher._jaccardSimilarity(
-                           textProcessor.tokenize(query), 
-                           textProcessor.tokenize(patternNorm)
-                       ) < 0.7;
+    // ================== [4] CORE ANSWER FINDING LOGIC ================== //
+    function evaluateQuestion(qna, query, keywords, isContextSearch = false) {
+        let score = 0;
+        
+        // 1. Pattern Matching
+        const { score: patternScore, pattern } = findBestPatternMatch(query, qna.patterns);
+        score += patternScore * 100;
+        
+        // 2. Keyword Matching
+        const matchedKeywords = qna.keywords.filter(kw => 
+            keywords.some(userKw => {
+                const stemmedKw = indonesianStemming(kw);
+                const stemmedUserKw = indonesianStemming(userKw);
+                return stemmedKw === stemmedUserKw;
             })
-            .slice(0, 3);
-    },
+        ).length;
+        
+        score += matchedKeywords * (15 + matchedKeywords * 0.5);
+        
+        // 3. Priority Keywords Bonus
+        matchedKeywords.forEach(kw => {
+            if (priorityKeywords[kw]) {
+                score += priorityKeywords[kw];
+            }
+        });
+        
+        // 4. Context Bonus
+        if (isContextSearch) {
+            score *= 1.5;
+        }
+        
+        // 5. Intent Matching
+        if (qna.intent && normalizeText(query).includes(normalizeText(qna.intent))) {
+            score += 30;
+        }
+        
+        return { score, pattern };
+    }
 
-    _formatResponse: (match) => {
+    function findAnswer(query) {
+        const cacheKey = normalizeText(query);
+        if (responseCache.has(cacheKey)) {
+            return responseCache.get(cacheKey);
+        }
+
+        const keywords = extractKeywords(query);
+        let bestMatch = null;
+        let highestScore = 0;
+        let usedPattern = null;
+
+        // [1] Check last context first
+        if (sessionContext.lastTopic && sessionContext.lastSubtopic) {
+            const lastTopicData = dataset.topics[sessionContext.lastTopic]?.subtopics[sessionContext.lastSubtopic];
+            if (lastTopicData) {
+                for (const qna of lastTopicData.QnA) {
+                    const { score, pattern } = evaluateQuestion(qna, query, keywords, true);
+                    if (score > highestScore) {
+                        highestScore = score;
+                        bestMatch = qna;
+                        usedPattern = pattern;
+                        bestMatch.topic = sessionContext.lastTopic;
+                        bestMatch.subtopic = sessionContext.lastSubtopic;
+                    }
+                }
+            }
+        }
+
+        // [2] Search all topics
+        for (const [topic, topicData] of Object.entries(dataset.topics)) {
+            for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
+                // Skip if already checked in context
+                if (topic === sessionContext.lastTopic && subtopic === sessionContext.lastSubtopic) continue;
+                
+                for (const qna of subtopicData.QnA) {
+                    const { score, pattern } = evaluateQuestion(qna, query, keywords);
+                    if (score > highestScore) {
+                        highestScore = score;
+                        bestMatch = qna;
+                        usedPattern = pattern;
+                        bestMatch.topic = topic;
+                        bestMatch.subtopic = subtopic;
+                    }
+                }
+            }
+        }
+
+        // [3] Prepare response
+        if (highestScore > 40) { // Dynamic threshold
+            sessionContext.lastTopic = bestMatch.topic;
+            sessionContext.lastSubtopic = bestMatch.subtopic;
+            
+            // Generate follow-up questions
+            sessionContext.followUpQuestions = bestMatch.patterns
+                .filter(p => p !== usedPattern)
+                .slice(0, 3);
+            
+            const response = formatResponse(bestMatch);
+            responseCache.set(cacheKey, response);
+            return response;
+        }
+        
+        return getFallbackResponse(keywords);
+    }
+
+    // ================== [5] RESPONSE FORMATTING ================== //
+    function formatResponse(match) {
+        const mainResponse = match.responses[0];
         let response = `
             <div class="answer-box">
                 <div class="topic-header">
                     <span class="topic-badge">${match.topic}</span>
                     <span class="subtopic-badge">${match.subtopic}</span>
-                    ${sessionContext.lastTopic === match.topic ? 
-                       '<span class="context-badge">👈 Topik Sebelumnya</span>' : ''}
                 </div>
-                <div class="answer-content">${match.response}</div>
+                <div class="answer-content">${mainResponse}</div>
         `;
         
+        // Add diagram if available
         if (match.diagram) {
             response += `
                 <div class="diagram-container">
                     <img src="${match.diagram}" alt="${match.subtopic}" 
-                         loading="lazy" onerror="this.style.display='none'">
+                         loading="lazy" class="diagram-img"
+                         onerror="this.style.display='none'">
                     <div class="diagram-caption">Diagram ${match.subtopic}</div>
                 </div>
             `;
         }
         
-        if (sessionContext.followUpQuestions.length > 0) {
+        // Add related responses
+        if (match.responses.length > 1) {
             response += `
-                <div class="follow-up">
-                    <div class="followup-title">Mungkin Kamu ingin tanya:</div>
-                    <div class="followup-questions">
-                        ${sessionContext.followUpQuestions.map(q => `
-                            <button class="followup-btn" 
-                                    onclick="setQueryAndSend('${q.replace(/'/g, "\\'")}')">
-                                ${q}
-                            </button>
-                        `).join('')}
-                    </div>
+                <div class="related-answers">
+                    <div class="related-title">Informasi terkait:</div>
+                    <ul>${match.responses.slice(1, 3).map(r => `<li>${r}</li>`).join('')}</ul>
                 </div>
             `;
         }
         
-        if (CONFIG.DEBUG_MODE) {
-            response += `<div class="debug-info">Confidence: ${Math.round(match.confidence * 100)}%</div>`;
+        // Add follow-up suggestions
+        if (sessionContext.followUpQuestions.length > 0) {
+            response += `
+                <div class="follow-up">
+                    <div class="followup-title">Pertanyaan lanjutan:</div>
+                    <ul>${sessionContext.followUpQuestions.map(q => 
+                        `<li><a href="#" onclick="document.getElementById('userInput').value='${q}';sendMessage();">${q}</a></li>`
+                    ).join('')}</ul>
+                </div>
+            `;
         }
         
-        return response + `</div>`;
-    },
+        response += `</div>`;
+        return response;
+    }
 
-    _getFallbackResponse: (query) => {
-        const keywords = textProcessor.tokenize(query);
-        const suggestions = [
-            "Coba tanyakan tentang:",
-            "- Struktur sel hewan dan tumbuhan",
-            "- Proses fotosintesis",
-            "- Hukum Newton",
-            "- Reaksi kimia sederhana"
-        ].join("<br>");
+    function getFallbackResponse(keywords) {
+        // Find related topics based on keywords
+        const relatedTopics = [];
+        const topicScores = {};
+        
+        for (const [topic, topicData] of Object.entries(dataset.topics)) {
+            for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
+                for (const qna of subtopicData.QnA) {
+                    const keywordMatches = qna.keywords.filter(kw => 
+                        keywords.some(userKw => 
+                            indonesianStemming(kw) === indonesianStemming(userKw)
+                        )
+                    ).length;
+                    
+                    if (keywordMatches > 0) {
+                        const topicKey = `${topic} > ${subtopic}`;
+                        topicScores[topicKey] = (topicScores[topicKey] || 0) + keywordMatches;
+                    }
+                }
+            }
+        }
+        
+        // Sort by relevance
+        const sortedTopics = Object.entries(topicScores)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([topic]) => topic);
+        
+        // Prepare suggestion
+        let suggestion = '';
+        if (sortedTopics.length > 0) {
+            suggestion = `Mungkin Anda maksud tentang: ${sortedTopics.join(', ')}`;
+        } else {
+            suggestion = 'Coba tanyakan tentang: sel, fotosintesis, sistem organ, gaya, energi, atau reaksi kimia';
+        }
         
         return `
             <div class="not-found">
                 <div class="not-found-icon">❓</div>
                 <div class="not-found-text">
                     <p>Saya belum memahami pertanyaan Anda.</p>
-                    <p>${suggestions}</p>
+                    <p>${suggestion}</p>
                 </div>
             </div>
         `;
     }
-};
 
-// ================== [5] UI CONTROLLER ================== //
-const uiController = {
-    init: () => {
-        this._setupEventListeners();
-        this._loadDataset();
-        this._setupAutoSuggestion();
-    },
+    // ================== [6] UI MANAGEMENT ================== //
+    function addMessage(message, isBot = true) {
+        const chatbox = document.getElementById('chatbox');
+        
+        if (isBot) {
+            // Add typing indicator
+            chatbox.innerHTML += `
+                <div class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>`;
+            
+            // Scroll to bottom
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
 
-    _setupEventListeners: () => {
-        document.getElementById('userInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.sendMessage();
-        });
-
-        document.getElementById('sendButton').addEventListener('click', () => this.sendMessage());
-
-        document.getElementById('clearChat').addEventListener('click', () => {
-            if (confirm('Hapus seluruh percakapan?')) {
-                document.getElementById('chatbox').innerHTML = '';
-                sessionContext.lastTopic = null;
-                sessionContext.lastSubtopic = null;
-                sessionContext.followUpQuestions = [];
-                this.addMessage("Halo! Ada yang bisa saya bantu?");
+        setTimeout(() => {
+            if (isBot) {
+                // Remove typing indicator
+                const typingIndicator = document.querySelector('.typing-indicator');
+                if (typingIndicator) typingIndicator.remove();
             }
-        });
-    },
+            
+            // Create message element
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
+            messageDiv.innerHTML = message;
+            chatbox.appendChild(messageDiv);
+            
+            // Apply special styles for answer boxes
+            const answerBoxes = messageDiv.querySelectorAll('.answer-box');
+            answerBoxes.forEach(box => {
+                box.style.borderLeft = '3px solid #4CAF50';
+                box.style.padding = '12px';
+                box.style.margin = '10px 0';
+                box.style.backgroundColor = '#f9f9f9';
+                box.style.borderRadius = '8px';
+            });
+            
+            // Scroll to bottom
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }, isBot ? 1000 : 0);
+    }
 
-    _loadDataset: () => {
+    function sendMessage() {
+        const userInput = document.getElementById('userInput');
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        addMessage(message, false);
+        userInput.value = '';
+
+        setTimeout(() => {
+            try {
+                const answer = findAnswer(message);
+                addMessage(answer);
+            } catch (error) {
+                console.error("Error:", error);
+                addMessage("<div class='error-message'>Terjadi kesalahan saat memproses pertanyaan Anda. Silakan coba lagi.</div>");
+            }
+        }, 800);
+    }
+
+    // ================== [7] INITIAL SETUP ================== //
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set last updated date
+        document.getElementById('lastUpdated').textContent = 'Terakhir diperbarui: ' + new Date().toLocaleDateString('id-ID');
+        
+        // Load dataset
         fetch('dataseek.json')
             .then(response => {
-                if (!response.ok) throw new Error('Gagal memuat dataset');
+                if (!response.ok) throw new Error('Network error');
                 return response.json();
             })
             .then(data => {
                 dataset = data.ipa_smp || {};
-                this.addMessage("Halo! Saya asisten Pak Zikri. Kamu bisa bertanya tentang:");
-                this.addMessage(`
+                addMessage("Halo! Saya asisten IPA. Anda bisa bertanya tentang:");
+                addMessage(`
                     <div class="welcome-message">
                         <div><b>Biologi</b>: Sel, Fotosintesis, Sistem Organ</div>
                         <div><b>Fisika</b>: Gaya, Energi, Listrik</div>
@@ -739,137 +593,52 @@ const uiController = {
                 `);
             })
             .catch(error => {
-                console.error("Error:", error);
-                this.addMessage(`
-                    <div class="error-message">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Sistem sedang dalam pemeliharaan. Silakan coba lagi nanti.
-                    </div>
-                `);
+                console.error("Error loading data:", error);
+                addMessage("<div class='error-message'>Sistem sedang dalam pemeliharaan. Silakan coba lagi nanti.</div>");
             });
-    },
 
-    _setupAutoSuggestion: () => {
-        const input = document.getElementById('userInput');
-        const container = document.createElement('div');
-        container.id = 'suggestions-container';
-        input.parentNode.insertBefore(container, input.nextSibling);
-
-        input.addEventListener('input', () => {
-            clearTimeout(this.suggestionTimeout);
-            this.suggestionTimeout = setTimeout(() => {
-                const query = input.value.trim();
-                if (query.length > 1) {
-                    this._showSuggestions(query, container);
-                } else {
-                    container.innerHTML = '';
-                }
-            }, 300);
+        // Event listeners
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
         });
 
-        document.addEventListener('click', (e) => {
-            if (!input.contains(e.target) {
-                container.innerHTML = '';
+        document.getElementById('sendButton').addEventListener('click', sendMessage);
+
+        // Clear chat button
+        document.getElementById('clearChat').addEventListener('click', () => {
+            document.getElementById('chatbox').innerHTML = '';
+            sessionContext.lastTopic = null;
+            sessionContext.lastSubtopic = null;
+            if (dataset.topics) {
+                addMessage("Halo! Ada yang bisa saya bantu?");
             }
         });
-   
-    _showSuggestions: (query, container) => {
-        const normalizedQuery = textProcessor.normalize(query);
-        const suggestions = new Set();
 
-        for (const topic of Object.values(dataset.topics || {})) {
-            for (const subtopic of Object.values(topic.subtopics || {})) {
-                for (const qna of subtopic.QnA || []) {
-                    for (const pattern of qna.patterns || []) {
-                        if (textProcessor.normalize(pattern).includes(normalizedQuery)) {
-                            suggestions.add(pattern);
-                            if (suggestions.size >= 5) break;
-                        }
-                    }
-                }
+        // Quick questions buttons
+        document.querySelector('.quick-buttons').addEventListener('click', function(e) {
+            if (e.target.classList.contains('quick-btn')) {
+                const question = e.target.getAttribute('data-question');
+                document.getElementById('userInput').value = question;
+                sendMessage();
             }
-        }
+        });
 
-        container.innerHTML = suggestions.size > 0 
-            ? Array.from(suggestions).map(s => `
-                <div class="suggestion-item" onclick="setQuery('${s.replace(/'/g, "\\'")}')">
-                    ${s}
-                </div>
-              `).join('')
-            : '';
-    },
+        // Focus input saat halaman dimuat
+        document.getElementById('userInput').focus();
+    });
 
-    addMessage: (content, isBot = true) => {
-        const chatbox = document.getElementById('chatbox');
-        
-        if (isBot) {
-            chatbox.innerHTML += `
-                <div class="typing-indicator">
-                    <span></span><span></span><span></span>
-                </div>`;
-        }
-
-        setTimeout(() => {
-            if (isBot) {
-                const typing = document.querySelector('.typing-indicator');
-                if (typing) typing.remove();
-            }
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
-            messageDiv.innerHTML = content;
-            chatbox.appendChild(messageDiv);
-            chatbox.scrollTop = chatbox.scrollHeight;
-        }, isBot ? CONFIG.TYPING_DELAY : 0);
-    },
-
-    sendMessage: () => {
-        const input = document.getElementById('userInput');
-        const message = input.value.trim();
-        if (!message) return;
-
-        this.addMessage(message, false);
-        input.value = '';
-        document.getElementById('suggestions-container').innerHTML = '';
-
-        setTimeout(() => {
-            try {
-                const answer = responseManager.findAnswer(message);
-                this.addMessage(answer);
-            } catch (error) {
-                console.error("Error:", error);
-                this.addMessage(`
-                    <div class="error-message">
-                        <i class="fas fa-exclamation-circle"></i>
-                        Terjadi kesalahan saat memproses pertanyaan.
-                    </div>
-                `);
-            }
-        }, CONFIG.TYPING_DELAY);
+    // ================== [8] UTILITY FUNCTIONS ================== //
+    function debugAnalytics() {
+        return {
+            cacheSize: responseCache.size,
+            lastContext: sessionContext,
+            datasetTopics: Object.keys(dataset.topics || {})
+        };
     }
-};
 
-// ================== [6] INITIALIZATION ================== //
-document.addEventListener('DOMContentLoaded', () => uiController.init());
-
-// ================== [7] GLOBAL HELPERS ================== //
-window.setQuery = (text) => {
-    const input = document.getElementById('userInput');
-    input.value = text;
-    input.focus();
-    document.getElementById('suggestions-container').innerHTML = '';
-};
-
-window.setQueryAndSend = (text) => {
-    setQuery(text);
-    uiController.sendMessage();
-};
-
-window.debug = {
-    getContext: () => sessionContext,
-    clearCache: () => responseCache.clear(),
-    findAnswer: (query) => responseManager.findAnswer(query)
-};
+    // For debugging
+    window.debug = debugAnalytics;
+    window.clearCache = () => responseCache.clear();
     </script>
 </body>
 </html>
