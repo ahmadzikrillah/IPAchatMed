@@ -40,7 +40,7 @@ function normalizeText(text) {
     return text.toLowerCase()
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/[^\w\s]/g, '')
-        .replace(/\b(apa|bagaimana|mengapa|tolong|jelaskan|sebutkan|definisi|pengertian|proses|mekanisme)\b/g, '')
+        .replace(/\b(apa|bagaimana|mengapa|tolong|jelaskan|sebutkan|definisi|pengertian|dengan|mekanisme)\b/g, '')
         .replace(/\s+/g, ' ')
         .trim();
 }
@@ -563,6 +563,16 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Error loading data:", error);
             addMessage("<div class='error-message'>Sistem sedang dalam pemeliharaan. Silakan coba lagi nanti.</div>");
         });
+    const userInput = document.getElementById('userInput');
+const sendButton = document.getElementById('sendButton');
+
+// Nonaktifkan tombol awal
+sendButton.disabled = true;
+
+// Aktif/nonaktifkan tombol berdasarkan input
+userInput.addEventListener('input', () => {
+    sendButton.disabled = userInput.value.trim() === '';
+});
 
     // Event listeners
     document.getElementById('userInput').addEventListener('keypress', (e) => {
