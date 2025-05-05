@@ -82,42 +82,59 @@ function calculateSimilarity(str1, str2) {
 function findBestPatternMatch(query, patterns) {
     let bestScore = 0;
     let bestPattern = null;
+    let exactMatchIndex = -1;
     
     const normalizedQuery = normalizeText(query);
     
-    patterns.forEach(pattern => {
-        const normalizedPattern = normalizeText(pattern);
-        const similarity = calculateSimilarity(normalizedQuery, normalizedPattern);
-        
-        // Bonus untuk exact match atau urutan kata yang sama
-        if (normalizedQuery === normalizedPattern) {
-            bestScore = 1.5;
+    // Cari exact match terlebih dahulu
+    patterns.forEach((pattern, index) => {
+        if (normalizeText(pattern) === normalizedQuery) {
+            exactMatchIndex = index;
+            bestScore = 2.0; // Skor tinggi untuk exact match
             bestPattern = pattern;
             return;
         }
-        
-        // Bonus untuk pola yang mengandung seluruh kata query
-        const queryWords = normalizedQuery.split(' ');
-        if (queryWords.every(word => normalizedPattern.includes(word))) {
-            similarity += 0.3;
-        }
-        
-        if (similarity > bestScore) {
-            bestScore = similarity;
-            bestPattern = pattern;
-        }
     });
     
-    return { score: bestScore, pattern: bestPattern };
+    // Jika tidak ada exact match, cari fuzzy match
+    if (exactMatchIndex === -1) {
+        patterns.forEach(pattern => {
+            const normalizedPattern = normalizeText(pattern);
+            const similarity = calculateSimilarity(normalizedQuery, normalizedPattern);
+            
+            // Bonus untuk pola yang mengandung seluruh kata query
+            const queryWords = normalizedQuery.split(' ');
+            if (queryWords.every(word => normalizedPattern.includes(word))) {
+                similarity += 0.3;
+            }
+            
+            if (similarity > bestScore) {
+                bestScore = similarity;
+                bestPattern = pattern;
+            }
+        });
+    }
+    
+    return { 
+        score: bestScore, 
+        pattern: bestPattern,
+        exactMatchIndex // NEW: Return index exact match
+    };
 }
 
 // ================== [4] CORE ANSWER FINDING LOGIC ================== //
 function evaluateQuestion(qna, query, keywords, isContextSearch = false) {
     let score = 0;
+    let responseIndex = 0; // Default: response pertama
     
     // 1. Pattern Matching
-    const { score: patternScore, pattern } = findBestPatternMatch(query, qna.patterns);
+    const { score: patternScore, pattern, exactMatchIndex } = findBestPatternMatch(query, qna.patterns);
     score += patternScore * 100;
+    
+    // Jika ada exact match, gunakan index tersebut untuk response
+    if (exactMatchIndex !== -1) {
+        responseIndex = exactMatchIndex % qna.responses.length;
+    }
     
     // 2. Keyword Matching
     const matchedKeywords = qna.keywords.filter(kw => 
@@ -147,7 +164,11 @@ function evaluateQuestion(qna, query, keywords, isContextSearch = false) {
         score += 30;
     }
     
-    return { score, pattern };
+    return { 
+        score, 
+        pattern,
+        responseIndex // NEW: Return response index yang dipilih
+    };
 }
 
 function findAnswer(query) {
@@ -160,17 +181,19 @@ function findAnswer(query) {
     let bestMatch = null;
     let highestScore = 0;
     let usedPattern = null;
+    let selectedResponseIndex = 0; // NEW: Track response index terpilih
 
     // [1] Check last context first
     if (sessionContext.lastTopic && sessionContext.lastSubtopic) {
         const lastTopicData = dataset.topics[sessionContext.lastTopic]?.subtopics[sessionContext.lastSubtopic];
         if (lastTopicData) {
             for (const qna of lastTopicData.QnA) {
-                const { score, pattern } = evaluateQuestion(qna, query, keywords, true);
+                const { score, pattern, responseIndex } = evaluateQuestion(qna, query, keywords, true);
                 if (score > highestScore) {
                     highestScore = score;
                     bestMatch = qna;
                     usedPattern = pattern;
+                    selectedResponseIndex = responseIndex;
                     bestMatch.topic = sessionContext.lastTopic;
                     bestMatch.subtopic = sessionContext.lastSubtopic;
                 }
@@ -181,15 +204,15 @@ function findAnswer(query) {
     // [2] Search all topics
     for (const [topic, topicData] of Object.entries(dataset.topics)) {
         for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
-            // Skip if already checked in context
             if (topic === sessionContext.lastTopic && subtopic === sessionContext.lastSubtopic) continue;
             
             for (const qna of subtopicData.QnA) {
-                const { score, pattern } = evaluateQuestion(qna, query, keywords);
+                const { score, pattern, responseIndex } = evaluateQuestion(qna, query, keywords);
                 if (score > highestScore) {
                     highestScore = score;
                     bestMatch = qna;
                     usedPattern = pattern;
+                    selectedResponseIndex = responseIndex;
                     bestMatch.topic = topic;
                     bestMatch.subtopic = subtopic;
                 }
@@ -198,7 +221,7 @@ function findAnswer(query) {
     }
 
     // [3] Prepare response
-    if (highestScore > 40) { // Dynamic threshold
+    if (highestScore > 40) {
         sessionContext.lastTopic = bestMatch.topic;
         sessionContext.lastSubtopic = bestMatch.subtopic;
         
@@ -207,7 +230,13 @@ function findAnswer(query) {
             .filter(p => p !== usedPattern)
             .slice(0, 3);
         
-        const response = formatResponse(bestMatch);
+        // NEW: Gunakan selectedResponseIndex untuk memilih response
+        const mainResponse = bestMatch.responses[selectedResponseIndex];
+        const response = formatResponse({
+            ...bestMatch,
+            responses: [mainResponse, ...bestMatch.responses.filter((_, i) => i !== selectedResponseIndex)]
+        });
+        
         responseCache.set(cacheKey, response);
         return response;
     }
@@ -215,6 +244,8 @@ function findAnswer(query) {
     return getFallbackResponse(keywords);
 }
 
+// [FUNGSI LAINNYA TETAP SAMA...]
+// formatResponse(), getFallbackResponse(), addMessage(), sendMessage(), dll.
 // ================== [5] RESPONSE FORMATTING ================== //
 function formatResponse(match) {
     const mainResponse = match.responses[0];
@@ -239,12 +270,12 @@ function formatResponse(match) {
         `;
     }
     
-    // Add related responses
+    // Add related responses (skip the main response)
     if (match.responses.length > 1) {
         response += `
             <div class="related-answers">
                 <div class="related-title">Informasi terkait:</div>
-                <ul>${match.responses.slice(1, 3).map(r => `<li>${r}</li>`).join('')}</ul>
+                <ul>${match.responses.slice(1).map(r => `<li>${r}</li>`).join('')}</ul>
             </div>
         `;
     }
