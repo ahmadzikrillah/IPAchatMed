@@ -533,7 +533,7 @@ const matcher = {
         // 1. Pattern matching
         const patternScore = Math.max(...qna.patterns.map(p => 
             this._jaccardSimilarity(queryTokens, textProcessor.tokenize(p))
-        );
+        ));
 
         // 2. Intent matching
         const intentScore = qna.intent ? 
