@@ -21,10 +21,15 @@ const priorityKeywords = {
     "sel": 15, "fotosintesis": 15, "mitokondria": 12, 
     "kloroplas": 12, "membran": 10, "nukleus": 10,
     "glukosa": 10, "oksigen": 9, "karbon": 9,
+    "dna": 12, "rna": 11, "enzim": 10,
+    
     // Fisika
     "gaya": 14, "energi": 13, "listrik": 12,
+    "magnet": 11, "cahaya": 11, "gerak": 10,
+    
     // Kimia
-    "asam": 12, "basa": 12, "reaksi": 11
+    "asam": 12, "basa": 12, "reaksi": 11,
+    "unsur": 10, "senyawa": 10, "periodik": 9
 };
 
 // ================== [2] TEXT PROCESSING ================== //
@@ -33,7 +38,7 @@ function normalizeText(text) {
     return text.toLowerCase()
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/[^\w\s]/g, '')
-        .replace(/\b(apa|bagaimana|mengapa|tolong|jelaskan|sebutkan|definisi)\b/g, '')
+        .replace(/\b(apa|bagaimana|mengapa|tolong|jelaskan|sebutkan|definisi|pengertian|proses|mekanisme)\b/g, '')
         .replace(/\s+/g, ' ')
         .trim();
 }
@@ -42,14 +47,17 @@ function enhancedStemming(word) {
     if (!word) return '';
 
     const specialTerms = {
-        "pernapasan": "napas", "mekanisme": "mekanik",
-        "diafragma": "diafragma", "fotosintesis": "fotosintesis"
+        "pernapasan": "napas",
+        "mekanisme": "mekanik",
+        "diafragma": "diafragma",
+        "fotosintesis": "fotosintesis",
+        "respirasi": "napas"
     };
 
     if (specialTerms[word]) return specialTerms[word];
 
     const suffixes = ['nya', 'lah', 'kah', 'pun', 'kan'];
-    const prefixes = ['ber', 'ter', 'me', 'pe'];
+    const prefixes = ['ber', 'ter', 'me', 'pe', 'di'];
     
     let stemmed = word;
     
@@ -85,6 +93,7 @@ function calculateSimilarity(str1, str2) {
     const union = new Set([...tokens1, ...tokens2]);
     
     const orderBonus = str1.includes(str2) || str2.includes(str1) ? 0.2 : 0;
+    
     return (union.size > 0 ? intersection.size / union.size : 0) + orderBonus;
 }
 
@@ -109,7 +118,13 @@ function getBestPatternIndex(query, patterns) {
     return bestIndex;
 }
 
-// ================== [4] MATCHING FUNCTIONS ================== //
+function calculateKeywordsSimilarity(query, keywords) {
+    const queryKeywords = new Set(extractKeywords(query));
+    const matched = keywords.filter(kw => queryKeywords.has(normalizeText(kw)));
+    return matched.length / Math.max(keywords.length, 1);
+}
+
+// ================== [4] CORE MATCHING FUNCTIONS ================== //
 function findExactPatternMatch(query) {
     for (const [topic, topicData] of Object.entries(dataset.topics)) {
         for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
@@ -124,7 +139,8 @@ function findExactPatternMatch(query) {
                         response: qna.responses[Math.min(patternIndex, qna.responses.length - 1)],
                         diagram: qna.diagram,
                         intent: qna.intent,
-                        confidence: 1.0
+                        confidence: 1.0,
+                        patterns: qna.patterns
                     };
                 }
             }
@@ -140,7 +156,8 @@ function findSemanticMatch(query) {
         topic: null,
         subtopic: null,
         diagram: null,
-        intent: null
+        intent: null,
+        patterns: []
     };
 
     for (const [topic, topicData] of Object.entries(dataset.topics)) {
@@ -165,19 +182,14 @@ function findSemanticMatch(query) {
                         subtopic,
                         response: qna.responses[responseIndex],
                         diagram: qna.diagram,
-                        intent: qna.intent
+                        intent: qna.intent,
+                        patterns: qna.patterns
                     };
                 }
             }
         }
     }
     return bestMatch;
-}
-
-function calculateKeywordsSimilarity(query, keywords) {
-    const queryKeywords = new Set(extractKeywords(query));
-    const matched = keywords.filter(kw => queryKeywords.has(normalizeText(kw)));
-    return matched.length / Math.max(keywords.length, 1);
 }
 
 function findKeywordMatch(query) {
@@ -187,7 +199,8 @@ function findKeywordMatch(query) {
         response: null,
         topic: null,
         subtopic: null,
-        diagram: null
+        diagram: null,
+        intent: null
     };
 
     for (const [topic, topicData] of Object.entries(dataset.topics)) {
@@ -205,7 +218,8 @@ function findKeywordMatch(query) {
                         topic,
                         subtopic,
                         response: qna.responses[0],
-                        diagram: qna.diagram
+                        diagram: qna.diagram,
+                        intent: qna.intent
                     };
                 }
             }
@@ -214,7 +228,102 @@ function findKeywordMatch(query) {
     return bestMatch;
 }
 
-// ================== [5] RESPONSE MANAGEMENT ================== //
+// ================== [5] MAIN ANSWER FINDING ================== //
+function findAnswer(userQuery) {
+    const normalizedQuery = normalizeText(userQuery);
+    
+    // 1. Check cache first
+    if (responseCache.has(normalizedQuery)) {
+        return responseCache.get(normalizedQuery);
+    }
+
+    // 2. Phase 1: Exact Pattern Matching
+    const exactMatch = findExactPatternMatch(normalizedQuery);
+    if (exactMatch) {
+        sessionContext.lastTopic = exactMatch.topic;
+        sessionContext.lastSubtopic = exactMatch.subtopic;
+        sessionContext.followUpQuestions = exactMatch.patterns
+            .filter(p => normalizeText(p) !== normalizedQuery)
+            .slice(0, 3);
+        
+        const response = formatResponse(exactMatch);
+        responseCache.set(normalizedQuery, response);
+        return response;
+    }
+
+    // 3. Phase 2: Semantic Search
+    const semanticMatch = findSemanticMatch(normalizedQuery);
+    if (semanticMatch.confidence >= MATCH_CONFIG.SIMILARITY_THRESHOLD) {
+        sessionContext.lastTopic = semanticMatch.topic;
+        sessionContext.lastSubtopic = semanticMatch.subtopic;
+        sessionContext.followUpQuestions = semanticMatch.patterns
+            .filter(p => {
+                const patternNorm = normalizeText(p);
+                return patternNorm !== normalizedQuery && 
+                       calculateSimilarity(normalizedQuery, patternNorm) < 0.7;
+            })
+            .slice(0, 3);
+        
+        const response = formatResponse(semanticMatch);
+        responseCache.set(normalizedQuery, response);
+        return response;
+    }
+
+    // 4. Phase 3: Keyword-based Fallback
+    const keywordMatch = findKeywordMatch(normalizedQuery);
+    if (keywordMatch.confidence >= MATCH_CONFIG.MIN_KEYWORD_MATCH) {
+        const response = formatResponse(keywordMatch);
+        responseCache.set(normalizedQuery, response);
+        return response;
+    }
+
+    // 5. Final Fallback
+    return getFallbackResponse(extractKeywords(userQuery));
+}
+
+function getFallbackResponse(keywords) {
+    const relatedTopics = [];
+    const topicScores = {};
+    
+    for (const [topic, topicData] of Object.entries(dataset.topics)) {
+        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
+            for (const qna of subtopicData.QnA) {
+                const matchedKeywords = qna.keywords.filter(kw => 
+                    keywords.some(userKw => normalizeText(kw) === userKw)
+                ).length;
+                
+                if (matchedKeywords > 0) {
+                    const topicKey = `${topic} > ${subtopic}`;
+                    topicScores[topicKey] = (topicScores[topicKey] || 0) + matchedKeywords;
+                }
+            }
+        }
+    }
+    
+    const sortedTopics = Object.entries(topicScores)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([topic]) => topic);
+    
+    let suggestion = '';
+    if (sortedTopics.length > 0) {
+        suggestion = `Mungkin Anda maksud tentang: ${sortedTopics.join(', ')}`;
+    } else {
+        suggestion = 'Coba tanyakan tentang: sel, fotosintesis, sistem organ, gaya, energi, atau reaksi kimia';
+    }
+    
+    return `
+        <div class="not-found">
+            <div class="not-found-icon">❓</div>
+            <div class="not-found-text">
+                <p>Saya belum memahami pertanyaan Anda.</p>
+                <p>${suggestion}</p>
+            </div>
+        </div>
+    `;
+}
+
+// ================== [6] RESPONSE FORMATTING ================== //
 function formatResponse(match) {
     let response = `
         <div class="answer-box">
@@ -233,31 +342,16 @@ function formatResponse(match) {
         `;
     }
     
-    // Debug info
-    if (process.env.NODE_ENV === 'development') {
-        response += `<div class="debug-info">Confidence: ${Math.round(match.confidence * 100)}%</div>`;
+    // Debug info (hanya di development)
+    if (process.env.NODE_ENV === 'development' && match.confidence) {
+        response += `<div class="debug-info">Kecocokan: ${Math.round(match.confidence * 100)}%</div>`;
     }
     
     response += `</div>`;
     return response;
 }
 
-function getFallbackResponse(keywords) {
-    const suggestions = [
-        'Coba tanyakan tentang: sel, fotosintesis, sistem organ',
-        'Atau tentang: gaya, energi, listrik',
-        'Bisa juga tentang: asam-basa, reaksi kimia'
-    ];
-    
-    return `
-        <div class="not-found">
-            <p>Maaf, saya tidak menemukan jawaban yang tepat.</p>
-            <p>${suggestions.join('<br>')}</p>
-        </div>
-    `;
-}
-
-// ================== [6] CHAT INTERFACE ================== //
+// ================== [7] UI MANAGEMENT ================== //
 function addMessage(message, isBot = true) {
     const chatbox = document.getElementById('chatbox');
     
@@ -271,13 +365,25 @@ function addMessage(message, isBot = true) {
 
     setTimeout(() => {
         if (isBot) {
-            document.querySelector('.typing-indicator')?.remove();
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) typingIndicator.remove();
         }
         
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
         messageDiv.innerHTML = message;
         chatbox.appendChild(messageDiv);
+        
+        // Apply special styles for answer boxes
+        const answerBoxes = messageDiv.querySelectorAll('.answer-box');
+        answerBoxes.forEach(box => {
+            box.style.borderLeft = '3px solid #4CAF50';
+            box.style.padding = '12px';
+            box.style.margin = '10px 0';
+            box.style.backgroundColor = '#f9f9f9';
+            box.style.borderRadius = '8px';
+        });
+        
         chatbox.scrollTop = chatbox.scrollHeight;
     }, isBot ? 1000 : 0);
 }
@@ -296,45 +402,36 @@ function sendMessage() {
             addMessage(answer);
         } catch (error) {
             console.error("Error:", error);
-            addMessage(`
-                <div class="error-message">
-                    Terjadi kesalahan. Silakan coba lagi atau refresh halaman.
-                </div>
-            `);
+            addMessage("<div class='error-message'>Terjadi kesalahan saat memproses pertanyaan Anda. Silakan coba lagi.</div>");
         }
     }, 800);
 }
 
-// ================== [7] SETUP & UTILITIES ================== //
-function loadDataset() {
-    return fetch('dataseek.json')
+// ================== [8] INITIALIZATION & EVENT HANDLERS ================== //
+document.addEventListener('DOMContentLoaded', () => {
+    // Load dataset
+    fetch('dataseek.json')
         .then(response => {
             if (!response.ok) throw new Error('Network error');
             return response.json();
         })
         .then(data => {
             dataset = data.ipa_smp || {};
-            return true;
+            addMessage("Halo! Saya asisten IPA. Anda bisa bertanya tentang:");
+            addMessage(`
+                <div class="welcome-message">
+                    <div><b>Biologi</b>: Sel, Fotosintesis, Sistem Organ</div>
+                    <div><b>Fisika</b>: Gaya, Energi, Listrik</div>
+                    <div><b>Kimia</b>: Asam-Basa, Reaksi Kimia</div>
+                </div>
+            `);
         })
         .catch(error => {
-            console.error("Error loading dataset:", error);
-            return false;
+            console.error("Error loading data:", error);
+            addMessage("<div class='error-message'>Sistem sedang dalam pemeliharaan. Silakan coba lagi nanti.</div>");
         });
-}
 
-function initializeChat() {
-    addMessage(`
-        <div class="welcome-message">
-            <strong>Asisten IPA SMP/MTs</strong><br>
-            Silakan bertanya tentang:<br>
-            • Biologi: Sel, Fotosintesis, Sistem Organ<br>
-            • Fisika: Gaya, Energi, Listrik<br>
-            • Kimia: Asam-Basa, Reaksi Kimia
-        </div>
-    `);
-}
-
-function setupEventListeners() {
+    // Event listeners
     document.getElementById('userInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
@@ -345,30 +442,21 @@ function setupEventListeners() {
         document.getElementById('chatbox').innerHTML = '';
         sessionContext.lastTopic = null;
         sessionContext.lastSubtopic = null;
-        initializeChat();
+        sessionContext.followUpQuestions = [];
+        addMessage("Halo! Ada yang bisa saya bantu?");
     });
-}
-
-// ================== [8] MAIN INITIALIZATION ================== //
-document.addEventListener('DOMContentLoaded', () => {
-    loadDataset().then(success => {
-        if (success) {
-            initializeChat();
-        } else {
-            addMessage(`
-                <div class="error-message">
-                    Gagal memuat data. Silakan refresh halaman.
-                </div>
-            `);
-        }
-    });
-    
-    setupEventListeners();
 });
 
-// Debug utilities
-window.debug = {
-    clearCache: () => responseCache.clear(),
-    getSession: () => sessionContext,
-    testQuery: (query) => findAnswer(query)
-};
+// ================== [9] DEBUGGING UTILITIES ================== //
+function debugAnalytics() {
+    return {
+        cacheSize: responseCache.size,
+        lastContext: sessionContext,
+        datasetTopics: Object.keys(dataset.topics || {})
+    };
+}
+
+// Expose for debugging
+window.debug = debugAnalytics;
+window.clearCache = () => responseCache.clear();
+window.findAnswer = findAnswer;  // Untuk testing langsung dari console
