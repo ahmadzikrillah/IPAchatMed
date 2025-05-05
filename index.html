@@ -7,114 +7,224 @@
     <meta name="description" content="Asisten virtual untuk pembelajaran IPA SMP/MTs dengan materi biologi, fisika, dan kimia">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="">
     <style>
-        /* Embedded CSS untuk fallback jika style.css tidak terload */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-        }
-        
-        #chatbox {
-            height: 60vh;
-            overflow-y: auto;
-            padding: 15px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
-            scroll-behavior: smooth;
-        }
-        
-        .message {
-            margin-bottom: 12px;
-            padding: 10px 15px;
-            border-radius: 18px;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-        
-        .user-message {
-            background-color: #e3f2fd;
-            margin-left: auto;
-            border-bottom-right-radius: 5px;
-        }
-        
-        .bot-message {
-            background-color: #f1f1f1;
-            margin-right: auto;
-            border-bottom-left-radius: 5px;
-        }
-        
-        #userInput {
-            width: calc(100% - 90px);
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: border 0.3s;
-        }
-        
-        #userInput:focus {
-            border-color: #4CAF50;
-        }
-        
-        button {
-            width: 80px;
-            padding: 12px;
-            margin-left: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #45a049;
-        }
-        
-        .typing-indicator {
-            display: inline-block;
-            padding: 10px 15px;
-            background-color: #f1f1f1;
-            border-radius: 18px;
-            margin-bottom: 12px;
-        }
-        
-        .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            background-color: #666;
-            border-radius: 50%;
-            display: inline-block;
-            margin: 0 2px;
-            animation: bounce 1.5s infinite ease-in-out;
-        }
-        
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        /* Accessibility Class */
+       /* ================== [1] BASE STYLES ================== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+/* ================== [2] CHAT INTERFACE ================== */
+#chatbox {
+    height: 60vh;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    scroll-behavior: smooth;
+}
+
+.message {
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.user-message {
+    background-color: #e3f2fd;
+    margin-left: auto;
+    border-bottom-right-radius: 5px;
+}
+
+.bot-message {
+    background-color: #f1f1f1;
+    margin-right: auto;
+    border-bottom-left-radius: 5px;
+}
+
+/* ================== [3] INPUT AREA ================== */
+.input-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#userInput {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+#userInput:focus {
+    border-color: #4CAF50;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+}
+
+button {
+    min-width: 40px;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ================== [4] SPECIAL MESSAGE STYLES ================== */
+.answer-box {
+    border-left: 3px solid #4CAF50;
+    padding: 12px;
+    margin: 10px 0;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.topic-header {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.topic-badge, .subtopic-badge, .context-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.topic-badge {
+    background-color: #2c3e50;
+    color: white;
+}
+
+.subtopic-badge {
+    background-color: #3498db;
+    color: white;
+}
+
+.context-badge {
+    background-color: #f1c40f;
+    color: #2c3e50;
+}
+
+.diagram-container {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.diagram-container img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.diagram-caption {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+/* ================== [5] INTERACTION ELEMENTS ================== */
+.typing-indicator {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #f1f1f1;
+    border-radius: 18px;
+    margin-bottom: 12px;
+}
+
+.typing-indicator span {
+    height: 8px;
+    width: 8px;
+    background-color: #666;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 2px;
+    animation: bounce 1.5s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.follow-up {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #ddd;
+}
+
+.followup-title {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-bottom: 8px;
+}
+
+.followup-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.followup-btn {
+    background-color: #e3f2fd !important;
+    color: #2c3e50 !important;
+    font-size: 0.85rem !important;
+    padding: 8px 12px !important;
+    min-width: unset !important;
+}
+
+.followup-btn:hover {
+    background-color: #bbdefb !important;
+}
+
+/* ================== [6] UTILITY CLASSES ================== */
 .sr-only {
     position: absolute;
     width: 1px;
@@ -127,9 +237,9 @@
     border: 0;
 }
 
-/* Loading States */
 .loading-spinner {
     display: none;
+    animation: spin 1s linear infinite;
 }
 
 button[aria-busy="true"] .button-content {
@@ -140,48 +250,95 @@ button[aria-busy="true"] .loading-spinner {
     display: block;
 }
 
-/* Button Group Layout */
-.button-group {
+.error-message {
+    background-color: #ffebee !important;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 8px;
     display: flex;
+    align-items: center;
     gap: 8px;
 }
-        
-        @keyframes bounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5px); }
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-        
-        .heart {
-            color: #e74c3c;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            
-            #chatbox {
-                height: 65vh;
-            }
-            
-            #userInput {
-                width: calc(100% - 80px);
-                padding: 10px 12px;
-            }
-            
-            button {
-                width: 70px;
-                padding: 10px;
-            }
-        }
+
+.not-found {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.not-found-icon {
+    font-size: 1.5rem;
+}
+
+.not-found-text {
+    flex: 1;
+}
+
+/* ================== [7] AUTO-SUGGESTIONS ================== */
+#suggestions-container {
+    position: absolute;
+    width: calc(100% - 30px);
+    max-width: 800px;
+    background: white;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 100;
+    margin-top: -15px;
+}
+
+.suggestion-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.suggestion-item:hover {
+    background-color: #f5f5f5;
+}
+
+/* ================== [8] ANIMATIONS ================== */
+@keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ================== [9] RESPONSIVE DESIGN ================== */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    #chatbox {
+        height: 65vh;
+    }
+    
+    .input-container {
+        flex-direction: column;
+    }
+    
+    #userInput {
+        width: 100%;
+        padding: 10px 12px;
+    }
+    
+    .button-group {
+        justify-content: flex-end;
+    }
+    
+    button {
+        width: 70px;
+        padding: 10px;
+    }
+    
+    .followup-questions {
+        flex-direction: column;
+    }
+}
     </style>
 </head>
 <body>
