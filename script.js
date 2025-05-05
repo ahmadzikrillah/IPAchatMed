@@ -564,7 +564,13 @@ document.addEventListener('DOMContentLoaded', () => {
             addMessage("<div class='error-message'>Sistem sedang dalam pemeliharaan. Silakan coba lagi nanti.</div>");
         });
     const userInput = document.getElementById('userInput');
-const sendButton = document.getElementById('sendButton');
+      const sendButton = document.getElementById('sendButton');
+    if (sendButton) {
+        sendButton.addEventListener('click', sendMessage);
+    } else {
+        console.error("Tombol sendButton tidak ditemukan!");
+    }
+});
 
 // Nonaktifkan tombol awal
 sendButton.disabled = true;
