@@ -4,7 +4,8 @@ const responseCache = new Map();
 const sessionContext = {
     lastTopic: null,
     lastSubtopic: null,
-    followUpQuestions: []
+    followUpQuestions: [],
+    lastResponseIndices: {} // Untuk menyimpan index terakhir per QnA
 };
 
 const MATCH_CONFIG = {
@@ -13,7 +14,8 @@ const MATCH_CONFIG = {
     MIN_KEYWORD_MATCH: 2,
     PATTERN_WEIGHT: 0.6,
     INTENT_WEIGHT: 0.3,
-    KEYWORD_WEIGHT: 0.1
+    KEYWORD_WEIGHT: 0.1,
+    CONTEXT_BONUS: 1.2 // 20% bonus untuk konteks yang sama
 };
 
 const priorityKeywords = {
@@ -47,11 +49,9 @@ function enhancedStemming(word) {
     if (!word) return '';
 
     const specialTerms = {
-        "pernapasan": "napas",
-        "mekanisme": "mekanik",
-        "diafragma": "diafragma",
-        "fotosintesis": "fotosintesis",
-        "respirasi": "napas"
+        "pernapasan": "napas", "mekanisme": "mekanik", "diafragma": "diafragma",
+        "fotosintesis": "fotosintesis", "respirasi": "napas", "tumbuhan": "tumbuh",
+        "hewan": "hewan", "manusia": "manusia", "seluler": "sel"
     };
 
     if (specialTerms[word]) return specialTerms[word];
@@ -120,8 +120,16 @@ function getBestPatternIndex(query, patterns) {
 
 function calculateKeywordsSimilarity(query, keywords) {
     const queryKeywords = new Set(extractKeywords(query));
-    const matched = keywords.filter(kw => queryKeywords.has(normalizeText(kw)));
-    return matched.length / Math.max(keywords.length, 1);
+    const matched = keywords.filter(kw => {
+        const normalizedKW = normalizeText(kw);
+        return queryKeywords.has(normalizedKW) || 
+               priorityKeywords[normalizedKW] !== undefined;
+    });
+    
+    // Berikan bonus untuk priority keywords
+    const bonus = matched.some(kw => priorityKeywords[normalizeText(kw)]) ? 1.5 : 1;
+    
+    return (matched.length / Math.max(keywords.length, 1)) * bonus;
 }
 
 // ================== [4] CORE MATCHING FUNCTIONS ================== //
@@ -133,10 +141,20 @@ function findExactPatternMatch(query) {
                     normalizeText(p) === query
                 );
                 if (patternIndex !== -1) {
+                    // Dapatkan response index dengan rotasi
+                    const qnaKey = `${topic}|${subtopic}|${qna.intent}`;
+                    const lastIndex = sessionContext.lastResponseIndices[qnaKey] || 0;
+                    const responseIndex = Math.min(
+                        (lastIndex + 1) % qna.responses.length,
+                        qna.responses.length - 1
+                    );
+                    
+                    sessionContext.lastResponseIndices[qnaKey] = responseIndex;
+                    
                     return {
                         topic,
                         subtopic,
-                        response: qna.responses[Math.min(patternIndex, qna.responses.length - 1)],
+                        response: qna.responses[responseIndex],
                         diagram: qna.diagram,
                         intent: qna.intent,
                         confidence: 1.0,
@@ -167,14 +185,29 @@ function findSemanticMatch(query) {
                 const intentScore = qna.intent ? calculateSimilarity(query, normalizeText(qna.intent)) : 0;
                 const keywordScore = calculateKeywordsSimilarity(query, qna.keywords);
                 
-                const totalScore = (patternScore * MATCH_CONFIG.PATTERN_WEIGHT) + 
-                                 (intentScore * MATCH_CONFIG.INTENT_WEIGHT) + 
-                                 (keywordScore * MATCH_CONFIG.KEYWORD_WEIGHT);
+                let totalScore = (patternScore * MATCH_CONFIG.PATTERN_WEIGHT) + 
+                               (intentScore * MATCH_CONFIG.INTENT_WEIGHT) + 
+                               (keywordScore * MATCH_CONFIG.KEYWORD_WEIGHT);
+                
+                // Bonus konteks
+                if (sessionContext.lastTopic === topic) {
+                    totalScore *= MATCH_CONFIG.CONTEXT_BONUS;
+                }
                 
                 if (totalScore > bestMatch.confidence) {
                     const bestPatternIndex = getBestPatternIndex(query, qna.patterns);
-                    const responseIndex = bestPatternIndex !== -1 ? 
-                        Math.min(bestPatternIndex, qna.responses.length - 1) : 0;
+                    const qnaKey = `${topic}|${subtopic}|${qna.intent}`;
+                    const lastIndex = sessionContext.lastResponseIndices[qnaKey] || 0;
+                    
+                    let responseIndex = 0;
+                    if (bestPatternIndex !== -1) {
+                        responseIndex = Math.min(bestPatternIndex, qna.responses.length - 1);
+                    } else {
+                        // Rotasi respons jika tidak ada pattern yang cocok
+                        responseIndex = (lastIndex + 1) % qna.responses.length;
+                    }
+                    
+                    sessionContext.lastResponseIndices[qnaKey] = responseIndex;
                     
                     bestMatch = {
                         confidence: totalScore,
@@ -184,42 +217,6 @@ function findSemanticMatch(query) {
                         diagram: qna.diagram,
                         intent: qna.intent,
                         patterns: qna.patterns
-                    };
-                }
-            }
-        }
-    }
-    return bestMatch;
-}
-
-function findKeywordMatch(query) {
-    const keywords = extractKeywords(query);
-    let bestMatch = {
-        confidence: 0,
-        response: null,
-        topic: null,
-        subtopic: null,
-        diagram: null,
-        intent: null
-    };
-
-    for (const [topic, topicData] of Object.entries(dataset.topics)) {
-        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
-            for (const qna of subtopicData.QnA) {
-                const matchedKeywords = qna.keywords.filter(kw => 
-                    keywords.includes(normalizeText(kw))
-                ).length;
-                
-                const confidence = matchedKeywords / Math.max(qna.keywords.length, 1);
-                
-                if (confidence > bestMatch.confidence) {
-                    bestMatch = {
-                        confidence,
-                        topic,
-                        subtopic,
-                        response: qna.responses[0],
-                        diagram: qna.diagram,
-                        intent: qna.intent
                     };
                 }
             }
@@ -240,12 +237,7 @@ function findAnswer(userQuery) {
     // 2. Phase 1: Exact Pattern Matching
     const exactMatch = findExactPatternMatch(normalizedQuery);
     if (exactMatch) {
-        sessionContext.lastTopic = exactMatch.topic;
-        sessionContext.lastSubtopic = exactMatch.subtopic;
-        sessionContext.followUpQuestions = exactMatch.patterns
-            .filter(p => normalizeText(p) !== normalizedQuery)
-            .slice(0, 3);
-        
+        updateSessionContext(exactMatch, normalizedQuery);
         const response = formatResponse(exactMatch);
         responseCache.set(normalizedQuery, response);
         return response;
@@ -254,16 +246,7 @@ function findAnswer(userQuery) {
     // 3. Phase 2: Semantic Search
     const semanticMatch = findSemanticMatch(normalizedQuery);
     if (semanticMatch.confidence >= MATCH_CONFIG.SIMILARITY_THRESHOLD) {
-        sessionContext.lastTopic = semanticMatch.topic;
-        sessionContext.lastSubtopic = semanticMatch.subtopic;
-        sessionContext.followUpQuestions = semanticMatch.patterns
-            .filter(p => {
-                const patternNorm = normalizeText(p);
-                return patternNorm !== normalizedQuery && 
-                       calculateSimilarity(normalizedQuery, patternNorm) < 0.7;
-            })
-            .slice(0, 3);
-        
+        updateSessionContext(semanticMatch, normalizedQuery);
         const response = formatResponse(semanticMatch);
         responseCache.set(normalizedQuery, response);
         return response;
@@ -272,6 +255,7 @@ function findAnswer(userQuery) {
     // 4. Phase 3: Keyword-based Fallback
     const keywordMatch = findKeywordMatch(normalizedQuery);
     if (keywordMatch.confidence >= MATCH_CONFIG.MIN_KEYWORD_MATCH) {
+        updateSessionContext(keywordMatch, normalizedQuery);
         const response = formatResponse(keywordMatch);
         responseCache.set(normalizedQuery, response);
         return response;
@@ -279,6 +263,64 @@ function findAnswer(userQuery) {
 
     // 5. Final Fallback
     return getFallbackResponse(extractKeywords(userQuery));
+}
+
+function updateSessionContext(match, query) {
+    sessionContext.lastTopic = match.topic;
+    sessionContext.lastSubtopic = match.subtopic;
+    
+    // Generate follow-up questions (exclude current query)
+    sessionContext.followUpQuestions = match.patterns
+        .filter(p => {
+            const patternNorm = normalizeText(p);
+            return patternNorm !== query && 
+                   calculateSimilarity(query, patternNorm) < 0.7;
+        })
+        .slice(0, 3);
+}
+
+function findKeywordMatch(query) {
+    const keywords = extractKeywords(query);
+    let bestMatch = {
+        confidence: 0,
+        response: null,
+        topic: null,
+        subtopic: null,
+        diagram: null,
+        intent: null,
+        patterns: []
+    };
+
+    for (const [topic, topicData] of Object.entries(dataset.topics)) {
+        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
+            for (const qna of subtopicData.QnA) {
+                const matchedKeywords = qna.keywords.filter(kw => 
+                    keywords.includes(normalizeText(kw))
+                ).length;
+                
+                const confidence = matchedKeywords / Math.max(qna.keywords.length, 1);
+                
+                if (confidence > bestMatch.confidence) {
+                    const qnaKey = `${topic}|${subtopic}|${qna.intent}`;
+                    const lastIndex = sessionContext.lastResponseIndices[qnaKey] || 0;
+                    const responseIndex = (lastIndex + 1) % qna.responses.length;
+                    
+                    sessionContext.lastResponseIndices[qnaKey] = responseIndex;
+                    
+                    bestMatch = {
+                        confidence,
+                        topic,
+                        subtopic,
+                        response: qna.responses[responseIndex],
+                        diagram: qna.diagram,
+                        intent: qna.intent,
+                        patterns: qna.patterns
+                    };
+                }
+            }
+        }
+    }
+    return bestMatch;
 }
 
 function getFallbackResponse(keywords) {
@@ -330,6 +372,8 @@ function formatResponse(match) {
             <div class="topic-header">
                 <span class="topic-badge">${match.topic}</span>
                 <span class="subtopic-badge">${match.subtopic}</span>
+                ${sessionContext.lastTopic === match.topic ? 
+                   '<span class="context-badge">👈 Topik Sebelumnya</span>' : ''}
             </div>
             <div class="answer-content">${match.response}</div>
     `;
@@ -337,13 +381,31 @@ function formatResponse(match) {
     if (match.diagram) {
         response += `
             <div class="diagram-container">
-                <img src="${match.diagram}" alt="${match.subtopic}" loading="lazy">
+                <img src="${match.diagram}" alt="${match.subtopic}" 
+                     loading="lazy" onerror="this.style.display='none'">
+                <div class="diagram-caption">Diagram ${match.subtopic}</div>
+            </div>
+        `;
+    }
+    
+    if (sessionContext.followUpQuestions.length > 0) {
+        response += `
+            <div class="follow-up">
+                <div class="followup-title">Mungkin Anda ingin tanya:</div>
+                <div class="followup-questions">
+                    ${sessionContext.followUpQuestions.map(q => `
+                        <button class="followup-btn" 
+                                onclick="document.getElementById('userInput').value='${q}';sendMessage()">
+                            ${q}
+                        </button>
+                    `).join('')}
+                </div>
             </div>
         `;
     }
     
     // Debug info (hanya di development)
-    if (process.env.NODE_ENV === 'development' && match.confidence) {
+    if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
         response += `<div class="debug-info">Kecocokan: ${Math.round(match.confidence * 100)}%</div>`;
     }
     
@@ -351,7 +413,75 @@ function formatResponse(match) {
     return response;
 }
 
-// ================== [7] UI MANAGEMENT ================== //
+// ================== [7] AUTO-SUGGESTION ================== //
+let suggestionTimeout;
+
+function setupAutoSuggestion() {
+    const input = document.getElementById('userInput');
+    const suggestionsContainer = document.createElement('div');
+    suggestionsContainer.id = 'suggestions-container';
+    input.parentNode.insertBefore(suggestionsContainer, input.nextSibling);
+
+    input.addEventListener('input', () => {
+        clearTimeout(suggestionTimeout);
+        suggestionTimeout = setTimeout(() => {
+            const query = input.value.trim();
+            if (query.length > 1) {
+                showSuggestions(query, suggestionsContainer);
+            } else {
+                suggestionsContainer.innerHTML = '';
+            }
+        }, 300);
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+}
+
+function showSuggestions(query, container) {
+    const normalizedQuery = normalizeText(query);
+    const suggestions = new Set();
+
+    // Cari di semua patterns
+    for (const topic of Object.values(dataset.topics)) {
+        for (const subtopic of Object.values(topic.subtopics)) {
+            for (const qna of subtopic.QnA) {
+                for (const pattern of qna.patterns) {
+                    if (normalizeText(pattern).includes(normalizedQuery)) {
+                        suggestions.add(pattern);
+                    }
+                }
+            }
+        }
+    }
+
+    if (suggestions.size > 0) {
+        container.innerHTML = Array.from(suggestions)
+            .slice(0, 5)
+            .map(suggestion => `
+                <div class="suggestion-item" 
+                     onclick="selectSuggestion('${suggestion.replace(/'/g, "\\'")}')">
+                    ${suggestion}
+                </div>
+            `).join('');
+        container.style.display = 'block';
+    } else {
+        container.innerHTML = '';
+    }
+}
+
+function selectSuggestion(suggestion) {
+    const input = document.getElementById('userInput');
+    input.value = suggestion;
+    input.focus();
+    document.getElementById('suggestions-container').innerHTML = '';
+}
+
+// ================== [8] UI MANAGEMENT ================== //
 function addMessage(message, isBot = true) {
     const chatbox = document.getElementById('chatbox');
     
@@ -374,9 +504,8 @@ function addMessage(message, isBot = true) {
         messageDiv.innerHTML = message;
         chatbox.appendChild(messageDiv);
         
-        // Apply special styles for answer boxes
-        const answerBoxes = messageDiv.querySelectorAll('.answer-box');
-        answerBoxes.forEach(box => {
+        // Apply special styles
+        messageDiv.querySelectorAll('.answer-box').forEach(box => {
             box.style.borderLeft = '3px solid #4CAF50';
             box.style.padding = '12px';
             box.style.margin = '10px 0';
@@ -395,6 +524,7 @@ function sendMessage() {
 
     addMessage(message, false);
     userInput.value = '';
+    document.getElementById('suggestions-container').innerHTML = '';
 
     setTimeout(() => {
         try {
@@ -407,7 +537,7 @@ function sendMessage() {
     }, 800);
 }
 
-// ================== [8] INITIALIZATION & EVENT HANDLERS ================== //
+// ================== [9] INITIALIZATION & EVENT HANDLERS ================== //
 document.addEventListener('DOMContentLoaded', () => {
     // Load dataset
     fetch('dataseek.json')
@@ -425,6 +555,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div><b>Kimia</b>: Asam-Basa, Reaksi Kimia</div>
                 </div>
             `);
+            
+            // Setup auto-suggestion setelah data dimuat
+            setupAutoSuggestion();
         })
         .catch(error => {
             console.error("Error loading data:", error);
@@ -447,16 +580,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ================== [9] DEBUGGING UTILITIES ================== //
+// ================== [10] DEBUGGING UTILITIES ================== //
 function debugAnalytics() {
     return {
         cacheSize: responseCache.size,
         lastContext: sessionContext,
-        datasetTopics: Object.keys(dataset.topics || {})
+        datasetTopics: Object.keys(dataset.topics || {}),
+        clearCache: () => responseCache.clear(),
+        findAnswer: (query) => findAnswer(query)
     };
 }
 
 // Expose for debugging
-window.debug = debugAnalytics;
-window.clearCache = () => responseCache.clear();
-window.findAnswer = findAnswer;  // Untuk testing langsung dari console
+window.debug = debugAnalytics();
+window.selectSuggestion = selectSuggestion;
