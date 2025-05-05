@@ -805,6 +805,8 @@ function sendMessage() {
 
 // ================== [9] INITIALIZATION & EVENT HANDLERS ================== //
 document.addEventListener('DOMContentLoaded', () => {
+     const sendButton = document.getElementById('sendButton');
+    const userInput = document.getElementById('userInput');
     // Load dataset
     fetch('dataseek.json')
         .then(response => {
@@ -833,9 +835,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     document.getElementById('userInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
-    });
-
-    document.querySelector('.send-button').addEventListener('click', sendMessage);
+    });  
+    document.getElementById('sendButton').addEventListener('click', sendMessage);
 
     document.getElementById('clearChat').addEventListener('click', () => {
         document.getElementById('chatbox').innerHTML = '';
