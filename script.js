@@ -7,20 +7,24 @@ const sessionContext = {
     followUpQuestions: []
 };
 
+const MATCH_CONFIG = {
+    EXACT_MATCH_SCORE: 500,
+    SIMILARITY_THRESHOLD: 0.85,
+    MIN_KEYWORD_MATCH: 2,
+    PATTERN_WEIGHT: 0.6,
+    INTENT_WEIGHT: 0.3,
+    KEYWORD_WEIGHT: 0.1
+};
+
 const priorityKeywords = {
     // Biologi
     "sel": 15, "fotosintesis": 15, "mitokondria": 12, 
     "kloroplas": 12, "membran": 10, "nukleus": 10,
     "glukosa": 10, "oksigen": 9, "karbon": 9,
-    "dna": 12, "rna": 11, "enzim": 10,
-    
     // Fisika
     "gaya": 14, "energi": 13, "listrik": 12,
-    "magnet": 11, "cahaya": 11, "gerak": 10,
-    
     // Kimia
-    "asam": 12, "basa": 12, "reaksi": 11,
-    "unsur": 10, "senyawa": 10, "periodik": 9
+    "asam": 12, "basa": 12, "reaksi": 11
 };
 
 // ================== [2] TEXT PROCESSING ================== //
@@ -29,30 +33,35 @@ function normalizeText(text) {
     return text.toLowerCase()
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/[^\w\s]/g, '')
-        .replace(/\b(apa|bagaimana|mengapa|jelaskan|sebutkan|bisa|dimaksud|tentang|fungsi|dari|pada|yang|dan|untuk|di|ke|dari|adalah|itu)\b/g, '')
+        .replace(/\b(apa|bagaimana|mengapa|tolong|jelaskan|sebutkan|definisi)\b/g, '')
         .replace(/\s+/g, ' ')
         .trim();
 }
 
-function indonesianStemming(word) {
+function enhancedStemming(word) {
     if (!word) return '';
-    
-    const suffixes = ['nya', 'lah', 'kah', 'pun', 'kan', 'an'];
-    const prefixes = ['ber', 'ter', 'me', 'pe', 'di', 'se'];
+
+    const specialTerms = {
+        "pernapasan": "napas", "mekanisme": "mekanik",
+        "diafragma": "diafragma", "fotosintesis": "fotosintesis"
+    };
+
+    if (specialTerms[word]) return specialTerms[word];
+
+    const suffixes = ['nya', 'lah', 'kah', 'pun', 'kan'];
+    const prefixes = ['ber', 'ter', 'me', 'pe'];
     
     let stemmed = word;
     
-    // Hapus suffix
     for (const suffix of suffixes) {
-        if (stemmed.endsWith(suffix) && stemmed.length > suffix.length + 2) {
+        if (stemmed.endsWith(suffix)) {
             stemmed = stemmed.slice(0, -suffix.length);
             break;
         }
     }
     
-    // Hapus prefix
     for (const prefix of prefixes) {
-        if (stemmed.startsWith(prefix) && stemmed.length > prefix.length + 2) {
+        if (stemmed.startsWith(prefix)) {
             stemmed = stemmed.slice(prefix.length);
             break;
         }
@@ -62,245 +71,171 @@ function indonesianStemming(word) {
 }
 
 function extractKeywords(text) {
-    if (!text) return [];
     return normalizeText(text).split(' ')
-        .map(indonesianStemming)
+        .map(enhancedStemming)
         .filter(word => word.length > 2);
 }
 
-// ================== [3] FUZZY MATCHING & SIMILARITY ================== //
+// ================== [3] SIMILARITY CALCULATION ================== //
 function calculateSimilarity(str1, str2) {
-    const set1 = new Set(str1.split(' '));
-    const set2 = new Set(str2.split(' '));
+    const tokens1 = new Set(str1.split(' '));
+    const tokens2 = new Set(str2.split(' '));
     
-    const intersection = new Set([...set1].filter(x => set2.has(x)));
-    const union = new Set([...set1, ...set2]);
+    const intersection = new Set([...tokens1].filter(t => tokens2.has(t)));
+    const union = new Set([...tokens1, ...tokens2]);
     
-    return union.size === 0 ? 0 : intersection.size / union.size;
+    const orderBonus = str1.includes(str2) || str2.includes(str1) ? 0.2 : 0;
+    return (union.size > 0 ? intersection.size / union.size : 0) + orderBonus;
 }
 
-function findBestPatternMatch(query, patterns) {
-    let bestScore = 0;
-    let bestPattern = null;
-    let exactMatchIndex = -1;
+function calculateBestSimilarity(query, patterns) {
+    return Math.max(...patterns.map(p => 
+        calculateSimilarity(query, normalizeText(p))
+    ));
+}
+
+function getBestPatternIndex(query, patterns) {
+    let maxScore = 0;
+    let bestIndex = -1;
     
-    const normalizedQuery = normalizeText(query);
-    
-    // Cari exact match terlebih dahulu
     patterns.forEach((pattern, index) => {
-        if (normalizeText(pattern) === normalizedQuery) {
-            exactMatchIndex = index;
-            bestScore = 2.0; // Skor tinggi untuk exact match
-            bestPattern = pattern;
-            return;
+        const score = calculateSimilarity(query, normalizeText(pattern));
+        if (score > maxScore) {
+            maxScore = score;
+            bestIndex = index;
         }
     });
     
-    // Jika tidak ada exact match, cari fuzzy match
-    if (exactMatchIndex === -1) {
-        patterns.forEach(pattern => {
-            const normalizedPattern = normalizeText(pattern);
-            const similarity = calculateSimilarity(normalizedQuery, normalizedPattern);
-            
-            // Bonus untuk pola yang mengandung seluruh kata query
-            const queryWords = normalizedQuery.split(' ');
-            if (queryWords.every(word => normalizedPattern.includes(word))) {
-                similarity += 0.3;
-            }
-            
-            if (similarity > bestScore) {
-                bestScore = similarity;
-                bestPattern = pattern;
-            }
-        });
-    }
-    
-    return { 
-        score: bestScore, 
-        pattern: bestPattern,
-        exactMatchIndex
-    };
+    return bestIndex;
 }
 
-// ================== [4] CORE ANSWER FINDING LOGIC ================== //
-function evaluateQuestion(qna, query, keywords, isContextSearch = false) {
-    let score = 0;
-    let responseIndex = 0;
-    let exactMatchFound = false;
-    let usedPattern = null;
-
-    // 1. Exact Pattern Matching - Prioritas Utama
-    qna.patterns.forEach((pattern, index) => {
-        if (normalizeText(pattern) === normalizeText(query)) {
-            score += 300; // Skor sangat tinggi untuk exact match
-            responseIndex = index % qna.responses.length;
-            exactMatchFound = true;
-            usedPattern = pattern;
-        }
-    });
-
-    // 2. Jika tidak ada exact match, lakukan pencarian biasa
-    if (!exactMatchFound) {
-        const { score: patternScore, pattern } = findBestPatternMatch(query, qna.patterns);
-        score += patternScore * 100;
-        usedPattern = pattern;
-
-        // Keyword Matching
-        const matchedKeywords = qna.keywords.filter(kw => 
-            keywords.some(userKw => {
-                const stemmedKw = indonesianStemming(kw);
-                const stemmedUserKw = indonesianStemming(userKw);
-                return stemmedKw === stemmedUserKw;
-            })
-        ).length;
-        
-        score += matchedKeywords * (15 + matchedKeywords * 0.5);
-        
-        // Priority Keywords Bonus
-        matchedKeywords.forEach(kw => {
-            if (priorityKeywords[kw]) {
-                score += priorityKeywords[kw];
-            }
-        });
-        
-        // Context Bonus
-        if (isContextSearch) {
-            score *= 1.5;
-        }
-        
-        // Intent Matching
-        if (qna.intent && normalizeText(query).includes(normalizeText(qna.intent))) {
-            score += 30;
-        }
-    }
-
-    return { 
-        score,
-        pattern: usedPattern,
-        responseIndex
-    };
-}
-
-function findAnswer(query) {
-    const cacheKey = normalizeText(query);
-    if (responseCache.has(cacheKey)) {
-        return responseCache.get(cacheKey);
-    }
-
-    const keywords = extractKeywords(query);
-    let bestMatch = null;
-    let highestScore = 0;
-    let usedPattern = null;
-    let selectedResponseIndex = 0;
-
-    // [1] Check last context first
-    if (sessionContext.lastTopic && sessionContext.lastSubtopic) {
-        const lastTopicData = dataset.topics[sessionContext.lastTopic]?.subtopics[sessionContext.lastSubtopic];
-        if (lastTopicData) {
-            for (const qna of lastTopicData.QnA) {
-                const { score, pattern, responseIndex } = evaluateQuestion(qna, query, keywords, true);
-                if (score > highestScore) {
-                    highestScore = score;
-                    bestMatch = qna;
-                    usedPattern = pattern;
-                    selectedResponseIndex = responseIndex;
-                    bestMatch.topic = sessionContext.lastTopic;
-                    bestMatch.subtopic = sessionContext.lastSubtopic;
-                }
-            }
-        }
-    }
-
-    // [2] Search all topics
+// ================== [4] MATCHING FUNCTIONS ================== //
+function findExactPatternMatch(query) {
     for (const [topic, topicData] of Object.entries(dataset.topics)) {
         for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
-            if (topic === sessionContext.lastTopic && subtopic === sessionContext.lastSubtopic) continue;
-            
             for (const qna of subtopicData.QnA) {
-                const { score, pattern, responseIndex } = evaluateQuestion(qna, query, keywords);
-                if (score > highestScore) {
-                    highestScore = score;
-                    bestMatch = qna;
-                    usedPattern = pattern;
-                    selectedResponseIndex = responseIndex;
-                    bestMatch.topic = topic;
-                    bestMatch.subtopic = subtopic;
+                const patternIndex = qna.patterns.findIndex(p => 
+                    normalizeText(p) === query
+                );
+                if (patternIndex !== -1) {
+                    return {
+                        topic,
+                        subtopic,
+                        response: qna.responses[Math.min(patternIndex, qna.responses.length - 1)],
+                        diagram: qna.diagram,
+                        intent: qna.intent,
+                        confidence: 1.0
+                    };
                 }
             }
         }
     }
-
-    // [3] Prepare response
-    if (highestScore > 40) {
-        sessionContext.lastTopic = bestMatch.topic;
-        sessionContext.lastSubtopic = bestMatch.subtopic;
-        
-        // Generate follow-up questions
-        sessionContext.followUpQuestions = bestMatch.patterns
-            .filter(p => p !== usedPattern)
-            .slice(0, 3);
-        
-        // Siapkan respons dengan urutan yang benar
-        const selectedResponses = [...bestMatch.responses];
-        const mainResponse = selectedResponses.splice(selectedResponseIndex, 1)[0];
-        
-        const response = formatResponse({
-            ...bestMatch,
-            responses: [mainResponse, ...selectedResponses]
-        });
-
-        responseCache.set(cacheKey, response);
-        return response;
-    }
-    
-    return getFallbackResponse(keywords);
+    return null;
 }
 
-// ================== [5] RESPONSE FORMATTING ================== //
+function findSemanticMatch(query) {
+    let bestMatch = {
+        confidence: 0,
+        response: null,
+        topic: null,
+        subtopic: null,
+        diagram: null,
+        intent: null
+    };
+
+    for (const [topic, topicData] of Object.entries(dataset.topics)) {
+        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
+            for (const qna of subtopicData.QnA) {
+                const patternScore = calculateBestSimilarity(query, qna.patterns);
+                const intentScore = qna.intent ? calculateSimilarity(query, normalizeText(qna.intent)) : 0;
+                const keywordScore = calculateKeywordsSimilarity(query, qna.keywords);
+                
+                const totalScore = (patternScore * MATCH_CONFIG.PATTERN_WEIGHT) + 
+                                 (intentScore * MATCH_CONFIG.INTENT_WEIGHT) + 
+                                 (keywordScore * MATCH_CONFIG.KEYWORD_WEIGHT);
+                
+                if (totalScore > bestMatch.confidence) {
+                    const bestPatternIndex = getBestPatternIndex(query, qna.patterns);
+                    const responseIndex = bestPatternIndex !== -1 ? 
+                        Math.min(bestPatternIndex, qna.responses.length - 1) : 0;
+                    
+                    bestMatch = {
+                        confidence: totalScore,
+                        topic,
+                        subtopic,
+                        response: qna.responses[responseIndex],
+                        diagram: qna.diagram,
+                        intent: qna.intent
+                    };
+                }
+            }
+        }
+    }
+    return bestMatch;
+}
+
+function calculateKeywordsSimilarity(query, keywords) {
+    const queryKeywords = new Set(extractKeywords(query));
+    const matched = keywords.filter(kw => queryKeywords.has(normalizeText(kw)));
+    return matched.length / Math.max(keywords.length, 1);
+}
+
+function findKeywordMatch(query) {
+    const keywords = extractKeywords(query);
+    let bestMatch = {
+        confidence: 0,
+        response: null,
+        topic: null,
+        subtopic: null,
+        diagram: null
+    };
+
+    for (const [topic, topicData] of Object.entries(dataset.topics)) {
+        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
+            for (const qna of subtopicData.QnA) {
+                const matchedKeywords = qna.keywords.filter(kw => 
+                    keywords.includes(normalizeText(kw))
+                ).length;
+                
+                const confidence = matchedKeywords / Math.max(qna.keywords.length, 1);
+                
+                if (confidence > bestMatch.confidence) {
+                    bestMatch = {
+                        confidence,
+                        topic,
+                        subtopic,
+                        response: qna.responses[0],
+                        diagram: qna.diagram
+                    };
+                }
+            }
+        }
+    }
+    return bestMatch;
+}
+
+// ================== [5] RESPONSE MANAGEMENT ================== //
 function formatResponse(match) {
-    const [mainResponse, ...relatedResponses] = match.responses;
-    
     let response = `
         <div class="answer-box">
             <div class="topic-header">
                 <span class="topic-badge">${match.topic}</span>
                 <span class="subtopic-badge">${match.subtopic}</span>
             </div>
-            <div class="answer-content">${mainResponse}</div>
+            <div class="answer-content">${match.response}</div>
     `;
     
-    // Add diagram if available
     if (match.diagram) {
         response += `
             <div class="diagram-container">
-                <img src="${match.diagram}" alt="${match.subtopic}" 
-                     loading="lazy" class="diagram-img"
-                     onerror="this.style.display='none'">
-                <div class="diagram-caption">Diagram ${match.subtopic}</div>
+                <img src="${match.diagram}" alt="${match.subtopic}" loading="lazy">
             </div>
         `;
     }
     
-    // Add related responses
-    if (relatedResponses.length > 0) {
-        response += `
-            <div class="related-answers">
-                <div class="related-title">Informasi terkait:</div>
-                <ul>${relatedResponses.map(r => `<li>${r}</li>`).join('')}</ul>
-            </div>
-        `;
-    }
-    
-    // Add follow-up suggestions
-    if (sessionContext.followUpQuestions.length > 0) {
-        response += `
-            <div class="follow-up">
-                <div class="followup-title">Pertanyaan lanjutan:</div>
-                <ul>${sessionContext.followUpQuestions.map(q => 
-                    `<li><a href="#" onclick="document.getElementById('userInput').value='${q}';sendMessage();">${q}</a></li>`
-                ).join('')}</ul>
-            </div>
-        `;
+    // Debug info
+    if (process.env.NODE_ENV === 'development') {
+        response += `<div class="debug-info">Confidence: ${Math.round(match.confidence * 100)}%</div>`;
     }
     
     response += `</div>`;
@@ -308,91 +243,41 @@ function formatResponse(match) {
 }
 
 function getFallbackResponse(keywords) {
-    // Find related topics based on keywords
-    const relatedTopics = [];
-    const topicScores = {};
-    
-    for (const [topic, topicData] of Object.entries(dataset.topics)) {
-        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
-            for (const qna of subtopicData.QnA) {
-                const keywordMatches = qna.keywords.filter(kw => 
-                    keywords.some(userKw => 
-                        indonesianStemming(kw) === indonesianStemming(userKw)
-                    )
-                ).length;
-                
-                if (keywordMatches > 0) {
-                    const topicKey = `${topic} > ${subtopic}`;
-                    topicScores[topicKey] = (topicScores[topicKey] || 0) + keywordMatches;
-                }
-            }
-        }
-    }
-    
-    // Sort by relevance
-    const sortedTopics = Object.entries(topicScores)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([topic]) => topic);
-    
-    // Prepare suggestion
-    let suggestion = '';
-    if (sortedTopics.length > 0) {
-        suggestion = `Mungkin Anda maksud tentang: ${sortedTopics.join(', ')}`;
-    } else {
-        suggestion = 'Coba tanyakan tentang: sel, fotosintesis, sistem organ, gaya, energi, atau reaksi kimia';
-    }
+    const suggestions = [
+        'Coba tanyakan tentang: sel, fotosintesis, sistem organ',
+        'Atau tentang: gaya, energi, listrik',
+        'Bisa juga tentang: asam-basa, reaksi kimia'
+    ];
     
     return `
         <div class="not-found">
-            <div class="not-found-icon">❓</div>
-            <div class="not-found-text">
-                <p>Saya belum memahami pertanyaan Anda.</p>
-                <p>${suggestion}</p>
-            </div>
+            <p>Maaf, saya tidak menemukan jawaban yang tepat.</p>
+            <p>${suggestions.join('<br>')}</p>
         </div>
     `;
 }
 
-// ================== [6] UI MANAGEMENT ================== //
+// ================== [6] CHAT INTERFACE ================== //
 function addMessage(message, isBot = true) {
     const chatbox = document.getElementById('chatbox');
     
     if (isBot) {
-        // Add typing indicator
         chatbox.innerHTML += `
             <div class="typing-indicator">
                 <span></span><span></span><span></span>
             </div>`;
-        
-        // Scroll to bottom
         chatbox.scrollTop = chatbox.scrollHeight;
     }
 
     setTimeout(() => {
         if (isBot) {
-            // Remove typing indicator
-            const typingIndicator = document.querySelector('.typing-indicator');
-            if (typingIndicator) typingIndicator.remove();
+            document.querySelector('.typing-indicator')?.remove();
         }
         
-        // Create message element
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
         messageDiv.innerHTML = message;
         chatbox.appendChild(messageDiv);
-        
-        // Apply special styles for answer boxes
-        const answerBoxes = messageDiv.querySelectorAll('.answer-box');
-        answerBoxes.forEach(box => {
-            box.style.borderLeft = '3px solid #4CAF50';
-            box.style.padding = '12px';
-            box.style.margin = '10px 0';
-            box.style.backgroundColor = '#f9f9f9';
-            box.style.borderRadius = '8px';
-        });
-        
-        // Scroll to bottom
         chatbox.scrollTop = chatbox.scrollHeight;
     }, isBot ? 1000 : 0);
 }
@@ -411,62 +296,79 @@ function sendMessage() {
             addMessage(answer);
         } catch (error) {
             console.error("Error:", error);
-            addMessage("<div class='error-message'>Terjadi kesalahan saat memproses pertanyaan Anda. Silakan coba lagi.</div>");
+            addMessage(`
+                <div class="error-message">
+                    Terjadi kesalahan. Silakan coba lagi atau refresh halaman.
+                </div>
+            `);
         }
     }, 800);
 }
 
-// ================== [7] INITIAL SETUP ================== //
-document.addEventListener('DOMContentLoaded', () => {
-    // Load dataset
-    fetch('dataseek.json')
+// ================== [7] SETUP & UTILITIES ================== //
+function loadDataset() {
+    return fetch('dataseek.json')
         .then(response => {
             if (!response.ok) throw new Error('Network error');
             return response.json();
         })
         .then(data => {
             dataset = data.ipa_smp || {};
-            addMessage("Halo! Saya asisten IPA. Anda bisa bertanya tentang:");
-            addMessage(`
-                <div class="welcome-message">
-                    <div><b>Biologi</b>: Sel, Fotosintesis, Sistem Organ</div>
-                    <div><b>Fisika</b>: Gaya, Energi, Listrik</div>
-                    <div><b>Kimia</b>: Asam-Basa, Reaksi Kimia</div>
-                </div>
-            `);
+            return true;
         })
         .catch(error => {
-            console.error("Error loading data:", error);
-            addMessage("<div class='error-message'>Sistem sedang dalam pemeliharaan. Silakan coba lagi nanti.</div>");
+            console.error("Error loading dataset:", error);
+            return false;
         });
+}
 
-    // Event listeners
+function initializeChat() {
+    addMessage(`
+        <div class="welcome-message">
+            <strong>Asisten IPA SMP/MTs</strong><br>
+            Silakan bertanya tentang:<br>
+            • Biologi: Sel, Fotosintesis, Sistem Organ<br>
+            • Fisika: Gaya, Energi, Listrik<br>
+            • Kimia: Asam-Basa, Reaksi Kimia
+        </div>
+    `);
+}
+
+function setupEventListeners() {
     document.getElementById('userInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
 
     document.querySelector('.send-button').addEventListener('click', sendMessage);
 
-    // Clear chat button
     document.getElementById('clearChat').addEventListener('click', () => {
         document.getElementById('chatbox').innerHTML = '';
         sessionContext.lastTopic = null;
         sessionContext.lastSubtopic = null;
-        if (dataset.topics) {
-            addMessage("Halo! Ada yang bisa saya bantu?");
-        }
+        initializeChat();
     });
-});
-
-// ================== [8] UTILITY FUNCTIONS ================== //
-function debugAnalytics() {
-    return {
-        cacheSize: responseCache.size,
-        lastContext: sessionContext,
-        datasetTopics: Object.keys(dataset.topics || {})
-    };
 }
 
-// For debugging
-window.debug = debugAnalytics;
-window.clearCache = () => responseCache.clear();
+// ================== [8] MAIN INITIALIZATION ================== //
+document.addEventListener('DOMContentLoaded', () => {
+    loadDataset().then(success => {
+        if (success) {
+            initializeChat();
+        } else {
+            addMessage(`
+                <div class="error-message">
+                    Gagal memuat data. Silakan refresh halaman.
+                </div>
+            `);
+        }
+    });
+    
+    setupEventListeners();
+});
+
+// Debug utilities
+window.debug = {
+    clearCache: () => responseCache.clear(),
+    getSession: () => sessionContext,
+    testQuery: (query) => findAnswer(query)
+};
