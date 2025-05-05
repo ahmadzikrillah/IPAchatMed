@@ -118,56 +118,66 @@ function findBestPatternMatch(query, patterns) {
     return { 
         score: bestScore, 
         pattern: bestPattern,
-        exactMatchIndex // NEW: Return index exact match
+        exactMatchIndex
     };
 }
 
 // ================== [4] CORE ANSWER FINDING LOGIC ================== //
 function evaluateQuestion(qna, query, keywords, isContextSearch = false) {
     let score = 0;
-    let responseIndex = 0; // Default: response pertama
-    
-    // 1. Pattern Matching
-    const { score: patternScore, pattern, exactMatchIndex } = findBestPatternMatch(query, qna.patterns);
-    score += patternScore * 100;
-    
-    // Jika ada exact match, gunakan index tersebut untuk response
-    if (exactMatchIndex !== -1) {
-        responseIndex = exactMatchIndex % qna.responses.length;
-    }
-    
-    // 2. Keyword Matching
-    const matchedKeywords = qna.keywords.filter(kw => 
-        keywords.some(userKw => {
-            const stemmedKw = indonesianStemming(kw);
-            const stemmedUserKw = indonesianStemming(userKw);
-            return stemmedKw === stemmedUserKw;
-        })
-    ).length;
-    
-    score += matchedKeywords * (15 + matchedKeywords * 0.5);
-    
-    // 3. Priority Keywords Bonus
-    matchedKeywords.forEach(kw => {
-        if (priorityKeywords[kw]) {
-            score += priorityKeywords[kw];
+    let responseIndex = 0;
+    let exactMatchFound = false;
+    let usedPattern = null;
+
+    // 1. Exact Pattern Matching - Prioritas Utama
+    qna.patterns.forEach((pattern, index) => {
+        if (normalizeText(pattern) === normalizeText(query)) {
+            score += 300; // Skor sangat tinggi untuk exact match
+            responseIndex = index % qna.responses.length;
+            exactMatchFound = true;
+            usedPattern = pattern;
         }
     });
-    
-    // 4. Context Bonus
-    if (isContextSearch) {
-        score *= 1.5;
+
+    // 2. Jika tidak ada exact match, lakukan pencarian biasa
+    if (!exactMatchFound) {
+        const { score: patternScore, pattern } = findBestPatternMatch(query, qna.patterns);
+        score += patternScore * 100;
+        usedPattern = pattern;
+
+        // Keyword Matching
+        const matchedKeywords = qna.keywords.filter(kw => 
+            keywords.some(userKw => {
+                const stemmedKw = indonesianStemming(kw);
+                const stemmedUserKw = indonesianStemming(userKw);
+                return stemmedKw === stemmedUserKw;
+            })
+        ).length;
+        
+        score += matchedKeywords * (15 + matchedKeywords * 0.5);
+        
+        // Priority Keywords Bonus
+        matchedKeywords.forEach(kw => {
+            if (priorityKeywords[kw]) {
+                score += priorityKeywords[kw];
+            }
+        });
+        
+        // Context Bonus
+        if (isContextSearch) {
+            score *= 1.5;
+        }
+        
+        // Intent Matching
+        if (qna.intent && normalizeText(query).includes(normalizeText(qna.intent))) {
+            score += 30;
+        }
     }
-    
-    // 5. Intent Matching
-    if (qna.intent && normalizeText(query).includes(normalizeText(qna.intent))) {
-        score += 30;
-    }
-    
+
     return { 
-        score, 
-        pattern,
-        responseIndex // NEW: Return response index yang dipilih
+        score,
+        pattern: usedPattern,
+        responseIndex
     };
 }
 
@@ -181,7 +191,7 @@ function findAnswer(query) {
     let bestMatch = null;
     let highestScore = 0;
     let usedPattern = null;
-    let selectedResponseIndex = 0; // NEW: Track response index terpilih
+    let selectedResponseIndex = 0;
 
     // [1] Check last context first
     if (sessionContext.lastTopic && sessionContext.lastSubtopic) {
@@ -230,13 +240,15 @@ function findAnswer(query) {
             .filter(p => p !== usedPattern)
             .slice(0, 3);
         
-        // NEW: Gunakan selectedResponseIndex untuk memilih response
-        const mainResponse = bestMatch.responses[selectedResponseIndex];
+        // Siapkan respons dengan urutan yang benar
+        const selectedResponses = [...bestMatch.responses];
+        const mainResponse = selectedResponses.splice(selectedResponseIndex, 1)[0];
+        
         const response = formatResponse({
             ...bestMatch,
-            responses: [mainResponse, ...bestMatch.responses.filter((_, i) => i !== selectedResponseIndex)]
+            responses: [mainResponse, ...selectedResponses]
         });
-        
+
         responseCache.set(cacheKey, response);
         return response;
     }
@@ -244,11 +256,10 @@ function findAnswer(query) {
     return getFallbackResponse(keywords);
 }
 
-// [FUNGSI LAINNYA TETAP SAMA...]
-// formatResponse(), getFallbackResponse(), addMessage(), sendMessage(), dll.
 // ================== [5] RESPONSE FORMATTING ================== //
 function formatResponse(match) {
-    const mainResponse = match.responses[0];
+    const [mainResponse, ...relatedResponses] = match.responses;
+    
     let response = `
         <div class="answer-box">
             <div class="topic-header">
@@ -270,12 +281,12 @@ function formatResponse(match) {
         `;
     }
     
-    // Add related responses (skip the main response)
-    if (match.responses.length > 1) {
+    // Add related responses
+    if (relatedResponses.length > 0) {
         response += `
             <div class="related-answers">
                 <div class="related-title">Informasi terkait:</div>
-                <ul>${match.responses.slice(1).map(r => `<li>${r}</li>`).join('')}</ul>
+                <ul>${relatedResponses.map(r => `<li>${r}</li>`).join('')}</ul>
             </div>
         `;
     }
