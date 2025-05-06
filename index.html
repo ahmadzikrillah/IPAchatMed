@@ -504,22 +504,29 @@ function sendMessage() {
     const message = userInput.value.trim();
     
     if (!message) return;
-    
-    // Add user message
+
+    // Tampilkan pesan pengguna
     addMessage(message, false);
     userInput.value = '';
-    
-    // Clear any existing suggestions
+
+    // Hapus saran sebelumnya
     const suggestionsContainer = document.getElementById('suggestions-container');
-    if (suggestionsContainer) {
-        suggestionsContainer.innerHTML = '';
-    }
-    
-    // Process and show bot response after a short delay
+    if (suggestionsContainer) suggestionsContainer.innerHTML = '';
+
     setTimeout(() => {
         try {
             const answer = findAnswer(message);
-            addMessage(answer);
+
+            if (answer && answer.response) {
+                addMessage(answer.response);
+
+                if (answer.diagram) {
+                    addMessage(`<img src="${answer.diagram}" class="response-diagram" alt="Diagram">`);
+                }
+            } else {
+                addMessage("Maaf, saya belum menemukan jawaban untuk pertanyaan itu.");
+            }
+
         } catch (error) {
             console.error("Error processing message:", error);
             addMessage(`
