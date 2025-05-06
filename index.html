@@ -193,7 +193,8 @@
     <script src="https://cdn.jsdelivr.net/npm/indonesian-stemmer@0.0.3/dist/index.min.js"></script>
     
     <!-- Main Script -->
-    <script>// ================== [1] INITIALIZATION ================== //
+    <script>
+    // ================== [1] INITIALIZATION ================== //
 let dataset = {};
 const responseCache = new Map();
 let sessionContext = {
@@ -223,7 +224,7 @@ function calculateSimilarity(str1, str2) {
     const tokens1 = new Set(str1.split(' '));
     const tokens2 = new Set(str2.split(' '));
     const intersection = new Set([...tokens1].filter(t => tokens2.has(t)));
-    const union = new Set([...tokens1, ...set2]);
+    const union = new Set([...tokens1, ...tokens2]);
     return union.size > 0 ? intersection.size / union.size : 0;
 }
 
@@ -346,6 +347,8 @@ function formatResponse(match) {
             <div class="topic-header">
                 <span class="topic-badge">${match.topic}</span>
                 <span class="subtopic-badge">${match.subtopic}</span>
+                ${sessionContext.lastTopic === match.topic ? 
+                 '<span class="context-badge">👈 Topik Sebelumnya</span>' : ''}
             </div>
             <div class="answer-content">${match.response}</div>
     `;
@@ -353,12 +356,14 @@ function formatResponse(match) {
     if (match.diagram) {
         responseHTML += `
             <div class="diagram-container">
-                <img src="${match.diagram}" alt="${match.subtopic}" loading="lazy">
+                <img src="${match.diagram}" alt="${match.subtopic}" loading="lazy" 
+                     onerror="this.style.display='none'">
+                <div class="diagram-caption">Diagram ${match.subtopic}</div>
             </div>
         `;
     }
     
-    // Add follow-up questions if available
+    // Add follow-up questions
     if (match.patterns && match.patterns.length > 1) {
         const otherQuestions = match.patterns
             .filter(p => normalizeText(p) !== normalizeText(match.response))
@@ -367,7 +372,7 @@ function formatResponse(match) {
         if (otherQuestions.length > 0) {
             responseHTML += `
                 <div class="follow-up">
-                    <p>Mungkin Anda ingin bertanya:</p>
+                    <div class="followup-title">Mungkin Anda ingin bertanya:</div>
                     <div class="followup-questions">
                         ${otherQuestions.map(q => `
                             <button class="followup-btn" 
@@ -379,6 +384,11 @@ function formatResponse(match) {
                 </div>
             `;
         }
+    }
+    
+    // Debug info in development
+    if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+        responseHTML += `<div class="debug-info">Kecocokan: ${Math.round(match.confidence * 100)}%</div>`;
     }
     
     responseHTML += `</div>`;
@@ -410,12 +420,17 @@ function findAnswer(userQuery) {
     }
 
     // 3. Final fallback
-    return `
+    const fallbackResponse = `
         <div class="not-found">
-            <p>Saya tidak menemukan jawaban untuk "${userQuery}"</p>
-            <p>Coba tanyakan tentang: sel, fotosintesis, atau sistem organ</p>
+            <div class="not-found-icon">❓</div>
+            <div class="not-found-text">
+                <p>Saya belum memahami pertanyaan Anda.</p>
+                <p>Coba tanyakan tentang: sel, fotosintesis, atau sistem organ</p>
+            </div>
         </div>
     `;
+    responseCache.set(normalizedQuery, fallbackResponse);
+    return fallbackResponse;
 }
 
 // ================== [6] UI MANAGEMENT ================== //
@@ -465,6 +480,12 @@ function sendMessage() {
     addMessage(message, false);
     userInput.value = '';
     
+    // Clear any existing suggestions
+    const suggestionsContainer = document.getElementById('suggestions-container');
+    if (suggestionsContainer) {
+        suggestionsContainer.innerHTML = '';
+    }
+    
     // Process and show bot response after a short delay
     setTimeout(() => {
         try {
@@ -476,13 +497,71 @@ function sendMessage() {
                 <div class="error-message">
                     <i class="fas fa-exclamation-triangle"></i>
                     Terjadi kesalahan saat memproses pertanyaan Anda. Silakan coba lagi.
+                    <button class="retry-btn" onclick="sendMessage()">Coba Lagi</button>
                 </div>
             `);
         }
     }, 300);
 }
 
-// ================== [7] INITIALIZATION ================== //
+// ================== [7] AUTO-SUGGESTION ================== //
+let suggestionTimeout;
+
+function setupAutoSuggestion() {
+    const input = document.getElementById('userInput');
+    const suggestionsContainer = document.createElement('div');
+    suggestionsContainer.id = 'suggestions-container';
+    input.parentNode.insertBefore(suggestionsContainer, input.nextSibling);
+
+    input.addEventListener('input', () => {
+        clearTimeout(suggestionTimeout);
+        suggestionTimeout = setTimeout(() => {
+            const query = input.value.trim();
+            if (query.length > 1) {
+                showSuggestions(query, suggestionsContainer);
+            } else {
+                suggestionsContainer.innerHTML = '';
+            }
+        }, 300);
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+}
+
+function showSuggestions(query, container) {
+    const normalizedQuery = normalizeText(query);
+    const suggestions = new Set();
+
+    // Search through all patterns
+    for (const topic of Object.values(dataset.topics || {})) {
+        for (const subtopic of Object.values(topic.subtopics || {})) {
+            for (const qna of subtopic.QnA || []) {
+                for (const pattern of qna.patterns || []) {
+                    if (normalizeText(pattern).includes(normalizedQuery)) {
+                        suggestions.add(pattern);
+                        if (suggestions.size >= 5) break;
+                    }
+                }
+            }
+        }
+    }
+
+    container.innerHTML = suggestions.size > 0 
+        ? Array.from(suggestions).map(suggestion => `
+            <div class="suggestion-item" 
+                 onclick="document.getElementById('userInput').value='${suggestion.replace(/'/g, "\\'")}';this.parentNode.innerHTML=''">
+                ${suggestion}
+            </div>
+          `).join('')
+        : '';
+}
+
+// ================== [8] INITIALIZATION ================== //
 function loadDataset() {
     fetch('dataseek.json')
         .then(response => {
@@ -501,6 +580,9 @@ function loadDataset() {
                     <div><b>Kimia</b>: Asam-Basa, Reaksi Kimia</div>
                 </div>
             `);
+            
+            // Setup auto-suggestion after data is loaded
+            setupAutoSuggestion();
         })
         .catch(error => {
             console.error("Error loading dataset:", error);
@@ -554,12 +636,22 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDataset();
 });
 
-// ================== [8] DEBUGGING UTILITIES ================== //
+// ================== [9] GLOBAL FUNCTIONS ================== //
+window.sendMessage = sendMessage;
+window.selectSuggestion = function(suggestion) {
+    document.getElementById('userInput').value = suggestion;
+    document.getElementById('suggestions-container').innerHTML = '';
+};
+
+// ================== [10] DEBUGGING UTILITIES ================== //
 window.debug = {
     getDataset: () => dataset,
     getSessionContext: () => sessionContext,
+    getCache: () => responseCache,
     clearCache: () => responseCache.clear(),
-    testMatching: (query) => findAnswer(query)
-};</script>
+    testQuery: (query) => findAnswer(query)
+};
+        
+    </script>
 </body>
 </html>
