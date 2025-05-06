@@ -204,7 +204,7 @@ footer {
     <main>
         <div id="chatbox"></div>
         
-        <div class="input-container">
+      <div class="input-container">
             <input type="text" id="userInput" placeholder="Tanyakan materi IPA..." 
                    aria-label="Input pertanyaan IPA" autocomplete="off">
             <button id="sendButton" aria-label="Kirim pertanyaan">
@@ -215,15 +215,9 @@ footer {
             </button>
             <!-- Suggestion box yang terletak di dalam input-container -->
             <div id="suggestion-box" class="suggestion-box hidden"></div>
-        </div>        
-        <div class="quick-questions">
-            <p>Coba tanyakan:</p>
-            <div class="quick-buttons">
-                <button class="quick-btn" data-question="Apa itu sel?">Apa itu sel?</button>
-                <button class="quick-btn" data-question="Bagaimana proses fotosintesis?">Proses fotosintesis</button>
-                <button class="quick-btn" data-question="Sebutkan bagian sel hewan">Bagian sel hewan</button>
-            </div>
-        </div>
+            </div> 
+      </div>
+      
     </main>
     
     <footer>
@@ -651,7 +645,6 @@ function setupEventListeners() {
     
     // Clear chat button
     document.getElementById('clearChat').addEventListener('click', () => {
-        if (confirm('Apakah Anda yakin ingin menghapus seluruh percakapan?')) {
             document.getElementById('chatbox').innerHTML = '';
             sessionContext = {
                 lastTopic: null,
