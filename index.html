@@ -219,13 +219,11 @@
     <p>&copy; 2025 Dibuat dengan <span class="heart">❤️</span> oleh Ahmad Zikrillah @Digital IPA Learning</p>
     <p class="version">Versi 2.1.0 | <span id="lastUpdated"></span></p>
   </footer>
-
   <!-- Script Eksternal -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/indonesian-stemmer@0.0.3/dist/index.min.js"></script>
-    
+  <script src="https://cdn.jsdelivr.net/npm/indonesian-stemmer@0.0.3/dist/index.min.js"></script>    
     <!-- Main Script -->
-    <script>
+<script>
     // ================== [1] INITIALIZATION ================== //
 let dataset = {};
 const responseCache = new Map();
@@ -629,14 +627,14 @@ function loadDataset() {
 function setupEventListeners() {
     // Send message on button click
     document.getElementById('sendButton').addEventListener('click', sendMessage);
-    
+
     // Send message on Enter key
-    document.getElementById('userInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
+    document.getElementById('userInput').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
             sendMessage();
         }
     });
-    
+
     // Clear chat button
     document.getElementById('clearChat').addEventListener('click', () => {
         if (confirm('Apakah Anda yakin ingin menghapus seluruh percakapan?')) {
@@ -649,7 +647,14 @@ function setupEventListeners() {
             };
             addMessage("Halo! Ada yang bisa saya bantu?");
         }
-    });   
+    });
+}
+
+// Jalankan setelah halaman siap
+document.addEventListener('DOMContentLoaded', () => {
+    loadDataset();
+    setupEventListeners();
+});
 
 
 // Initialize when DOM is loaded
@@ -672,8 +677,7 @@ window.debug = {
     getCache: () => responseCache,
     clearCache: () => responseCache.clear(),
     testQuery: (query) => findAnswer(query)
-};
-        
-    </script>
+};        
+</script>
 </body>
 </html>
