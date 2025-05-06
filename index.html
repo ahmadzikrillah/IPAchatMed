@@ -222,59 +222,18 @@
   <!-- Script Eksternal -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script src="https://cdn.jsdelivr.net/npm/indonesian-stemmer@0.0.3/dist/index.min.js"></script>    
-    <!-- Main Script -->
-<script>
-  // ================ [1] INITIALIZATION ================ //
-const dataset = {
-    topics: {
-        "Biologi": {
-            subtopics: {
-                "Sel": {
-                    QnA: [{
-                        patterns: ["apa itu sel", "definisi sel", "jelaskan tentang sel"],
-                        responses: [
-                            "Sel adalah unit terkecil penyusun makhluk hidup. Terdiri dari membran sel, sitoplasma, dan inti sel.",
-                            "Dalam biologi, sel merupakan struktur dasar semua makhluk hidup. Setiap organisme terdiri dari satu atau lebih sel."
-                        ],
-                        diagram: "images/sel.png"
-                    }]
-                },
-                "Fotosintesis": {
-                    QnA: [{
-                        patterns: ["proses fotosintesis", "bagaimana fotosintesis bekerja"],
-                        responses: [
-                            "Fotosintesis adalah proses tumbuhan mengubah cahaya matahari menjadi energi kimia.",
-                            "Proses fotosintesis terjadi di kloroplas dengan rumus: 6CO₂ + 6H₂O + cahaya → C₆H₁₂O₆ + 6O₂"
-                        ],
-                        diagram: "images/fotosintesis.png"
-                    }]
-                }
-            }
-        },
-        "Fisika": {
-            subtopics: {
-                "Gaya": {
-                    QnA: [{
-                        patterns: ["apa itu gaya", "jenis-jenis gaya", "contoh gaya dalam fisika"],
-                        responses: [
-                            "Gaya adalah interaksi yang dapat menyebabkan benda bergerak atau berubah bentuk. Contoh: gaya gravitasi, gaya gesek.",
-                            "Dalam fisika, gaya diukur dalam newton (N). Jenis utama: gaya kontak dan gaya lapangan."
-                        ],
-                        diagram: "images/gaya.png"
-                    }]
-                }
-            }
-        }
-    }
-};
-
+  <script> 
+    // ================== [1] INITIALIZATION ================== //
+let dataset = {};
+const responseCache = new Map();
 let sessionContext = {
-    currentTopic: null,
+    lastTopic: null,
     lastSubtopic: null,
+    lastResponseIndices: {},
     conversationHistory: []
 };
 
-// ================ [2] TEXT PROCESSING ================ //
+// ================== [2] TEXT PROCESSING ================== //
 function normalizeText(text) {
     if (!text) return '';
     return text.toLowerCase()
@@ -285,234 +244,411 @@ function normalizeText(text) {
         .trim();
 }
 
-function tokenize(text) {
+function extractKeywords(text) {
     return normalizeText(text).split(' ').filter(word => word.length > 2);
 }
 
-// ================ [3] ENHANCED MATCHING ENGINE ================ //
-function calculateMatchScore(query, pattern) {
-    const queryTokens = new Set(tokenize(query));
-    const patternTokens = new Set(tokenize(pattern));
-    
-    // 1. Base similarity
-    const intersection = new Set([...queryTokens].filter(t => patternTokens.has(t)));
-    const union = new Set([...queryTokens, ...patternTokens]);
-    let score = intersection.size / union.size;
-    
-    // 2. Context bonus
-    if (sessionContext.currentTopic && pattern.includes(sessionContext.currentTopic)) {
-        score *= 1.3;
-    }
-    
-    // 3. Question type bonus
-    const questionTypes = {
-        'apa': 1.2, 
-        'bagaimana': 1.15,
-        'mengapa': 1.1
-    };
-    for (const [type, bonus] of Object.entries(questionTypes)) {
-        if (query.includes(type) && pattern.includes(type)) {
-            score *= bonus;
-            break;
-        }
-    }
-    
-    return Math.min(score, 1.0);
+// ================== [3] SIMILARITY CALCULATION ================== //
+function calculateSimilarity(str1, str2) {
+    const tokens1 = new Set(str1.split(' '));
+    const tokens2 = new Set(str2.split(' '));
+    const intersection = new Set([...tokens1].filter(t => tokens2.has(t)));
+    const union = new Set([...tokens1, ...tokens2]);
+    return union.size > 0 ? intersection.size / union.size : 0;
 }
 
-function findBestMatch(query) {
+// ================== [4] CORE MATCHING FUNCTIONS ================== //
+function findBestPatternMatch(query, patterns) {
+    let maxScore = 0;
+    let bestIndex = -1;
+    
+    patterns.forEach((pattern, index) => {
+        const score = calculateSimilarity(normalizeText(query), normalizeText(pattern));
+        if (score > maxScore) {
+            maxScore = score;
+            bestIndex = index;
+        }
+    });
+    
+    return bestIndex;
+}
+
+function findExactPatternMatch(query) {
     const normalizedQuery = normalizeText(query);
-    let bestMatch = { score: 0 };
-
-    // Priority 1: Check current topic first
-    if (sessionContext.currentTopic) {
-        const topicData = dataset.topics[sessionContext.currentTopic];
-        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
-            for (const qna of subtopicData.QnA) {
-                for (const pattern of qna.patterns) {
-                    const score = calculateMatchScore(normalizedQuery, pattern);
-                    if (score > bestMatch.score) {
-                        bestMatch = {
-                            score,
-                            topic: sessionContext.currentTopic,
-                            subtopic,
-                            response: qna.responses[Math.floor(Math.random() * qna.responses.length)],
-                            diagram: qna.diagram
-                        };
-                    }
-                }
-            }
-        }
-        
-        if (bestMatch.score > 0.7) {
-            return bestMatch;
-        }
-    }
-
-    // Priority 2: Global search
-    for (const [topic, topicData] of Object.entries(dataset.topics)) {
-        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics)) {
-            for (const qna of subtopicData.QnA) {
-                for (const pattern of qna.patterns) {
-                    const score = calculateMatchScore(normalizedQuery, pattern);
-                    if (score > bestMatch.score) {
-                        bestMatch = {
-                            score,
-                            topic,
-                            subtopic,
-                            response: qna.responses[Math.floor(Math.random() * qna.responses.length)],
-                            diagram: qna.diagram
-                        };
-                    }
+    for (const [topic, topicData] of Object.entries(dataset.topics || {})) {
+        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics || {})) {
+            for (const qna of subtopicData.QnA || []) {
+                const exactMatch = qna.patterns.find(p => normalizeText(p) === normalizedQuery);
+                if (exactMatch) {
+                    const qnaKey = `${topic}|${subtopic}|${qna.intent}`;
+                    const lastIndex = sessionContext.lastResponseIndices[qnaKey] || 0;
+                    const responseIndex = (lastIndex + 1) % qna.responses.length;
+                    
+                    sessionContext = {
+                        ...sessionContext,
+                        lastTopic: topic,
+                        lastSubtopic: subtopic,
+                        lastResponseIndices: {
+                            ...sessionContext.lastResponseIndices,
+                            [qnaKey]: responseIndex
+                        },
+                        conversationHistory: [
+                            ...sessionContext.conversationHistory,
+                            {
+                                query: normalizedQuery,
+                                topic,
+                                subtopic,
+                                timestamp: new Date()
+                            }
+                        ]
+                    };
+                    
+                    return {
+                        topic,
+                        subtopic,
+                        response: qna.responses[responseIndex],
+                        diagram: qna.diagram,
+                        intent: qna.intent,
+                        confidence: 1.0,
+                        patterns: qna.patterns
+                    };
                 }
             }
         }
     }
-
-    return bestMatch.score > 0.6 ? bestMatch : null;
+    return null;
 }
 
-// ================ [4] RESPONSE MANAGEMENT ================ //
+function findSemanticMatch(query) {
+    const normalizedQuery = normalizeText(query);
+    let bestMatch = { confidence: 0 };
+    
+    for (const [topic, topicData] of Object.entries(dataset.topics || {})) {
+        for (const [subtopic, subtopicData] of Object.entries(topicData.subtopics || {})) {
+            for (const qna of subtopicData.QnA || []) {
+                const patternScore = Math.max(...qna.patterns.map(p => 
+                    calculateSimilarity(normalizedQuery, normalizeText(p))
+                ));
+                
+                if (patternScore > bestMatch.confidence) {
+                    const qnaKey = `${topic}|${subtopic}|${qna.intent}`;
+                    const lastIndex = sessionContext.lastResponseIndices[qnaKey] || 0;
+                    const responseIndex = (lastIndex + 1) % qna.responses.length;
+                    
+                    bestMatch = {
+                        confidence: patternScore,
+                        topic,
+                        subtopic,
+                        response: qna.responses[responseIndex],
+                        diagram: qna.diagram,
+                        intent: qna.intent,
+                        patterns: qna.patterns
+                    };
+                }
+            }
+        }
+    }
+    
+    if (bestMatch.confidence > 0.65) {
+        sessionContext = {
+            ...sessionContext,
+            lastTopic: bestMatch.topic,
+            lastSubtopic: bestMatch.subtopic,
+            conversationHistory: [
+                ...sessionContext.conversationHistory,
+                {
+                    query: normalizedQuery,
+                    topic: bestMatch.topic,
+                    subtopic: bestMatch.subtopic,
+                    timestamp: new Date()
+                }
+            ]
+        };
+    }
+    
+    return bestMatch.confidence > 0.65 ? bestMatch : null;
+}
+
+// ================== [5] RESPONSE MANAGEMENT ================== //
 function formatResponse(match) {
-    let html = `
+    let responseHTML = `
         <div class="answer-box">
             <div class="topic-header">
-                <span class="topic">${match.topic}</span>
-                <span class="subtopic">${match.subtopic}</span>
-                ${sessionContext.currentTopic === match.topic ? 
-                 '<span class="context-badge">(Topik Terkait)</span>' : ''}
+                <span class="topic-badge">${match.topic}</span>
+                <span class="subtopic-badge">${match.subtopic}</span>
             </div>
             <div class="answer-content">${match.response}</div>
     `;
-    
+
     if (match.diagram) {
-        html += `
-            <div class="diagram">
-                <img src="${match.diagram}" alt="${match.subtopic}" 
+        responseHTML += `
+            <div class="diagram-container">
+                <img src="${match.diagram}" alt="${match.subtopic}" loading="lazy" 
                      onerror="this.style.display='none'">
+                <div class="diagram-caption">Diagram ${match.subtopic}</div>
             </div>
         `;
     }
-    
-    html += `</div>`;
-    return html;
+
+    // Add follow-up questions
+    if (match.patterns && match.patterns.length > 1) {
+        const otherQuestions = match.patterns
+            .filter(p => normalizeText(p) !== normalizeText(match.response))
+            .slice(0, 3);
+
+        if (otherQuestions.length > 0) {
+            responseHTML += `
+                <div class="follow-up">
+                    <div class="followup-title">Mungkin Anda ingin bertanya:</div>
+                    <div class="followup-questions">
+                        ${otherQuestions.map(q => `
+                            <button class="followup-btn" 
+                                    onclick="document.getElementById('userInput').value='${q.replace(/'/g, "\\'")}';sendMessage()">
+                                ${q}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Debug info in development
+    if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+        responseHTML += `<div class="debug-info">Kecocokan: ${Math.round(match.confidence * 100)}%</div>`;
+    }
+
+    responseHTML += `</div>`;
+    return responseHTML;
 }
 
-function getFallbackResponse() {
-    if (sessionContext.currentTopic) {
-        const subtopics = Object.keys(dataset.topics[sessionContext.currentTopic].subtopics);
-        return `
-            <div class="not-found">
-                <p>Dalam topik <strong>${sessionContext.currentTopic}</strong>, 
-                coba tanyakan tentang:</p>
-                <ul>
-                    ${subtopics.map(st => `<li>${st}</li>`).join('')}
-                </ul>
-            </div>
-        `;
-    }
+
+function findAnswer(userQuery) {
+    const normalizedQuery = normalizeText(userQuery);
     
-    const topics = Object.keys(dataset.topics);
-    return `
+    // Check cache first
+    if (responseCache.has(normalizedQuery)) {
+        return responseCache.get(normalizedQuery);
+    }
+
+    // 1. Try exact match first
+    const exactMatch = findExactPatternMatch(userQuery);
+    if (exactMatch) {
+        const response = formatResponse(exactMatch);
+        responseCache.set(normalizedQuery, response);
+        return response;
+    }
+
+    // 2. Fallback to semantic match
+    const semanticMatch = findSemanticMatch(userQuery);
+    if (semanticMatch) {
+        const response = formatResponse(semanticMatch);
+        responseCache.set(normalizedQuery, response);
+        return response;
+    }
+
+    // 3. Final fallback
+    const fallbackResponse = `
         <div class="not-found">
-            <p>Coba tanyakan salah satu topik berikut:</p>
-            <ul>
-                ${topics.map(t => `<li>${t}</li>`).join('')}
-            </ul>
+            <div class="not-found-icon">❓</div>
+            <div class="not-found-text">
+                <p>Saya belum memahami pertanyaan Anda.</p>
+                <p>Coba tanyakan tentang: sel, fotosintesis, atau sistem organ</p>
+            </div>
         </div>
     `;
+    responseCache.set(normalizedQuery, fallbackResponse);
+    return fallbackResponse;
 }
 
-// ================ [5] CHAT INTERFACE ================ //
-function addMessage(content, isBot = true) {
+// ================== [6] UI MANAGEMENT ================== //
+function addMessage(message, isBot = true) {
     const chatbox = document.getElementById('chatbox');
-    const messageDiv = document.createElement('div');
     
-    messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
-    messageDiv.innerHTML = content;
-    chatbox.appendChild(messageDiv);
+    if (isBot) {
+        // Add typing indicator
+        const typingIndicator = `
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>`;
+        chatbox.insertAdjacentHTML('beforeend', typingIndicator);
+    }
     
-    // Scroll to bottom
+    // Scroll to bottom immediately
     chatbox.scrollTop = chatbox.scrollHeight;
+    
+    setTimeout(() => {
+        if (isBot) {
+            // Remove typing indicator
+            const typingIndicators = chatbox.getElementsByClassName('typing-indicator');
+            while (typingIndicators.length > 0) {
+                typingIndicators[0].remove();
+            }
+        }
+        
+        // Add the actual message
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
+        messageDiv.innerHTML = message;
+        chatbox.appendChild(messageDiv);
+        
+        // Scroll to bottom again after adding message
+        chatbox.scrollTop = chatbox.scrollHeight;
+        
+    }, isBot ? 800 : 0);
 }
 
-function processUserInput() {
+function sendMessage() {
     const input = document.getElementById('userInput');
     const message = input.value.trim();
-    
     if (!message) return;
-    
-    // Add user message
-    addMessage(message, false);
+
+    addMessage(`<div class="user-message">${message}</div>`);
     input.value = '';
-    
-    // Process and show response
+    document.getElementById('suggestions-container').innerHTML = '';
+
     setTimeout(() => {
         try {
-            const match = findBestMatch(message);
-            
-            if (match) {
-                sessionContext.currentTopic = match.topic;
-                sessionContext.lastSubtopic = match.subtopic;
-                sessionContext.conversationHistory.push({
-                    query: message,
-                    response: match.response,
-                    timestamp: new Date()
-                });
-                
-                addMessage(formatResponse(match));
+            const answer = findAnswer(message);
+
+            if (answer) {
+                // Tampilkan format lengkap: bisa ditambahkan topik/subtopik jika dibutuhkan
+                let responseHTML = `<div class="bot-message">${answer.response}</div>`;
+
+                if (answer.diagram) {
+                    responseHTML += `<img src="${answer.diagram}" class="response-diagram" alt="Diagram">`;
+                }
+
+                addMessage(responseHTML);
             } else {
-                addMessage(getFallbackResponse());
+                // fallback jika tidak ditemukan
+                addMessage(`<div class="bot-message fallback">Maaf, saya belum menemukan jawaban untuk pertanyaan itu.</div>`);
             }
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error processing message:", error);
             addMessage(`
                 <div class="error-message">
-                    Terjadi kesalahan sistem. Silakan coba lagi.
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Terjadi kesalahan saat memproses pertanyaan Anda. Silakan coba lagi.
+                    <button class="retry-btn" onclick="sendMessage()">Coba Lagi</button>
                 </div>
             `);
         }
-    }, 500);
+    }, 300);
+} 
+
+window.sendMessage = sendMessage; // pastikan ini tetap tersedia jika dipanggil dari HTML
+
+
+function showSuggestions(query, container) {
+    const normalizedQuery = normalizeText(query);
+    const suggestions = new Set();
+
+    // Search through all patterns
+    for (const topic of Object.values(dataset.topics || {})) {
+        for (const subtopic of Object.values(topic.subtopics || {})) {
+            for (const qna of subtopic.QnA || []) {
+                for (const pattern of qna.patterns || []) {
+                    if (normalizeText(pattern).includes(normalizedQuery)) {
+                        suggestions.add(pattern);
+                        if (suggestions.size >= 5) break;
+                    }
+                }
+            }
+        }
+    }
+
+    container.innerHTML = suggestions.size > 0 
+        ? Array.from(suggestions).map(suggestion => `
+            <div class="suggestion-item" 
+                 onclick="document.getElementById('userInput').value='${suggestion.replace(/'/g, "\\'")}';this.parentNode.innerHTML=''">
+                ${suggestion}
+            </div>
+          `).join('')
+        : '';
 }
 
-// ================ [6] EVENT HANDLERS ================ //
+// ================== [8] INITIALIZATION ================== //
+function loadDataset() {
+    fetch('dataseek.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Gagal memuat dataset');
+            }
+            return response.json();
+        })
+        .then(data => {
+            dataset = data.ipa_smp || {};
+            addMessage("Halo! Saya asisten Virtual IPA. Kamu bisa bertanya tentang:");
+            addMessage(`
+                <div class="welcome-message">
+                    <div><b>Biologi</b>: Sel, Fotosintesis, Sistem Organ</div>
+                    <div><b>Fisika</b>: Gaya, Energi, Listrik</div>
+                    <div><b>Kimia</b>: Asam-Basa, Reaksi Kimia</div>
+                </div>
+            `);
+            
+            // Setup auto-suggestion after data is loaded
+            setupAutoSuggestion();
+        })
+        .catch(error => {
+            console.error("Error loading dataset:", error);
+            addMessage(`
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Sistem sedang dalam pemeliharaan. Silakan coba lagi nanti.
+                </div>
+            `);
+        });
+}
+
 function setupEventListeners() {
-    document.getElementById('sendButton').addEventListener('click', processUserInput);
-    
-    document.getElementById('userInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') processUserInput();
+    // Send message on button click
+    document.getElementById('sendButton').addEventListener('click', sendMessage);
+
+    // Send message on Enter key
+    document.getElementById('userInput').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
     });
-    
+
+    // Clear chat button
     document.getElementById('clearChat').addEventListener('click', () => {
-        document.getElementById('chatbox').innerHTML = '';
-        sessionContext = {
-            currentTopic: null,
-            lastSubtopic: null,
-            conversationHistory: []
-        };
-        showWelcomeMessage();
+        if (confirm('Apakah Anda yakin ingin menghapus seluruh percakapan?')) {
+            document.getElementById('chatbox').innerHTML = '';
+            sessionContext = {
+                lastTopic: null,
+                lastSubtopic: null,
+                lastResponseIndices: {},
+                conversationHistory: []
+            };
+            addMessage("Halo! Ada yang bisa saya bantu?");
+        }
     });
 }
-
-function showWelcomeMessage() {
-    addMessage("Halo! Saya Asisten IPA. Silakan ajukan pertanyaan Anda.");
-    addMessage(`
-        <div class="welcome-message">
-            <p><b>Contoh pertanyaan:</b></p>
-            <ul>
-                <li>Apa itu sel?</li>
-                <li>Bagaimana proses fotosintesis?</li>
-                <li>Jelaskan jenis-jenis gaya</li>
-            </ul>
-        </div>
-    `);
-}
-
-// ================ [7] INITIALIZATION ================ //
+// Jalankan setelah halaman siap
 document.addEventListener('DOMContentLoaded', () => {
+    loadDataset();
     setupEventListeners();
-    showWelcomeMessage();
 });
+
+// ================== [9] GLOBAL FUNCTIONS ================== //
+window.sendMessage = sendMessage;
+window.selectSuggestion = function(suggestion) {
+    document.getElementById('userInput').value = suggestion;
+    document.getElementById('suggestions-container').innerHTML = '';
+};
+
+// ================== [10] DEBUGGING UTILITIES ================== //
+window.debug = {
+    getDataset: () => dataset,
+    getSessionContext: () => sessionContext,
+    getCache: () => responseCache,
+    clearCache: () => responseCache.clear(),
+    testQuery: (query) => findAnswer(query)
+};        
 </script>
+
 </body>
 </html>
