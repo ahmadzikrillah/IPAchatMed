@@ -1,183 +1,98 @@
-/* ================== [1] BASE STYLES ================== */
-:root {
-    --primary-color: #4CAF50;
-    --primary-dark: #45a049;
-    --secondary-color: #2a3a4a;
-    --background-dark: #121212;
-    --background-darker: #1e1e1e;
-    --background-light: #2d2d2d;
-    --text-primary: #e0e0e0;
-    --text-secondary: #999;
-    --border-color: #444;
-    --user-message-bg: #3a3a3a;
-    --bot-message-bg: #2a3a4a;
-    --error-color: #f44336;
-    --warning-color: #ff9800;
-    --info-color: #2196F3;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
+/* Embedded CSS untuk fallback jika style.css tidak terload */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: var(--background-dark);
-    color: var(--text-primary);
+    background-color: #f5f7fa;
+    color: #333;
     line-height: 1.6;
-    transition: all 0.3s ease;
 }
 
-/* ================== [2] TYPOGRAPHY ================== */
 h1 {
-    color: var(--primary-color);
+    color: #2c3e50;
     text-align: center;
-    margin: 20px 0;
+    margin-bottom: 20px;
     font-size: 1.8rem;
-    position: relative;
-    padding-bottom: 10px;
 }
 
-h1::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: var(--primary-color);
-    border-radius: 3px;
-}
-
-.subtitle {
-    text-align: center;
-    color: var(--text-secondary);
-    margin-bottom: 30px;
-    font-size: 0.9rem;
-}
-
-/* ================== [3] CHAT INTERFACE ================== */
 #chatbox {
     height: 60vh;
     overflow-y: auto;
     padding: 15px;
-    background-color: var(--background-darker);
+    background-color: white;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    scroll-behavior: smooth;
 }
 
 .message {
-    padding: 12px 16px;
+    margin-bottom: 12px;
+    padding: 10px 15px;
     border-radius: 18px;
-    max-width: 85%;
+    max-width: 80%;
     word-wrap: break-word;
-    animation: fadeIn 0.3s ease;
-    position: relative;
-    line-height: 1.5;
-}
-
-.bot-message {
-    background-color: var(--bot-message-bg);
-    align-self: flex-start;
-    border-bottom-left-radius: 5px;
-    margin-right: auto;
 }
 
 .user-message {
-    background-color: var(--user-message-bg);
-    align-self: flex-end;
-    border-bottom-right-radius: 5px;
+    background-color: #e3f2fd;
     margin-left: auto;
+    border-bottom-right-radius: 5px;
 }
 
-/* ================== [4] INPUT AREA ================== */
-.input-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+.bot-message {
+    background-color: #f1f1f1;
+    margin-right: auto;
+    border-bottom-left-radius: 5px;
 }
 
 #userInput {
-    flex: 1;
+    width: calc(100% - 90px);
     padding: 12px 15px;
-    border: 1px solid var(--border-color);
+    border: 1px solid #ddd;
     border-radius: 25px;
     font-size: 16px;
     outline: none;
-    background-color: var(--background-light);
-    color: var(--text-primary);
     transition: border 0.3s;
 }
 
 #userInput:focus {
-    border-color: var(--primary-color);
+    border-color: #4CAF50;
 }
 
 button {
-    padding: 12px 20px;
+    width: 80px;
+    padding: 12px;
+    margin-left: 10px;
+    background-color: #4CAF50;
+    color: white;
     border: none;
     border-radius: 25px;
     cursor: pointer;
     font-size: 16px;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    transition: background-color 0.3s;
 }
 
-#sendButton {
-    background-color: var(--primary-color);
-    color: white;
-    min-width: 80px;
+button:hover {
+    background-color: #45a049;
 }
 
-#sendButton:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-2px);
-}
-
-#clearChat {
-    background-color: var(--background-light);
-    color: var(--text-primary);
-    width: 50px;
-    padding: 12px;
-}
-
-#clearChat:hover {
-    background-color: #333;
-}
-
-/* ================== [5] SPECIAL ELEMENTS ================== */
 .typing-indicator {
-    display: inline-flex;
+    display: inline-block;
     padding: 10px 15px;
-    background-color: var(--bot-message-bg);
+    background-color: #f1f1f1;
     border-radius: 18px;
     margin-bottom: 12px;
-    gap: 5px;
 }
 
 .typing-indicator span {
-    width: 8px;
     height: 8px;
-    background-color: var(--text-primary);
+    width: 8px;
+    background-color: #666;
     border-radius: 50%;
     display: inline-block;
+    margin: 0 2px;
     animation: bounce 1.5s infinite ease-in-out;
 }
 
@@ -189,227 +104,70 @@ button {
     animation-delay: 0.4s;
 }
 
-/* ================== [6] ANSWER COMPONENTS ================== */
-.answer-box {
-    background-color: var(--bot-message-bg);
-    border-radius: 12px;
-    padding: 15px;
-    margin: 8px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.topic-header {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    align-items: center;
-}
-
-.topic-badge {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-.subtopic-badge {
-    background-color: var(--background-light);
-    color: var(--text-primary);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-}
-
-.diagram-container {
-    margin: 15px 0;
-    text-align: center;
-}
-
-.diagram-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.diagram-caption {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    margin-top: 5px;
-    text-align: center;
-}
-
-.related-answers {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px dashed var(--border-color);
-}
-
-.related-title {
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: var(--primary-color);
-    font-size: 0.9rem;
-}
-
-.related-answers ul {
-    padding-left: 20px;
-    margin-top: 8px;
-}
-
-.related-answers li {
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-}
-
-/* ================== [7] QUICK QUESTIONS ================== */
-.quick-questions {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: var(--background-darker);
-    border-radius: 10px;
-}
-
-.quick-questions p {
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.quick-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.quick-btn {
-    background-color: var(--background-light);
-    color: var(--text-primary);
-    padding: 8px 12px;
-    font-size: 0.8rem;
-    border-radius: 20px;
-    white-space: nowrap;
-}
-
-.quick-btn:hover {
-    background-color: #333;
-}
-
-/* ================== [8] FOOTER & MISC ================== */
-footer {
-    text-align: center;
-    margin-top: 30px;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    padding-top: 15px;
-    border-top: 1px solid var(--border-color);
-}
-
-.heart {
-    color: #e74c3c;
-    animation: pulse 1.5s infinite;
-}
-
-.version {
-    font-size: 0.7rem;
-    margin-top: 5px;
-    opacity: 0.7;
-}
-
-.not-found {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 15px;
-    background-color: var(--background-light);
-    border-radius: 10px;
-    margin: 10px 0;
-}
-
-.not-found-icon {
-    font-size: 1.5rem;
-    color: var(--warning-color);
-}
-
-.not-found-text {
-    flex: 1;
-}
-
-.error-message {
-    color: var(--error-color);
-    background-color: rgba(244, 67, 54, 0.1);
-    padding: 15px;
-    border-radius: 10px;
-    border-left: 4px solid var(--error-color);
-}
-
-/* ================== [9] ANIMATIONS ================== */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 @keyframes bounce {
     0%, 60%, 100% { transform: translateY(0); }
     30% { transform: translateY(-5px); }
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #7f8c8d;
+    font-size: 0.9rem;
 }
 
-/* ================== [10] RESPONSIVE DESIGN ================== */
-@media (max-width: 768px) {
+.heart {
+    color: #e74c3c;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
     body {
-        padding: 15px;
+        padding: 10px;
     }
-    
+
     #chatbox {
         height: 65vh;
     }
-    
-    .input-container {
-        flex-direction: row;
-    }
-    
+
     #userInput {
-        width: 100%;
+        width: calc(100% - 80px);
+        padding: 10px 12px;
     }
-    
-    .quick-buttons {
-        flex-direction: column;
-    }
-    
-    .quick-btn {
-        width: 100%;
+
+    button {
+        width: 70px;
+        padding: 10px;
     }
 }
 
-@media (max-width: 480px) {
-    h1 {
-        font-size: 1.5rem;
-    }
-    
-    .message {
-        max-width: 90%;
-        padding: 10px 12px;
-        font-size: 0.9rem;
-    }
-    
-    #userInput {
-        padding: 10px 12px;
-    }
-    
-    button {
-        padding: 10px 15px;
-    }
-    
-    #sendButton {
-        min-width: 70px;
-    }
+/* Suggestion Box */
+.suggestion-box {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 10;
+    position: absolute; /* jika ingin posisi lebih dinamis */
+    top: 100%; /* posisi relatif terhadap elemen di atas */
+    left: 0;
+    right: 0;
+}
+
+.suggestion-box p {
+    margin: 5px 0;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.suggestion-box p:hover {
+    background-color: #e0e0e0;
+}
+
+.hidden {
+    display: none;
 }
