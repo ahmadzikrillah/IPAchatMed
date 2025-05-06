@@ -415,11 +415,13 @@ function formatResponse(match) {
             <div class="topic-header">
                 <span class="topic-badge">${match.topic}</span>
                 <span class="subtopic-badge">${match.subtopic}</span>
-                ${sessionContext.lastTopic === match.topic ? 
-                 '<span class="context-badge">👈 Topik Sebelumnya</span>' : ''}
             </div>
             <div class="answer-content">${match.response}</div>
+        </div>
     `;
+    return responseHTML;
+}
+
     
     if (match.diagram) {
         responseHTML += `
