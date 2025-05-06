@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatMed IPA MTs - Asisten Pembelajaran IPA</title>
+    <title>ChatMed IPA - Asisten Belajar IPA</title>
     <meta name="description" content="Asisten virtual untuk pembelajaran IPA SMP/MTs dengan materi biologi, fisika, dan kimia">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="">
     <style>
         /* Embedded CSS untuk fallback jika style.css tidak terload */
 body {
@@ -615,7 +615,7 @@ function loadDataset() {
         })
         .then(data => {
             dataset = data.ipa_smp || {};
-            addMessage("Halo! Saya asisten IPA. Anda bisa bertanya tentang:");
+            addMessage("Halo! Saya AI asisten Virtual Pak Zikri. Kamu bisa bertanya tentang:");
             addMessage(`
                 <div class="welcome-message">
                     <div><b>Biologi</b>: Sel, Fotosintesis, Sistem Organ</div>
