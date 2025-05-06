@@ -151,6 +151,33 @@
                 padding: 10px;
             }
         }
+        .suggestion-box {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    position: relative;
+    z-index: 10;
+}
+
+.suggestion-box p {
+    margin: 5px 0;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.suggestion-box p:hover {
+    background-color: #e0e0e0;
+}
+
+.hidden {
+    display: none;
+}
+
     </style>
 </head>
 <body>
@@ -172,7 +199,7 @@
                 <i class="fas fa-trash-alt"></i>
             </button>
         </div>
-        
+        <div id="suggestion-box" class="suggestion-box hidden"></div>        
         <div class="quick-questions">
             <p>Coba tanyakan:</p>
             <div class="quick-buttons">
