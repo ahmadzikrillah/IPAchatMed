@@ -417,13 +417,8 @@ function formatResponse(match) {
                 <span class="subtopic-badge">${match.subtopic}</span>
             </div>
             <div class="answer-content">${match.response}</div>
-        </div>
     `;
-    return responseHTML;
-}
 
-
-    
     if (match.diagram) {
         responseHTML += `
             <div class="diagram-container">
@@ -433,13 +428,13 @@ function formatResponse(match) {
             </div>
         `;
     }
-    
+
     // Add follow-up questions
     if (match.patterns && match.patterns.length > 1) {
         const otherQuestions = match.patterns
             .filter(p => normalizeText(p) !== normalizeText(match.response))
             .slice(0, 3);
-            
+
         if (otherQuestions.length > 0) {
             responseHTML += `
                 <div class="follow-up">
@@ -456,15 +451,16 @@ function formatResponse(match) {
             `;
         }
     }
-    
+
     // Debug info in development
     if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
         responseHTML += `<div class="debug-info">Kecocokan: ${Math.round(match.confidence * 100)}%</div>`;
     }
-    
+
     responseHTML += `</div>`;
     return responseHTML;
 }
+
 
 function findAnswer(userQuery) {
     const normalizedQuery = normalizeText(userQuery);
