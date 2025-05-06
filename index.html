@@ -479,57 +479,52 @@ function addMessage(message, isBot = true) {
     chatbox.scrollTop = chatbox.scrollHeight;
     
     setTimeout(() => {
-    try {
-        const answer = findAnswer(message);
-        if (answer && answer.response) {
-            addMessage(answer.response);  // hanya tampilkan jawaban
-            if (answer.diagram) {
-                addMessage(`<img src="${answer.diagram}" class="response-diagram" alt="Diagram">`);
+        if (isBot) {
+            // Remove typing indicator
+            const typingIndicators = chatbox.getElementsByClassName('typing-indicator');
+            while (typingIndicators.length > 0) {
+                typingIndicators[0].remove();
             }
-        } else {
-            addMessage("Maaf, saya belum menemukan jawaban untuk pertanyaan itu.");
         }
-    } catch (error) {
-        console.error("Error processing message:", error);
-        addMessage(`
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i>
-                Terjadi kesalahan saat memproses pertanyaan Anda. Silakan coba lagi.
-                <button class="retry-btn" onclick="sendMessage()">Coba Lagi</button>
-            </div>
-        `);
-    }
-}, 300);
+        
+        // Add the actual message
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isBot ? 'bot-message' : 'user-message'}`;
+        messageDiv.innerHTML = message;
+        chatbox.appendChild(messageDiv);
+        
+        // Scroll to bottom again after adding message
+        chatbox.scrollTop = chatbox.scrollHeight;
+        
+    }, isBot ? 800 : 0);
+}
 
 
 function sendMessage() {
     const userInput = document.getElementById('userInput');
     const message = userInput.value.trim();
-    
+
     if (!message) return;
 
-    // Tampilkan pesan pengguna
     addMessage(message, false);
     userInput.value = '';
 
-    // Hapus saran sebelumnya
     const suggestionsContainer = document.getElementById('suggestions-container');
-    if (suggestionsContainer) suggestionsContainer.innerHTML = '';
+    if (suggestionsContainer) {
+        suggestionsContainer.innerHTML = '';
+    }
 
     setTimeout(() => {
         try {
             const answer = findAnswer(message);
-
             if (answer && answer.response) {
                 addMessage(answer.response);
-
                 if (answer.diagram) {
                     addMessage(`<img src="${answer.diagram}" class="response-diagram" alt="Diagram">`);
                 }
             } else {
                 addMessage("Maaf, saya belum menemukan jawaban untuk pertanyaan itu.");
             }
-
         } catch (error) {
             console.error("Error processing message:", error);
             addMessage(`
@@ -543,6 +538,8 @@ function sendMessage() {
     }, 300);
 }
 
+
+  
 // ================== [7] AUTO-SUGGESTION ================== //
 let suggestionTimeout;
 
