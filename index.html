@@ -102,27 +102,7 @@
     button:hover {
       background-color: #45a049;
     }
-
-    .quick-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .quick-btn {
-      background-color: #ddd;
-      border: none;
-      border-radius: 15px;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .quick-btn:hover {
-      background-color: #ccc;
-    }
-
+  
     .suggestion-box {
       background-color: #f0f0f0;
       border: 1px solid #ccc;
@@ -213,15 +193,7 @@
       button {
         width: 100%;
       }
-
-      .quick-buttons {
-        flex-direction: column;
-      }
-
-      .quick-btn {
-        width: 100%;
-        text-align: left;
-      }
+    
     }
   </style>
 </head>
@@ -240,15 +212,7 @@
       <button id="clearChat" aria-label="Bersihkan percakapan"><i class="fas fa-trash-alt"></i></button>
       <div id="suggestion-box" class="suggestion-box hidden"></div>
     </div>
-
-    <div class="quick-questions">
-      <p>Contoh pertanyaan:</p>
-      <div class="quick-buttons">
-        <button class="quick-btn" data-question="Apa itu sel?">Apa itu sel?</button>
-        <button class="quick-btn" data-question="Bagaimana proses fotosintesis?">Proses fotosintesis</button>
-        <button class="quick-btn" data-question="Sebutkan bagian sel hewan">Bagian sel hewan</button>
-      </div>
-    </div>
+    
   </main>
 
   <footer>
@@ -685,17 +649,8 @@ function setupEventListeners() {
             };
             addMessage("Halo! Ada yang bisa saya bantu?");
         }
-    });
-    
-    // Quick question buttons
-    document.querySelectorAll('.quick-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const question = this.getAttribute('data-question');
-            document.getElementById('userInput').value = question;
-            sendMessage();
-        });
-    });
-}
+    });   
+
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
