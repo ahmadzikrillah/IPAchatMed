@@ -253,7 +253,7 @@ function normalizeText(text) {
     return text.toLowerCase()
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/[^\w\s]/g, '')
-        .replace(/\b(apa|bagaimana|mengapa|tolong|jelaskan|sebutkan)\b/g, '')
+        .replace(/\b(apa|bagaimana|mengapa|tolong|itu|jelaskan|sebutkan)\b/g, '')
         .replace(/\s+/g, ' ')
         .trim();
 }
