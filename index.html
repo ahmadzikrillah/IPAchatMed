@@ -299,7 +299,7 @@ function findSemanticMatch(query) {
             for (const qna of subtopicData.QnA || []) {
                 const patternScore = Math.max(...qna.patterns.map(p => 
                     calculateSimilarity(normalizedQuery, normalizeText(p))
-                );
+                ));
                 
                 if (patternScore > bestMatch.confidence) {
                     const qnaKey = `${topic}|${subtopic}|${qna.intent}`;
