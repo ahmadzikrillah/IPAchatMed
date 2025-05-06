@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatMed IPA MTs - Asisten Pembelajaran IPA</title>
+    <title>ChatMed IPA MTs/SMP</title>
     <meta name="description" content="Asisten virtual untuk pembelajaran IPA SMP/MTs dengan materi biologi, fisika, dan kimia">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-       /* Embedded CSS untuk fallback jika style.css tidak terload */
+        /* Embedded CSS untuk fallback jika style.css tidak terload */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 800px;
@@ -44,20 +44,33 @@ h1 {
     border-radius: 18px;
     max-width: 80%;
     word-wrap: break-word;
+    font-size: 16px;
 }
 
+/* Pesan Pengguna (User) */
 .user-message {
-    background-color: #e3f2fd;
+    background-color: #e3f2fd; /* Warna latar belakang terang untuk pengguna */
     margin-left: auto;
     border-bottom-right-radius: 5px;
+    color: #333; /* Warna teks yang gelap untuk kontras */
 }
 
+/* Pesan Bot (Bot) */
 .bot-message {
-    background-color: #f1f1f1;
+    background-color: #f1f1f1; /* Warna latar belakang terang untuk bot */
     margin-right: auto;
     border-bottom-left-radius: 5px;
+    color: #333; /* Warna teks yang gelap untuk bot */
 }
 
+/* Mengatur agar semua pesan memiliki bayangan */
+.bot-message, .user-message {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Bayangan untuk pemisahan */
+    padding: 12px 18px; /* Padding yang sedikit lebih besar untuk kenyamanan membaca */
+    font-size: 16px; /* Ukuran font standar */
+}
+
+/* Pengaturan untuk Kotak Input dan Tombol */
 #userInput {
     width: calc(100% - 90px);
     padding: 12px 15px;
@@ -161,11 +174,8 @@ footer {
     padding: 10px;
     max-height: 150px;
     overflow-y: auto;
+    position: relative;
     z-index: 10;
-    position: absolute; /* jika ingin posisi lebih dinamis */
-    top: 100%; /* posisi relatif terhadap elemen di atas */
-    left: 0;
-    right: 0;
 }
 
 .suggestion-box p {
@@ -197,7 +207,7 @@ footer {
     <div class="input-container">
         <input type="text" id="userInput" placeholder="Ketik Pertanyaan tentang IPA..." 
                aria-label="Input pertanyaan IPA" autocomplete="off">
-        <button id="sendButton" aria-label="Kirim pertanyaan">
+        <button id="sendButton" aria-label="Tanya Pak ZIKRI">
             <i class="fas fa-paper-plane"></i> Kirim
         </button>
         <button id="clearChat" aria-label="Bersihkan percakapan">
@@ -604,7 +614,7 @@ function loadDataset() {
         })
         .then(data => {
             dataset = data.ipa_smp || {};
-            addMessage("Halo! Saya asisten IPA. Anda bisa bertanya tentang:");
+            addMessage("Halo! Saya asisten Virtual IPA. Kamu bisa bertanya tentang:");
             addMessage(`
                 <div class="welcome-message">
                     <div><b>Biologi</b>: Sel, Fotosintesis, Sistem Organ</div>
